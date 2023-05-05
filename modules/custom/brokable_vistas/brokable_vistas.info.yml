@@ -1,0 +1,5 @@
+name: Vistas de brokable
+description: Incorpora las vistas con funciones en twig
+package: Brokable
+type: module
+core: 8.x

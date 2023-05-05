@@ -1,0 +1,36 @@
+.normativas-homologaciones {
+	padding: 20px;
+}
+.normativas-homologaciones .field--label {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.norm-cables, .norm-normativas {
+	padding: 10px;
+}
+.norm-normativas div {
+	padding: 0;
+}
+.norm-normativas .norm-imagenes .field--item {
+	float: left;
+	width: 14%;
+	margin-left: 2%;
+}
+.norm-normativas .norm-imagenes .field--item img {
+	width: 100%;
+}
+
+.norm-normativas hr {
+	max-width: 100%;
+	border: 0;
+	border-top: solid 1px var(--gris1);
+	float: left;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.normativas-bloque {
+	border-bottom: solid 1px var(--negro);
+}

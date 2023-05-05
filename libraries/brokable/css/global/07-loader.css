@@ -1,0 +1,41 @@
+.loading_page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--negro);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.loading_page .field.field--name-field-imagen {
+  width: 50%;
+  animation: loading 7s infinite ease;
+}
+
+.loading_page img {
+  margin: auto;
+}
+
+@-webkit-keyframes loading {
+  0%, 100% {
+    width: 35%;
+  }
+  50% {
+    width: 40%;
+  }
+}
+
+/* Standard syntax */
+@keyframes loading {
+  0%, 100% {
+    width: 35%;
+  }
+  50% {
+    width: 40%;
+  }
+}

@@ -1,0 +1,289 @@
+/* .we-mega-menu-submenu.cables li.we-mega-menu-li.aereo 				{ background: url('/libraries/brokable/assets/cable_icons/aereo.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.altatemperatura 	{ background: url('/libraries/brokable/assets/cable_icons/altatemperatura.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.armado 			{ background: url('/libraries/brokable/assets/cable_icons/armado.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.automotriz 		{ background: url('/libraries/brokable/assets/cable_icons/automotriz.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.bus 				{ background: url('/libraries/brokable/assets/cable_icons/bus.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.coaxial 			{ background: url('/libraries/brokable/assets/cable_icons/coaxial.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.control 			{ background: url('/libraries/brokable/assets/cable_icons/control.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.ferroviario 		{ background: url('/libraries/brokable/assets/cable_icons/ferroviario.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.festoon 			{ background: url('/libraries/brokable/assets/cable_icons/festoon.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.fibraoptica 		{ background: url('/libraries/brokable/assets/cable_icons/fibraoptica.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.flexible 			{ background: url('/libraries/brokable/assets/cable_icons/flexible.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.fuerza 			{ background: url('/libraries/brokable/assets/cable_icons/fuerza.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.goma 				{ background: url('/libraries/brokable/assets/cable_icons/goma.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.iluminacion 		{ background: url('/libraries/brokable/assets/cable_icons/iluminacion.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.instrumentacion 	{ background: url('/libraries/brokable/assets/cable_icons/instrumentacion.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.lan 				{ background: url('/libraries/brokable/assets/cable_icons/lan.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.lszh 				{ background: url('/libraries/brokable/assets/cable_icons/lszh.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.marino 			{ background: url('/libraries/brokable/assets/cable_icons/marino.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.mediovoltaje 		{ background: url('/libraries/brokable/assets/cable_icons/mediovoltaje.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.militar 			{ background: url('/libraries/brokable/assets/cable_icons/militar.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.mineria 			{ background: url('/libraries/brokable/assets/cable_icons/mineria.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.pvc 				{ background: url('/libraries/brokable/assets/cable_icons/pvc.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.portaelectrodo 	{ background: url('/libraries/brokable/assets/cable_icons/portaelectrodo.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.pruebadefuego 		{ background: url('/libraries/brokable/assets/cable_icons/pruebadefuego.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.residencial 		{ background: url('/libraries/brokable/assets/cable_icons/residencial.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.solar 				{ background: url('/libraries/brokable/assets/cable_icons/solar.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.sumergible 		{ background: url('/libraries/brokable/assets/cable_icons/sumergible.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.telefonico 		{ background: url('/libraries/brokable/assets/cable_icons/telefonico.png'); }
+.we-mega-menu-submenu.cables li.we-mega-menu-li.termopar 			{ background: url('/libraries/brokable/assets/cable_icons/termopar.png'); } */
+
+.navbar-we-mega-menu .nav-tabs {
+  display: inline-block;
+}
+
+.we-mega-menu-li.brokable-principal,
+.we-mega-menu-li.brokable-principal span {
+  background: transparent;
+  color: var(--blanco);
+  border: none;
+}
+
+header#navbar {
+  background: var(--gris2);
+  border-radius: 0;
+  margin: 0;
+  padding: 16px 64px;
+}
+
+.navbar-default {
+  background: transparent;
+}
+
+.we-mega-menu-li.brokable-principal .we-mega-menu-submenu {
+  background: var(--blanco);
+  color: var(--negro);
+  border: none;
+}
+
+.we-mega-menu-li.brokable-principal span,
+.we-mega-menu-ul > .we-mega-menu-li {
+  font-size: 1em;
+}
+
+.we-mega-menu-submenu.cables li.we-mega-menu-li {
+  background-repeat: no-repeat !important;
+  background-size: 24px !important;
+  background-position: 24px 9px !important;
+}
+
+.we-mega-menu-li.brokable-principal .we-mega-menu-submenu li.we-mega-menu-li {
+  padding: 8px;
+  transition: 0.3s;
+  cursor: pointer;
+  border-bottom: solid 1px var(--gris1);
+  margin-top: 8px;
+}
+
+.we-mega-menu-li.brokable-principal .we-mega-menu-submenu li.we-mega-menu-li span,
+.we-mega-menu-li.brokable-principal .we-mega-menu-submenu li.we-mega-menu-li a {
+  border: none;
+  font-size: 1em;
+}
+
+.we-mega-menu-li.brokable-principal .we-mega-menu-submenu.cables li.we-mega-menu-li span {
+  padding-left: 64px;
+  color: inherit;
+}
+
+.we-mega-menu-li.brokable-principal:hover > span,
+.we-mega-menu-li.brokable-principal > .we-mega-menu-submenu li.we-mega-menu-li:hover {
+  background-color: var(--azul);
+  color: var(--blanco);
+}
+
+.we-mega-menu-li.brokable-principal > .we-mega-menu-submenu li.we-mega-menu-li:hover span,
+.we-mega-menu-li.brokable-principal > .we-mega-menu-submenu li.we-mega-menu-li:hover a {
+  color: var(--blanco);
+}
+
+
+.region.region-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+div#block-bootstrap-search {
+  margin-left: 16px;
+  width: 300px;
+}
+
+.navbar-header {
+  width: 100%;
+}
+
+nav.brokable-principal {
+  margin: 0;
+  border: none;
+}
+
+div#block-bootstrap-search .form-item {
+  margin: 0;
+}
+
+div#block-bootstrap-search input[type="search"] {
+  border: none;
+  color: var(--gris2);
+  background: var(--gris1);
+  font-family: var(--font-1);
+  box-shadow: unset;
+}
+
+div#block-bootstrap-search span.input-group-btn button {
+  background: var(--gris1);
+  border-color: var(--gris1);
+  border-left: solid 1px var(--gris2);
+  color: var(--gris2);
+}
+
+.region-navigation a.logo.navbar-btn.pull-left {
+  background: var(--negro);
+  width: 150px;
+  padding: 8px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 8vw;
+  top: 0;
+  margin: 0;
+  z-index: 1;
+}
+
+header#navbar {
+  border: none;
+  padding: 0 64px;
+}
+
+/* menu de vistas de cables */
+
+.seleccion_de_vista_menu_cables {
+  transition: 0.3s;
+  font-size: 1em;
+  font-weight: 600;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.seleccion_de_vista_menu_cables.active {
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+.menu_cables > .row:first-child {
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: solid 1px var(--azul-75);
+}
+
+.menu_cables img {
+  width: 20px;
+  height: 20px;
+  max-width: unset;
+}
+
+.menu_cables > .row:last-child .col-sm-4,
+.menu_cables > .row:last-child .col-sm-6 {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: 0.3s;
+  border-bottom: solid 1px var(--gris1);
+  padding: 8px 0;
+}
+
+.menu_cables a {
+  color: inherit;
+  text-decoration: none !important;
+  padding: 0px;
+  display: block;
+}
+
+.menu_cables > .row:last-child .col-sm-4:hover,
+.menu_cables > .row:last-child .col-sm-6:hover {
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+
+/* precio de los metales */
+.precios_metales {
+  text-align: right;
+  width: auto;
+  display: inline-block;
+  float: right;
+  color: var(--blanco);
+}
+
+li.precios_metal_item {
+  list-style: none;
+  padding: 4px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+
+
+.we-mega-menu-ul > li > a.we-mega-menu-li {
+  font-size: 1em !important;
+  padding: 11px 16px !important;
+  background: transparent !important;
+  color: var(--blanco) !important;
+}
+
+.we-mega-menu-ul > li > a.we-mega-menu-li:hover {
+  background: var(--azul) !important;
+}
+
+
+header {
+  z-index: 100;
+  width: 100vw;
+  box-shadow: 0 2px 4px var(--negro-75);
+}
+
+.precios_metales {
+  list-style: none;
+  margin: 4px 0;
+}
+
+.precios_metales li {
+  display: inline-block;
+  padding: 0 2px;
+}
+
+.precios_metales li:not(:last-child)::after {
+  content: '|';
+  margin-left: 4px;
+}
+
+.precio_prefijo {
+  letter-spacing: 0;
+  margin-right: -2px;
+}
+
+#block-preciodemetales {
+  float: right;
+  align-self: flex-end;
+}
+
+#block-preciodemetales .field--label {
+  display: none;
+}
+
+header#navbar {
+  position: absolute;
+  transition: 0.3s;
+}
+
+.main-container .region.region-header {
+  margin-top: 50px;
+  box-shadow: 0 2px 4px var(--negro-75);
+}
+
+.overlay {
+  z-index: 1;
+}

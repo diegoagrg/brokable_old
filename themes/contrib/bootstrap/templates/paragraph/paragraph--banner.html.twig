@@ -1,0 +1,56 @@
+<div class="banner-principal">
+
+  <div class="banner-principal__imagen
+  {% if content.field_imagen_para_tablets|render %} tablet-definida {% endif %}
+  {% if content.field_imagen_para_mobile|render %} celular-definida {% endif %}
+  ">
+    <div class="banner-principal__imagen__img--escritorio">
+      {% if content.field_gif|render %} 
+        {{ content.field_gif }}
+      {% else %}
+        {{ content.field_imagen_para_escritorio }}
+      {% endif %}
+    </div>
+    {% if content.field_imagen_para_tablets|render %}
+      <div class="banner-principal__imagen__img--tablet">
+        {% if content.field_gif|render %} 
+          {{ content.field_gif }}
+        {% else %}
+          {{ content.field_imagen_para_tablets }}
+        {% endif %} 
+      </div>
+    {% endif %}
+    {% if content.field_imagen_para_mobile|render %}
+      <div class="banner-principal__imagen__img--celular">
+        {% if content.field_gif|render %} 
+          {{ content.field_gif }}
+        {% else %}
+          {{ content.field_imagen_para_mobile }}
+        {% endif %} 
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="
+    banner-principal__info 
+    banner-principal__info--{{ paragraph.field_alineacion_vertical.value }} 
+    banner-principal__info--{{ paragraph.field_alineacion_horizontal.value }}
+  ">
+    {% if content.field_titulo|render %}
+      <div class="banner-principal__texto banner-principal__texto--titulo">
+        {{ content.field_titulo }}
+      </div>
+    {% endif %}
+    {% if content.field_texto|render %}
+      <div class="banner-principal__texto banner-principal__texto--descripcion">
+        {{ content.field_texto }}
+      </div>
+    {% endif %}
+    {% if content.field_link|render %}
+      <div class="banner-principal__texto banner-principal__texto--enlace">
+        {{ content.field_link }}
+      </div>
+    {% endif %}
+  </div>
+
+</div>

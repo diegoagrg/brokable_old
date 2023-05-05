@@ -1,0 +1,42 @@
+.icono_titulo_descripcion {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.icono_titulo_descripcion .icono_titulo_descripcion-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icono_titulo_descripcion.nivel-1 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono  {
+  padding-right: 20px;
+}
+
+.icono_titulo_descripcion.nivel-1 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono img {
+  width: 50px;
+}
+
+
+.icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono {
+  padding-right: 10px;
+  padding-left: 46px;
+}
+
+.icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono img {
+  width: 25px;
+}
+
+.icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-texto {
+  padding-left: 64px;
+}
+
+/* sidebars */
+.region-sidebar-second .icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-texto,
+.region-sidebar-second .icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono {
+  padding-left: 0;
+}
+
+.region-sidebar-second .icono_titulo_descripcion.nivel-2 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono {
+  margin-left: -15px;
+}

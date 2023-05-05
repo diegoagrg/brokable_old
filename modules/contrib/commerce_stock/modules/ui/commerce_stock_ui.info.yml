@@ -1,0 +1,13 @@
+name: Commerce Stock UI
+type: module
+description: UI for Commerce stock
+# core: 8.x
+package: Commerce Stock
+dependencies:
+  - commerce_stock
+
+# Information added by Drupal.org packaging script on 2018-10-05
+version: '8.x-1.0-alpha1'
+core: '8.x'
+project: 'commerce_stock'
+datestamp: 1538754784

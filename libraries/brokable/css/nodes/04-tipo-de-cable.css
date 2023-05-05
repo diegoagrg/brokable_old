@@ -1,0 +1,129 @@
+.tipo-de-cable {
+  padding: 20px 0;
+}
+
+.tipo-de-cable .cable-header {
+  margin-bottom: 17px;
+}
+
+.tipo-de-cable .cable-header h1 {
+  color: var(--azul);
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  margin: 0 0 8.5px;
+}
+
+.tipo-de-cable .cable-header img {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#gama-cables-ancla {
+  color: var(--azul);
+}
+
+.tipo-de-cable .cable-contenido {
+  text-align: justify;
+}
+
+.tipo-de-cable .cable-contenido a {
+  color: var(--azul);
+}
+
+.tipo-de-cable .cable-header {
+  padding: 0 20px;
+}
+
+.tipo-de-cable .cable-contenido {
+  padding: 0 20px 20px 20px;
+}
+
+.field--name-field-normativa > .field--item .node_normativa {
+  display: inline-block;
+}
+
+.field--name-field-normativa > .field--item {
+  display: inline-block;
+  width: auto;
+  margin: 0 2px;
+}
+
+.field--name-field-normativa > .field--item .node_normativa {
+  width: 100%;
+  cursor: pointer;
+}
+
+.field--name-field-normativa > .field--item .node_normativa .normativa_img img {
+  width: 30px !important;
+  margin: auto;
+  position: relative;
+}
+
+.field--name-field-normativa > .field--item .node_normativa .normativa_nombre {
+  text-align: center;
+  position: absolute;
+  background: var(--gris2);
+  padding: 8px;
+  color: var(--blanco);
+  display: none;
+  border-radius: 2px;
+}
+
+.field--name-field-normativa > .field--item .node_normativa:hover .normativa_nombre {
+  display: inherit;
+}
+
+.gama-columna .h5 {
+  border-top: solid 1px var(--gris2-25);
+  padding-top: 16px;
+}
+
+.file>span {
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding: 0;
+  font-weight: 300;
+  font-size: 1.2em;
+}
+
+
+.file-link a {
+  display: inline-block !important;
+  background: var(--gris2);
+  color: var(--blanco);
+  padding: 4px 16px;
+  transition: 0.3s;
+}
+
+.file-link a:hover {
+  text-decoration: none;
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+span.file-size {
+  display: none;
+}
+
+span.file-icon {
+  display: none;
+}
+
+.container.gama-de-cables .col-md-12 {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container.gama-de-cables .col-md-12 .gama-columna {
+  flex-basis: 50%;
+  padding: 8px 4px;
+}
+
+.container.gama-de-cables .col-md-12 .gama-columna .thumbnail {
+  height: 100%;
+}
+
+.gama-columna:after {
+  margin-top: -12px
+}

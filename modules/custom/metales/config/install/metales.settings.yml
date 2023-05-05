@@ -1,0 +1,6 @@
+interval: '86400'
+api_key: 'kPonhCNXHdUacJLLaBUV'
+cobre:  'CHRIS/CME_HG1'
+aluminio: 'ODA/PALUM_USD'
+oro: 'CHRIS/CME_GC1'
+plata: 'CHRIS/CME_SI1'

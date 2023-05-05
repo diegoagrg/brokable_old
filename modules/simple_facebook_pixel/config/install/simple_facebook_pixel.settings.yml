@@ -1,0 +1,12 @@
+pixel_enabled: false
+pixel_id: ''
+exclude_admin_pages: true
+excluded_roles: {  }
+view_content_entities: {  }
+complete_registration_enabled: false
+initiate_checkout_enabled: false
+purchase_enabled: false
+add_to_cart_enabled: false
+add_to_wishlist_enabled: false
+add_to_wishlist_flag_enabled: false
+add_to_wishlist_flag_list: {  }

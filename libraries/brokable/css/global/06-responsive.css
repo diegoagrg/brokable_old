@@ -1,0 +1,257 @@
+html,
+body {
+  max-width: 100vw;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1200px) {
+  .region.region-navigation {
+    display: block;
+    width: 100%;
+  }
+
+  .region-navigation a.logo.navbar-btn.pull-left {
+    position: relative;
+    margin: 0;
+    left: unset;
+    height: 64px;
+  }
+
+  div#block-bootstrap-search {
+    display: none;
+  }
+
+  #block-brokableprincipal-2 {
+    width: auto;
+    float: right;
+    margin: 0;
+  }
+
+  .region-we-mega-menu {
+    padding: 0;
+    margin: 0;
+    width: auto;
+    display: inline-block;
+    float: right;
+  }
+
+  .navbar-default .navbar-toggle {
+    margin: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  #block-brokableprincipal-2 {
+    margin: 16px 0;
+  }
+
+  .navbar-toggle {
+    display: block;
+    margin-left: -16px;
+    position: absolute;
+  }
+
+  .we-mega-menu-li.brokable-principal .we-mega-menu-submenu {
+    background: var(--gris2);
+  }
+
+  .menu_cables .col-sm-4,
+  .menu_cables .col-sm-6 {
+    width: 100%;
+  }
+
+  .menu_cables {
+    max-height: 300px;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .navbar-we-mega-menu.navbar ul {
+    width: 100%;
+    margin: 0;
+  }
+
+  .menu_cables .row {
+    margin: 0;
+  }
+
+
+  ul.nav.nav-tabs.subul {
+    padding: 0;
+  }
+
+  .seleccion_de_vista_menu_cables {
+    color: var(--blanco);
+  }
+
+  .menu_cables > .row:first-child {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    background: var(--gris2);
+    padding-top: 8px;
+  }
+
+  .menu_cables > .row:last-child {
+    padding-top: 96px
+  }
+
+  .menu_cables > .row:last-child .col-sm-4, .menu_cables > .row:last-child .col-sm-6 {
+    padding: 0;
+  }
+}
+
+/* ambiente */
+@media (max-width: 991px) {
+  .view-por-ambiente .col-sm-3.thumbnail.views-col {
+    width: 100% !important;
+    margin: 8px 0;
+  }
+
+  .main-container.container .row {
+    width: 100%;
+    margin: 0 !important;
+  }
+}
+
+/* casos de exito */
+@media (max-width: 991px) {
+  .region-sidebar-first {
+    display: none;
+  }
+
+  .caso-de-exito {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .caso-de-exito-encabezado {
+    background: var(--gris2-75);
+    z-index: 1;
+    width: 100%;
+  }
+
+  .caso-de-exito-imagen {
+    position: absolute;
+    width: calc(100% - 32px);
+    top: 0;
+  }
+
+  .caso-de-exito-icono {
+    left: calc(50% - 16px);
+    top: calc(100% - 48px);
+  }
+
+  .caso-de-exito-titulos {
+    background: var(--azul-75);
+  }
+
+  .tab_index_list .tab_index {
+    width: 100%;
+    height: 64px;
+    display: inline-block;
+  }
+
+  .tab_index_list .tab_index .icon-card:hover, .tab_index_list .tab_index.active .icon-card,
+  .tab_index_list .tab_index .icon-card {
+    height: 48px;
+    padding: 0;
+    text-align: left;
+  }
+
+
+  .tab_index_list .tab_index .icon-card:hover img, .tab_index_list .tab_index.active .icon-card img,
+  .tab_index_list .tab_index .icon-card .icon-card-img {
+    height: 32px;
+    margin-left: 16px;
+  }
+
+  .tab_index_list .icon-card-img,
+  .tab_index_list .h3 {
+    display: inline-block;
+    width: auto;
+    font-size: 16px !important;
+    margin: 16px;
+  }
+
+  .tab_index_list .icon-card {
+    display: block;
+    text-align: left;
+  }
+
+  .tab_content_list,
+  .icono_titulo_descripcion,
+  .icono_titulo_descripcion .icono_titulo_descripcion-encabezado {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .icono_titulo_descripcion.nivel-1 .icono_titulo_descripcion-encabezado .icono_titulo_descripcion-icono img,
+  .field--name-field-icono.field--type-image {
+    display: block !important;
+    width: 100%;
+  }
+
+  .region-sidebar-second {
+    display: none;
+  }
+
+  .main-container > .row > section.col-sm-6 {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 991px) {
+  .navbar-we-mega-menu.navbar {
+    background: var(--negro);
+    background-image: url('http://brokable.com/sites/default/files/Logo%20BK%20NEGRO-01.png');
+    background-position: center -30px;
+    background-repeat: no-repeat;
+    background-size: 90%;
+    padding: 96px 0;
+    font-size: 18px;
+    max-height: 100vh;
+  }
+
+  .menu_cables > .row:first-child,
+  .menu_cables > .row:first-child * {
+    background: rgb(51, 51, 51);
+    color: var(--gris1) !important;
+    margin: 0;
+    padding: 0;
+  }
+
+ .menu_cables > .row:first-child .seleccion_de_vista_menu_cables.active,
+ .menu_cables > .row:first-child .seleccion_de_vista_menu_cables.active * {
+    background: rgb(183, 180, 183) !important;
+    color: var(--negro) !important;
+  }
+
+  .menu_cables > .row:first-child .seleccion_de_vista_menu_cables {
+    padding: 10px;
+  }
+
+  ul.we-mega-menu-ul.nav.nav-tabs {
+    max-height: calc(90vh - 90px);
+    overflow: auto;
+  }
+
+  .top_bar {
+    position: relative;
+    z-index: 10;
+  }
+
+  nav.brokable-principal.navbar.navbar-default.navbar-we-mega-menu.mobile-collapse.hover-action.mobile-main-menu.we-mobile-megamenu-active {
+    overflow: initial;
+  }
+}
+
+@media(max-width: 767px) {
+  .view-tipos-de-cable .col-sm-3.thumbnail.views-col {
+    width: 100% !important;
+    margin: 8px 0;
+    text-align: center;
+  }
+}

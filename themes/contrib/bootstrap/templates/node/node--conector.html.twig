@@ -1,0 +1,257 @@
+{#
+/**
+ * @file
+ * Theme override to display a node.
+ *
+ * Available variables:
+ * - node: The node entity with limited access to object properties and methods.
+     Only "getter" methods (method names starting with "get", "has", or "is")
+     and a few common methods such as "id" and "label" are available. Calling
+     other methods (such as node.delete) will result in an exception.
+ * - label: The title of the node.
+ * - content: All node items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - author_picture: The node author user entity, rendered using the "compact"
+ *   view mode.
+ * - metadata: Metadata for this node.
+ * - date: Themed creation date field.
+ * - author_name: Themed author name field.
+ * - url: Direct URL of the current node.
+ * - display_submitted: Whether submission information should be displayed.
+ * - attributes: HTML attributes for the containing element.
+ *   The attributes.class element may contain one or more of the following
+ *   classes:
+ *   - node: The current template type (also known as a "theming hook").
+ *   - node--type-[type]: The current node type. For example, if the node is an
+ *     "Article" it would result in "node--type-article". Note that the machine
+ *     name will often be in a short form of the human readable label.
+ *   - node--view-mode-[view_mode]: The View Mode of the node; for example, a
+ *     teaser would result in: "node--view-mode-teaser", and
+ *     full: "node--view-mode-full".
+ *   The following are controlled through the node publishing options.
+ *   - node--promoted: Appears on nodes promoted to the front page.
+ *   - node--sticky: Appears on nodes ordered above other non-sticky nodes in
+ *     teaser listings.
+ *   - node--unpublished: Appears on unpublished nodes visible only to site
+ *     admins.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - content_attributes: Same as attributes, except applied to the main
+ *   content tag that appears in the template.
+ * - author_attributes: Same as attributes, except applied to the author of
+ *   the node tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ * - teaser: Flag for the teaser state. Will be true if view_mode is 'teaser'.
+ * - page: Flag for the full page state. Will be true if view_mode is 'full'.
+ * - readmore: Flag for more state. Will be true if the teaser content of the
+ *   node cannot hold the main body content.
+ * - logged_in: Flag for authenticated user status. Will be true when the
+ *   current user is a logged-in member.
+ * - is_admin: Flag for admin user status. Will be true when the current user
+ *   is an administrator.
+ *
+ * @ingroup templates
+ *
+ * @see template_preprocess_node()
+ *
+ * @todo Remove the id attribute (or make it a class), because if that gets
+ *   rendered twice on a page this is invalid CSS for example: two lists
+ *   in different view modes.
+ */
+#}
+
+<!-- Node Tipo de cable-->
+<article class="conector col-md-12">
+
+  <div class="conector-header background-blanco row">
+    <div class="conector-info col-md-8 col-md-push-4">
+      <div class="conector-title">
+        <h1 class="h1 color-azul">{{ label }}</h1>
+      </div>
+      {% if content.field_descripcion|render %}
+        <div class="conector-description">
+          {{ content.field_descripcion }}
+        </div>
+      {% endif %}
+      <div class="conector-number">
+        {{ node.field_numero_parte.fieldDefinition.label }}: 
+        <span>{{ node.field_numero_parte.value }}</span>
+      </div>
+    </div>
+    <div class="conector-img col-md-4 col-md-pull-8">
+      {{ content.field_imagen_req }}
+    </div>
+  </div>
+
+  <div class="conector-container row">
+
+    <div class="conector-techdata col-md-6 closed-section">
+
+      <div class="section-title">
+        <h2 class="h2">
+          Información técnica
+          <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="conector-anchors">
+        {% if content.field_identificacion|render %}
+          <a href="#identification">{{ node.field_identificacion.fieldDefinition.label }}</a>
+        {% endif %}
+        {% if content.field_version|render %}
+          <a href="#version">{{ node.field_version.fieldDefinition.label }}</a>
+        {% endif %}
+        {% if content.field_caracteristicas_tecnicas|render %}
+          <a href="#characteristics">{{ node.field_caracteristicas_tecnicas.fieldDefinition.label }}</a>
+        {% endif %}
+        {% if content.field_propiedades_material|render %}
+          <a href="#properties">{{ node.field_propiedades_material.fieldDefinition.label }}</a>
+        {% endif %}
+        {% if content.field_especificaciones|render %}
+          <a href="#specifications">{{ node.field_especificaciones.fieldDefinition.label }}</a>
+        {% endif %}
+        {% if content.field_informacion_comercial|render %}
+          <a href="#commercial">{{ node.field_informacion_comercial.fieldDefinition.label }}</a>
+        {% endif %}
+      </div>
+
+      <div class="field-wrapper">
+        {% if content.field_identificacion|render %}
+          <div class="conector-identification closed-section" id="identification">
+            <h3 class="h3">
+              {{ node.field_identificacion.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </h3>
+            {{ content.field_identificacion }}
+          </div>
+        {% endif %}
+        {% if content.field_version|render %}
+          <div class="conector-version closed-section" id="version">
+            <h3 class="h3">
+              {{ node.field_version.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </h3>
+            {{ content.field_version }}
+          </div>
+        {% endif %}
+        {% if content.field_caracteristicas_tecnicas|render %}
+          <div class="conector-carac closed-section" id="characteristics">
+            <h3 class="h3">
+              {{ node.field_caracteristicas_tecnicas.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span> 
+            </h3>
+            {{ content.field_caracteristicas_tecnicas }}
+          </div>
+        {% endif %}
+        {% if content.field_propiedades_material|render %}
+          <div class="conector-properties closed-section" id="properties">
+            <h3 class="h3">
+              {{ node.field_propiedades_material.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </h3>
+            {{ content.field_propiedades_material }}
+          </div>
+        {% endif %}
+        {% if content.field_especificaciones|render %}
+          <div class="conector-specifications closed-section" id="specifications">
+            <h3 class="h3">
+              {{ node.field_especificaciones.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </h3>
+            {{ content.field_especificaciones }}
+          </div>
+        {% endif %}
+        {% if content.field_informacion_comercial|render %}
+          <div class="conector-commercial closed-section" id="commercial">
+            <h3 class="h3">
+              {{ node.field_informacion_comercial.fieldDefinition.label }}
+              <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </h3>
+            {{ content.field_informacion_comercial }}
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="conector-files col-md-6 closed-section">
+
+      <div class="section-title">
+        <h2 class="h2">
+          Descargas
+          <span class="icon glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="field-wrapper">
+        {% if content.field_ficha_multiple|render %}
+          <div class="conector-ficha background-blanco">
+            <span class="file-label-item">
+              {{ node.field_ficha_multiple.fieldDefinition.label }}
+            </span>
+            <div class="file-items">
+              {% for file in node.field_ficha_multiple %}
+                <a href="{{ file_url(file.entity.uri.value) }}" class="file-item" target="_blank">
+                  <span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if content.field_instructivos|render %}
+          <div class="conector-ficha background-blanco">
+            <span class="file-label-item">
+              {{ node.field_instructivos.fieldDefinition.label }}
+            </span>
+            <div class="file-items">
+              {% for file in node.field_instructivos %}
+                <a href="{{ file_url(file.entity.uri.value) }}" class="file-item" target="_blank">
+                  <span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if content.field_planos|render %}
+          <div class="conector-ficha background-blanco">
+            <span class="file-label-item">
+              {{ node.field_planos.fieldDefinition.label }}
+            </span>
+            <div class="file-items">
+              {% for file in node.field_planos %}
+                <a href="{{ file_url(file.entity.uri.value) }}" class="file-item" target="_blank">
+                  <span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if content.field_hoja_tipo|render %}
+          <div class="conector-ficha background-blanco">
+            <span class="file-label-item">
+              {{ node.field_hoja_tipo.fieldDefinition.label }}
+            </span>
+            <div class="file-items">
+              {% for file in node.field_hoja_tipo %}
+                <a href="{{ file_url(file.entity.uri.value) }}" class="file-item" target="_blank">
+                  <span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </div>
+</article>

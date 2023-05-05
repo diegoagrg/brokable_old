@@ -1,0 +1,60 @@
+.tab_index_list {
+  padding: 0;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.tab_index_list,
+.tab_index_list .tab_index {
+  height: auto;
+  position: relative;
+}
+
+
+.tab_index_list .tab_index {
+  display: inline-flex;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+}
+
+.tab_index_list .tab_index .icon-card {
+  text-align: center;
+  background: var(--gris2-75);
+  color: var(--blanco);
+  width: 100%;
+  padding: 16px;
+  cursor: pointer;
+  margin: 0 -16px;
+}
+
+.tab_index_list .tab_index .icon-card,
+.tab_index_list .tab_index .icon-card * {
+  transition: 0.3s;
+}
+
+.tab_index_list .tab_index .icon-card .icon-card-img  {
+  height: 80px;
+  margin: auto;
+  position: relative;
+}
+
+.tab_index_list .tab_index .icon-card:hover,
+.tab_index_list .tab_index.active .icon-card {
+  background: var(--gris2);
+  padding: 6px 16px;
+}
+
+.tab_index_list .tab_index .icon-card:hover img,
+.tab_index_list .tab_index.active .icon-card img {
+  height: 100px;
+}
+
+.tab_content_list .tab_target {
+  list-style: none;
+}
+
+.tab_content_list .tab_target:not(.active) {
+  display: none;
+}

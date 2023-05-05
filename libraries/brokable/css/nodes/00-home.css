@@ -1,0 +1,7 @@
+.page-node-type-home nav[aria-labelledby="pagination-heading"]{
+  display: none;
+}
+
+.page-node-type-home .view-display-id-articulos_todo .views-row:nth-child(n+5) {
+  /* display: none; */
+}

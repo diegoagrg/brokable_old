@@ -1,0 +1,8 @@
+# src/metales.services.yml
+services:
+  metales.twig.metales_twig_extensions:
+    class: Drupal\metales\metales_twig_extensions
+
+    tags:
+
+      - { name: twig.extension }

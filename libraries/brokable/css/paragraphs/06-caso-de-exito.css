@@ -1,0 +1,60 @@
+.caso-de-exito-encabezado {
+  height: 180px;
+  display: flex;
+  padding: 0 24px 64px 24px;
+  justify-content: center;
+  border: solid 1px var(--gris1);
+  position: relative;
+  cursor: pointer;
+}
+
+.caso-de-exito-icono {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  background: var(--gris1-75);
+  border: solid 2px var(--negro);
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: -16px;
+  top: calc(100% - 64px);
+  z-index: 1;
+  transition: 0.3s;
+}
+
+.caso-de-exito-titulos {
+  padding: 8px;
+  width: 100%;
+}
+
+.caso-de-exito-imagen {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  border: solid 1px var(--gris1);
+  cursor: pointer;
+}
+
+.caso-de-exito-imagen img {
+  position: absolute;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.caso-de-exito-detalle {
+  padding: 24px;
+  border: solid 1px var(--gris1);
+}
+
+.caso-de-exito.dropdown_tile_active_parent .caso-de-exito-icono {
+  transform: rotate(180deg);
+}

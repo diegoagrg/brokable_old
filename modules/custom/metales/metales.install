@@ -1,0 +1,37 @@
+<?php
+
+use Drupal\metales\Controller\PrecioMetal;
+
+function metales_schema () {
+  $schema['precios_de_metales'] = array(
+    'description' => 'Precio de los metales, traidos desde Quandl.',
+    'fields' => array(
+        'id' => array(
+            'description' => 'Identificador primario.',
+            'type' => 'serial',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+        ),
+        'nombre_de_metal' => array(
+            'type' => 'varchar',
+            'length' => 100,
+            'not null' => TRUE,
+            'default' => '',
+        ),
+        'precio' => array(
+            'type' => 'varchar',
+            'length' => 100,
+            'not null' => TRUE,
+            'default' => '',
+        ),
+    ),
+    'primary key' => array( 'id'),
+  );
+  return $schema;
+}
+
+
+function metales_install () {
+    $precios = new PrecioMetal();
+    $precios -> ActualizarBD();
+}

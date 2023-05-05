@@ -1,0 +1,36 @@
+{{ attach_library('bootstrap/brokable_casos') }}
+
+<div id="caso-{{ paragraph.id() }}" class="col-md-6 caso-de-exito" categoria="{{ paragraph.field_categoria.value }}">
+
+
+  <div class="col-md-6 caso-de-exito-encabezado background-gris2">
+
+    <span class="glyphicon glyphicon-chevron-down caso-de-exito-icono"></span>
+
+    <div class="caso-de-exito-titulos background-azul">
+
+      <div class="h4 color-blanco">
+        {{ paragraph.field_titulo.value }}
+      </div>
+
+      <div class="h4 color-gris2">
+        {{ paragraph.field_ubicacion.value }}
+      </div>
+
+    </div>
+
+    <div class="caso-de-exito-categoria">
+
+    </div>
+  </div>
+
+  <div class="col-md-6 caso-de-exito-imagen">
+    {{ content.field_imagen }}
+  </div>
+
+  <div class="col-md-12 caso-de-exito-detalle background-gris2 color-blanco">
+    {{ content.field_detalle }}
+  </div>
+
+
+</div>

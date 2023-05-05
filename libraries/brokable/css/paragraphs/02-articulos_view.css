@@ -1,0 +1,39 @@
+.articulos .views-field-title {
+  font-size: var(--h4);
+  padding-bottom: 8px;
+  border-bottom: solid 3px var(--azul);
+}
+
+.articulos .views-field-title a {
+  color: var(--negro);
+  font-weight: bold;
+}
+
+.articulos {
+  max-width: calc(100% - 128px);
+  /* padding-top: 64px;
+  padding-bottom: 64px; */
+}
+
+.articulos .views-col {
+  padding: 16px;
+}
+
+.articulos .articulo-img {
+  padding-bottom: 56.25%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.articulos .articulo-img img {
+  position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+}

@@ -1,0 +1,36 @@
+@import "global/00-vars.css";
+@import "global/01-layout.css";
+@import "global/02-texto.css";
+@import "global/03-colores.css";
+@import "global/04-main-menu.css";
+@import "global/05-breadcrumb.css";
+@import "global/07-loader.css";
+
+@import "nodes/00-home.css";
+@import "nodes/01-acerca-de.css";
+@import "nodes/02-testimonios.css";
+@import "nodes/03-articulo.css";
+@import "nodes/04-tipo-de-cable.css";
+@import "nodes/05-accesorio.css";
+@import "nodes/06-ensamble.css";
+@import "nodes/07-conector.css";
+
+@import "paragraphs/01-slider-header.css";
+@import "paragraphs/02-articulos_view.css";
+@import "paragraphs/03-icono_titulo_descripcion.css";
+@import "paragraphs/04-tabla-iconos-contenido.css";
+@import "paragraphs/05-testimonio.css";
+@import "paragraphs/06-caso-de-exito.css";
+@import "paragraphs/07-sector-industrial.css";
+@import "paragraphs/08-imagen-pdf.css";
+@import "paragraphs/09-normativas-homologaciones.css";
+@import "paragraphs/10-columnas.css";
+@import "paragraphs/11-banner-principal.css";
+
+@import "views/01-article_card.css";
+@import "views/02-por_ambiente.css";
+@import "views/03-por_tipo.css";
+@import "views/04-categorias_conectores.css";
+@import "views/05-conectores_productos.css";
+
+@import "global/06-responsive.css";

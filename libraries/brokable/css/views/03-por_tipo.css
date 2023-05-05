@@ -1,0 +1,28 @@
+.view-tipos-de-cable .col-sm-3.thumbnail.views-col {
+  width: calc(25% - 16px) !important;
+  margin: 8px;
+}
+
+.view-tipos-de-cable .views-field.views-field-field-imagen-tipo {
+  width: 80%;
+  padding-bottom: 30%;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+}
+
+.view-tipos-de-cable .views-field.views-field-field-imagen-tipo img {
+  position: absolute;
+  object-fit: contain;
+  min-width: 100%;
+  min-height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.view-tipos-de-cable .views-field.views-field-title {
+  padding: 8px;
+}

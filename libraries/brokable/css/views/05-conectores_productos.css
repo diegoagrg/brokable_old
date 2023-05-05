@@ -1,0 +1,136 @@
+#block-views-block-productos-relacionados-block-1 {
+    clear: both;
+}
+
+.view-products .view-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.view-products .conector-url {
+    display: flex;
+    text-decoration: none;
+    color: var(--negro);
+    transition: all 0.1s;
+}
+
+.view-products .conector-producto {
+    padding: 0;
+}
+
+.view-products .view-header .block-title {
+    overflow: hidden;
+    position: relative;
+}
+
+.view-products .view-header .block-title:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    height: 1px;
+    width: 100%;
+    background: var(--azul);
+    margin-left: 10px;
+}
+
+.view-products .view-content {
+    margin-top: 20px;
+}
+
+.view-products .view-content .views-row {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.view-products .views-row .conector-producto .conector-img {
+    padding: 15px;
+}
+
+.view-products .views-row .conector-producto .conector-info {
+    border-top: solid 1px var(--gris1-75);
+    padding: 10px;
+    text-align: center;
+}
+
+.view-products .views-row .conector-producto .conector-category {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.view-products .views-row .conector-producto .conector-category a {
+    text-decoration: none;
+}
+
+.view-products .views-row .conector-producto .conector-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+    .view-products .view-content .views-row {
+        flex-basis: calc((100%/2) - 10px);
+        margin-right: 20px;
+    }
+    
+    .view-products .view-content .views-row:nth-child(2n) {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+    .view-products .view-content .views-row {
+        flex-basis: calc((100%/4) - 20px);
+        margin-right: 26px;
+    }
+    
+    .view-products .view-content .views-row:nth-child(4n) {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .view-products .conector-url:hover {
+        box-shadow: 0 0 35px rgba(0,0,0,0.1);
+        transition: all 0.1s;
+        transform: scale(1.05);
+    }
+
+    .view-products .view-content .views-row {
+        flex-basis: calc((100%/6) - 30px);
+        margin-right: 36px;
+    }
+    
+    .view-products .view-content .views-row:nth-child(6n) {
+        margin-right: 0;
+    }
+}
+
+.view-products .view-content .views-row {
+    margin: 0;
+    padding: 8px;
+    min-height: 100%;
+    height: unset;
+}
+
+.view-products .view-content {
+    margin: -8px;
+    display: flex;
+}
+
+.view-products .conector-url {
+    height: 100%;
+    width: 100%;
+}
+
+.view-products .views-field.views-field-rendered-entity,
+.view-products .conector-producto{
+    width: 100%;
+}
+
+section#block-views-block-busqueda-en-categorias-bus-cat-ensambles form {
+    display: none;
+}
+
+

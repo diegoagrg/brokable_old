@@ -1,0 +1,8 @@
+# src/brokable_vistas.services.yml
+services:
+  brokable_vistas.twig.brokable_vistas_twig_extensions:
+    class: Drupal\brokable_vistas\brokable_vistas_twig_extensions
+
+    tags:
+
+      - { name: twig.extension }

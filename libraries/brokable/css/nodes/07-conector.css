@@ -1,0 +1,179 @@
+.conector {
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.conector .conector-header {
+  padding: 20px 0;
+}
+
+.conector .conector-header .conector-description {
+  margin: 15px 0;
+}
+
+.conector .conector-img {
+  text-align: center;
+}
+
+.conector .conector-img img {
+  display: inline;
+}
+
+.conector .conector-number span {
+  font-weight: bold;
+}
+
+.conector .conector-container {
+  padding-top: 20px;
+}
+
+.conector .section-title {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.conector .h2 .glyphicon-chevron-down {
+  font-size: 24px;
+  transition: all 0.1s;
+}
+
+.conector .h3 .glyphicon-chevron-down {
+  font-size: 18px;
+  transition: all 0.1s;
+}
+
+.conector .conector-container .conector-anchors {
+  display: none;
+}
+
+.conector .conector-container .conector-anchors span {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.conector .conector-container .conector-anchors a {
+  margin-right: 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.conector .conector-container .conector-techdata .h3 {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.conector .conector-container .conector-techdata table {
+  width: 100%;
+}
+
+.conector .conector-container .conector-techdata table td {
+  padding: 10px;
+}
+
+.conector .conector-container .conector-techdata table tbody tr {
+  background: var(--blanco);
+}
+
+.conector .conector-container .conector-techdata table tbody tr:nth-child(2n) {
+  background: var(--gris1-75);
+}
+
+.conector .conector-files .field-wrapper > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.conector .conector-files .file-label-item {
+  font-weight: bold;
+  padding: 20px;
+}
+
+.conector .conector-files a.file-item {
+  text-decoration: none;
+  font-size: 18px;
+  padding: 15px;
+  border-left: solid 1px var(--gris1-75);
+}
+
+.conector .section-title h2:after {
+  content: "";
+  position: absolute;
+  top: 60%;
+  height: 1px;
+  width: 100%;
+  background: var(--azul);
+  margin-left: 10px;
+}
+
+@media (min-width: 992px) {
+  .conector .conector-header .conector-info {
+    padding-right: 8%;
+  }
+
+  .conector .conector-container .conector-anchors {
+    display: block;
+  }
+
+  .conector .h2 .glyphicon-chevron-down, .conector .h3 .glyphicon-chevron-down {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .conector .section-title .h2, 
+  .conector .conector-techdata .h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .conector .conector-img {
+    margin-top: 20px;
+  }
+
+  .conector .section-title .h2 {
+    color: var(--azul);
+  }
+
+  .conector .section-title h2:after {
+    display: none;
+  }
+
+  .conector .conector-techdata .section-title {
+    margin: 0;
+  }
+
+  .conector .conector-techdata,
+  .conector .conector-files {
+    padding: 0;
+  }
+
+  .conector .conector-techdata .file-wrapper > div:last-child {
+    margin-bottom: 20px;
+  }
+
+  .conector .closed-section .h2 span,
+  .conector .closed-section .h3 span {
+    transform: rotate(180deg);
+    transition: all 0.1s;
+  }
+
+  .conector .field-wrapper, 
+  .conector .conector-techdata .field-wrapper .field--item {
+    max-height: 1500px;
+    overflow: hidden;
+    transition: max-height 1s;
+  }
+
+
+  .conector .closed-section .field-wrapper, 
+  .conector .conector-techdata .closed-section .field--item{
+    max-height: 0;
+    transition: max-height 0.3s;
+  }
+}

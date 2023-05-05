@@ -1,0 +1,74 @@
+<ul class="precios_metales">
+    {% if paragraph.field_cobre_bool.0.value %}
+        <li>
+            <span class="precio_etiqueta">
+                {{ paragraph.field_etiqueta_cobre.value }}:
+            </span> 
+            <span class="precio_prefijo">
+                {{ paragraph.field_prefijo_cobre.value }}
+            </span>
+            <span class="precio_valor">    
+                {% if content.field_valor_cobre|render %}
+                    {{ paragraph.field_valor_cobre.value }}
+                {% else %}
+                    {{ precio_de_metal('cobre') }}
+                {% endif %}
+            </span>
+        </li>
+    {% endif %}
+
+    {% if paragraph.field_aluminio_bool.0.value %}
+        <li>
+            <span class="precio_etiqueta">
+                {{ paragraph.field_etiqueta_aluminio.value }}:
+            </span>
+            <span class="precio_prefijo">
+                {{ paragraph.field_prefijo_aluminio.value }}
+            </span>
+            <span class="precio_valor">    
+                {% if content.field_valor_aluminio|render %}
+                    {{ paragraph.field_valor_aluminio.value }}
+                {% else %}
+                    {{ precio_de_metal('aluminio') }}
+                {% endif %}
+            </span>
+        </li>
+    {% endif %}
+
+    {% if paragraph.field_oro_bool.0.value %}
+        <li>
+            <span class="precio_etiqueta">
+                {{ paragraph.field_etiqueta_oro.value }}:
+            </span>
+            <span class="precio_prefijo">
+                {{ paragraph.field_prefijo_oro.value }}
+            </span>
+            <span class="precio_valor">    
+                {% if content.field_valor_oro|render %}
+                    {{ paragraph.field_valor_oro.value }}
+                {% else %}
+                    {{ precio_de_metal('oro') }}
+                {% endif %}
+            </span>
+        </li>
+    {% endif %}
+
+    {% if paragraph.field_plata_bool.0.value %}
+    <li>
+        <span class="precio_etiqueta">
+            {{ paragraph.field_etiqueta_plata.value }}:
+        </span>
+        <span class="precio_prefijo">
+            {{ paragraph.field_prefijo_plata.value }}
+        </span>
+        <span class="precio_valor">    
+            {% if content.field_valor_plata|render %}
+                {{ paragraph.field_valor_plata.value }}
+            {% else %}
+                {{ precio_de_metal('plata') }}
+            {% endif %}
+        </span>
+    </li>
+    {% endif %}
+    
+</ul>

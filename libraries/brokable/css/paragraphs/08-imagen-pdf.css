@@ -1,0 +1,52 @@
+.gama-de-cables {
+  padding: 20px 0;
+}
+
+.gama-de-cables .field--label {
+    color: var(--azul);
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.gama-columna {
+  padding: 0 5px;
+}
+
+.gama-columna:after {
+  content: "";
+  display: block;
+  border-bottom: solid 1px var(--gris2);
+}
+
+h4 .file-link a,
+h4 .file-link a:hover {
+  color: var(--azul);
+  background: transparent;
+  padding: 0;
+  text-decoration: none;
+  pointer-events: none;
+  text-align: left;
+}
+
+h4 .file-link a::after {
+  content: none;
+}
+
+h4 .file>span {
+  background: transparent;
+  padding: 0;
+  border: navajowhite;
+  font-weight: 600;
+}
+
+.file-link a {
+  width: 100%;
+  text-align: center;
+}
+
+.file-link a::after {
+  content: '.pdf';
+}

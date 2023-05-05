@@ -1,0 +1,43 @@
+ol.breadcrumb {
+  background: var(--negro-75);
+  margin: 0;
+  border-radius: 0;
+  margin-top: -36px;
+  position: relative;
+  color: var(--blanco);
+}
+
+ol.breadcrumb li a {
+  color: var(--gris1);
+  font-weight: bold;
+}
+
+ol.breadcrumb li a:hover {
+  text-decoration: none;
+}
+
+ol.breadcrumb li.active {
+  /* color: var(--azul); */
+  display: none;
+}
+
+/* .page-node-type-acerca-de- ol.breadcrumb,
+.page-node-type-testimonios ol.breadcrumb,
+.page-node-type-casos-de-exito ol.breadcrumb,
+.page-node-type-noticias-y-opinion ol.breadcrumb,
+.page-node-type-sectores ol.breadcrumb {
+  top: 300px;
+  position: relative;
+  z-index: 10;
+}
+
+.page-node-type-sectores ol.breadcrumb {
+  background: var(--negro);
+  text-align: right;
+  padding-right: 64px
+}
+
+.page-node-type-articulo ol.breadcrumb {
+  padding-right: 64px;
+  text-align: right;
+} */

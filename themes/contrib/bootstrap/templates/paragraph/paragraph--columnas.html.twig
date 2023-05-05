@@ -1,0 +1,10 @@
+{% set col_lenght = paragraph.field_descripcion|length %}
+{% set col_size =  (col_lenght <= 4) ? 12 / col_lenght : 3 %}
+
+<div class="row columnas">
+  {% for col in paragraph.field_descripcion %}
+    <div class="col-sm-{{ col_size }} columna">
+      {{ col.value|raw }}
+    </div>
+  {% endfor %}
+</div>

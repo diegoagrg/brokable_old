@@ -1,0 +1,21 @@
+{% set nivel = paragraph.field_nivel.value %}
+{% set h_level = (nivel == 1) ? 3 : 4 %}
+
+<div class="container icono_titulo_descripcion nivel-{{ nivel }}">
+  <div class="row">
+    <div class="col-md-12 icono_titulo_descripcion-encabezado">
+      <div class="icono_titulo_descripcion-icono">
+        {{ content.field_icono }}
+      </div>
+      <div class="icono_titulo_descripcion-titulo">
+        <h{{ h_level }}>
+          {{ content.field_titulo }}
+        </h{{ h_level }}>
+      </div>
+    </div>
+
+    <div class="col-md-12 icono_titulo_descripcion-texto">
+      {{ content.field_descripcion }}
+    </div>
+  </div>
+</div>

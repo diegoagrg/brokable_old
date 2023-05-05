@@ -1,0 +1,52 @@
+.ensamble .anclas {
+  width: 100%;
+  margin-left: -8px;
+  margin-right: -8px;
+  box-sizing: border-box;
+}
+
+.ensamble .anclas a.scroll_to {
+  font-size: 16px;
+  font-weight: bold;
+  display: inline-block;
+  padding:4px;
+  margin: 8px;
+  position: relative;
+}
+
+.ensamble .anclas a.scroll_to:hover {
+  text-decoration: none;
+}
+
+/* .ensamble .anclas a.scroll_to:not(:last-child)::after {
+  content: '|';
+  position: absolute;
+  right: -16px;
+  top: 0;
+  font-size: 20px;
+  pointer-events: none;
+  color: var(--azul);
+} */
+
+.ensamble .file {
+  width: 200px;
+}
+
+.ensamble .row {
+  margin-bottom: 16px;
+}
+
+.ensamble-link  .views-field-title {
+  padding: 8px;
+  text-align: center;
+}
+
+.ensamble-link  .views-field-title a {
+  color: var(--azul) !important;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ensambles-menu .views-field-title {
+  margin-bottom: 8px;
+}

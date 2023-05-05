@@ -1,0 +1,20 @@
+name: Commerce Inventory
+type: module
+description: Manage inventory of purchasable items.
+# core: 8.x
+package: Commerce
+dependencies:
+  - action
+  - commerce
+  - commerce_log
+  - core_extend
+  - dynamic_entity_reference
+  - entity
+  - system (>=8.4.0)
+  - views
+
+# Information added by Drupal.org packaging script on 2018-06-30
+version: '8.x-1.0-alpha5'
+core: '8.x'
+project: 'commerce_inventory'
+datestamp: 1530364727

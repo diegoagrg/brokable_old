@@ -1,0 +1,107 @@
+.main_slider {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.main_slider > .slick,
+.main_slider > .slick > .slick__slider,
+.main_slider > .slick > .slick__slider > .slick-list,
+.main_slider > .slick > .slick__slider > .slick-list > .slick-track,
+.main_slider > .slick > .slick__slider > .slick-list > .slick-track > .slick__slide,
+.main_slider > .slick > .slick__slider > .slick-list > .slick-track > .slick__slide > .slide__content,
+.main_slider > .slick > .slick__slider > .slick-list > .slick-track > .slick__slide > .slide__content > .media--slick {
+  height: 100%;
+  position: relative;
+}
+
+.main_slider > .slick > .slick__slider > .slick-list > .slick-track > .slick__slide > .slide__content > .media--slick > img {
+  position: absolute;
+  min-height: 100%;
+  min-width: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.page-node-type-acerca-de- .main_slider,
+.page-node-type-testimonios .main_slider,
+.page-node-type-casos-de-exito .main_slider,
+.page-node-type-noticias-y-opinion .main_slider,
+.page-node-type-sectores .main_slider {
+  position: absolute;
+  width: 100vw;
+  top: -36px;
+}
+
+.page-node-type-acerca-de- .main_slider,
+.page-node-type-noticias-y-opinion .main_slider {
+  left: 0;
+}
+
+.page-node-type-testimonios .main_slider,
+.page-node-type-casos-de-exito .main_slider {
+  right: 0;
+}
+
+/* .page-node-type-acerca-de- article,
+.page-node-type-acerca-de- .region.region-sidebar-second,
+.page-node-type-testimonios article,
+.page-node-type-testimonios .region.region-sidebar-first ,
+.page-node-type-casos-de-exito article,
+.page-node-type-casos-de-exito .region.region-sidebar-first,
+.page-node-type-noticias-y-opinion article,
+.page-node-type-noticias-y-opinion  .region.region-sidebar-first {
+  margin-top: 332px;
+}
+
+.page-node-type-sectores article,
+.page-node-type-sextores  .region.region-sidebar-first {
+  margin-top: 300px;
+} */
+
+/* bloque */
+.region.region-header {
+  margin-bottom: 32px;
+}
+
+.region.region-header .media.media--slick.media--image {
+  height: 100%;
+  width: 100%;
+}
+
+.region.region-header .slide__content {
+  height: auto;
+  position: relative;
+}
+
+.region.region-header img.lazy.media__image.media__element.img-responsive {
+  position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.slick-slide img {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .region.region-header .slide__content {
+    height: auto;
+  }
+}

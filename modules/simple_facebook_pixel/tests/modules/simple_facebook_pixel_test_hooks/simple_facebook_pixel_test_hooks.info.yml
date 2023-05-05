@@ -1,0 +1,12 @@
+name: 'Simple Facebook Pixel Test Hooks'
+type: module
+description: 'Support module for testing Simple Facebook Pixel.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: Testing
+hidden: true
+
+# Information added by Drupal.org packaging script on 2020-05-31
+version: '8.x-1.1'
+project: 'simple_facebook_pixel'
+datestamp: 1590935922

@@ -1,0 +1,67 @@
+{{ attach_library('bootstrap/brokable_tabs') }}
+
+{% set col_lenght = paragraph.field_tabs|length %}
+{% set col_size = (col_lenght <= 4) ? 12 / col_lenght : 3 %}
+
+<div
+  id="tabs-{{ paragraph.id() }}"
+  class="container list-tabs"
+>
+
+<!-- __________________________ lista de índices ________-__________________ -->
+  <ul class="row tab_index_list">
+    {% for tab in paragraph.field_tabs %}
+
+      <li
+        target-tab="{{ loop.index }}"
+        class="
+          col-md-{{ col_size }}
+          tab_index
+          {% if loop.index == 1 %}active{% endif %}
+        "
+        parent-tab="tabs-{{ paragraph.id() }}"
+      >
+        <div class="icon-card">
+          <img
+            class="icon-card-img"
+            src="{{ file_url(tab.entity.fields.field_icono.entity.uri.value) }}"
+          >
+          <div class="h3">
+            {{ tab.entity.fields.field_titulo.value }}
+          </div>
+        </div>
+
+      </li>
+
+    {% endfor %}
+  </ul>
+
+<!-- _________________________ lista de contenidos _________________________ -->
+  <ul class="tab_content_list">
+    {% for key, item in content.field_tabs if key|first != '#' %}
+
+      <li
+        target-tab="{{ loop.index }}"
+        class="
+          tab_target
+          {% if loop.index == 1 %}active{% endif %}
+        "
+        parent-tab="tabs-{{ paragraph.id() }}"
+      >
+        {% set tabs = item %}
+        {% for tab in tabs['#paragraph'].field_contenido %}
+
+          {% if tab.entity %}
+            {% set tabs = tabs|merge({'#paragraph': tab.entity}) %}
+            {% set tabs = tabs|merge({'#cache': {}}) %}
+            {{ tabs }}
+          {% endif %}
+
+        {% endfor %}
+      </li>
+
+    {% endfor %}
+  </ul>
+
+
+</div>

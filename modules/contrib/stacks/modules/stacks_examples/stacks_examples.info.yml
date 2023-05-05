@@ -1,0 +1,15 @@
+name: 'Example: Grid Stacks'
+type: module
+description: 'Example code in creating new content feed and content list widgets.'
+package: Stacks
+dependencies:
+  - stacks
+  - stacks_content_feed
+  - stacks_content_list
+
+# core: '8.x'
+# Information added by Drupal.org packaging script on 2018-06-19
+version: '8.x-1.3'
+core: '8.x'
+project: 'stacks'
+datestamp: 1529416438

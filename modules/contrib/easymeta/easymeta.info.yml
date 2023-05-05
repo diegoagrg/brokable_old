@@ -1,0 +1,11 @@
+name: easymeta
+type: module
+description: The simplest way to add specific metatags for every pages.
+# core: 8.x
+package: Other
+
+# Information added by Drupal.org packaging script on 2017-01-27
+version: '8.x-1.0'
+core: '8.x'
+project: 'easymeta'
+datestamp: 1485555786

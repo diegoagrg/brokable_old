@@ -1,0 +1,22 @@
+{{ attach_library('bootstrap/brokable_sectores') }}
+
+<div class="col-sm-4 sector-industrial background-negro color-blanco">
+  <div class="aspect-ratio-16-9">
+    <div class="sector-industrial-img">
+      {{ content.field_imagen }}
+    </div>
+    <div class="sector-industrial-icono">
+      {{ content.field_icono }}
+    </div>
+    <div class="sector-industrial-nombre">
+      <h3>
+        {{ paragraph.field_titulo.value }}
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      </h3>
+    </div>
+  </div>
+
+  <div class="p-8-16 background-negro color-blanco sector-industrial-descripcion">
+    {{ content.field_descripcion }}
+  </div>
+</div>

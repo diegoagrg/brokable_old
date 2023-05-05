@@ -1,0 +1,27 @@
+.view-por-ambiente .col-sm-3.thumbnail.views-col {
+  width: calc(25% - 16px) !important;
+  margin: 8px;
+}
+
+.view-por-ambiente .views-field.views-field-field-imagen-tipo {
+  width: 100%;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  position: relative;
+}
+
+.view-por-ambiente .views-field.views-field-field-imagen-tipo img {
+  position: absolute;
+  object-fit: cover;
+  min-width: 100%;
+  min-height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.view-por-ambiente .views-field.views-field-title {
+  padding: 8px;
+}

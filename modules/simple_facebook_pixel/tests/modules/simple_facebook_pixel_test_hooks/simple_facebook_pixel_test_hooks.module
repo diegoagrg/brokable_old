@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Simple Facebook Pixel Test Hooks.
+ *
+ * Helper module used only for testing purposes.
+ */
+
+/**
+ * Implements hook_simple_facebook_pixel_events_alter().
+ */
+function simple_facebook_pixel_test_hooks_simple_facebook_pixel_events_alter(&$events) {
+  if (isset($events[0]['data']['content_name'])) {
+    $events[0]['data']['content_name'] = 'Altered title';
+  }
+}
+
+/**
+ * Implements hook_simple_facebook_pixel_script_code_alter().
+ */
+function simple_facebook_pixel_test_hooks_simple_facebook_pixel_script_code_alter(&$script_code) {
+  $script_code = $script_code . 'Appended script code text';
+}
+
+/**
+ * Implements hook_simple_facebook_pixel_noscript_code_alter().
+ */
+function simple_facebook_pixel_test_hooks_simple_facebook_pixel_noscript_code_alter(&$noscript_code) {
+  $noscript_code = $noscript_code . 'Appended noscript code text';
+}

@@ -1,0 +1,44 @@
+<?php
+
+use Drupal\metales\Controller\PrecioMetal;
+
+function metales_cron() {
+
+  // We access our configuration.
+  $cron_config = \Drupal::configFactory()
+    ->getEditable('metales.settings');
+
+  // Default to an hourly interval. Of course, cron has to be running at least
+  // hourly for this to work.
+  $interval = $cron_config
+    ->get('interval');
+  $interval = !empty($interval) ? $interval : 86400;
+
+  // We usually don't want to act every time cron runs (which could be every
+  // minute) so keep a time for the next run in the site state.
+  $next_execution = \Drupal::state()
+    ->get('metales.next_execution');
+  $next_execution = !empty($next_execution) ? $next_execution : 0;
+  if (REQUEST_TIME >= $next_execution) {
+
+    $preciosDeMetales = new PrecioMetal();
+    $preciosDeMetales -> ActualizarBD();
+
+    // This is a silly example of a cron job.
+    // It just makes it obvious that the job has run without
+    // making any changes to your database.
+    \Drupal::logger('metales')
+      ->notice('metales ran');
+    if (\Drupal::state()
+      ->get('metales_show_status_message')) {
+      \Drupal::messenger()
+        ->addMessage(t('metales executed at %time', [
+        '%time' => date('c'),
+      ]));
+      \Drupal::state()
+        ->set('metales_show_status_message', FALSE);
+    }
+    \Drupal::state()
+      ->set('metales.next_execution', REQUEST_TIME + $interval);
+  }
+}

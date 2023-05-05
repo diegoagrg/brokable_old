@@ -1,0 +1,34 @@
+.node_articulo .field--name-field-imagen-principal img {
+  position: absolute;
+  min-height: 100%;
+  min-width: 100%;
+  object-fit: cover;
+}
+
+.node_articulo .field--name-field-imagen-principal {
+  position: absolute;
+  object-fit: cover;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+.node_articulo .aspect-ratio-16-9 {
+  margin-bottom: 16px;
+}
+
+.articulo_body {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.page-node-type-articulo .region-sidebar-second {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  background: var(--gris1);
+}
+
+.page-node-type-articulo aside.col-sm-3 {
+  background: var(--gris1);
+  height: 100%;
+}

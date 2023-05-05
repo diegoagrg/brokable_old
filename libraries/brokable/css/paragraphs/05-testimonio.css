@@ -1,0 +1,19 @@
+.testimonio-nombre {
+  text-align: center;
+}
+
+.testimonio-imagen img {
+  max-height: 75px;
+  width: auto;
+  margin: auto;
+}
+
+.testimonio {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.testimonio > div > div {
+  padding: 32px 16px;
+  min-heiight: 200px;
+}
