@@ -4,8 +4,8 @@
 
 /* eslint func-names: ["error", "never"] */
 (function(wp, $, Drupal, drupalSettings) {
-  const { data, blocks, editor } = wp;
-  const { BlockAlignmentToolbar, BlockControls } = editor;
+  const { data, blocks, blockEditor } = wp;
+  const { BlockAlignmentToolbar, BlockControls } = blockEditor;
   const { Fragment } = wp.element;
   const { DrupalIcon, DrupalBlock } = window.DrupalGutenberg.Components;
 
@@ -64,12 +64,15 @@
         blockId: {
           type: 'string',
         },
+        settings: {
+          type: 'object',
+        },
         align: {
           type: 'string',
         },
       },
       edit({ attributes, className, setAttributes }) {
-        const { align } = attributes;
+        const { align, settings } = attributes;
         setAttributes({ blockId: id });
 
         return (
@@ -77,7 +80,8 @@
             <DrupalBlock
               className={className}
               id={id}
-              url={`${drupalSettings.path.baseUrl}editor/blocks/load/${id}`}
+              name={definition.admin_label}
+              settings={settings}
             />
           </Fragment>
         );
@@ -90,34 +94,32 @@
 
   function registerDrupalBlocks(contentType) {
     return new Promise(resolve => {
-      $.ajax(
-        `${
-          drupalSettings.path.baseUrl
-        }editor/blocks/load_by_type/${contentType}`,
-      ).done(definitions => {
-        const category = {
-          slug: 'drupal',
-          title: Drupal.t('Drupal Blocks'),
-        };
+      $.ajax(Drupal.url(`editor/blocks/load_by_type/${contentType}`)).done(
+        definitions => {
+          const category = {
+            slug: 'drupal',
+            title: Drupal.t('Drupal Blocks'),
+          };
 
-        const categories = [
-          ...data.select('core/blocks').getCategories(),
-          category,
-        ];
+          const categories = [
+            ...data.select('core/blocks').getCategories(),
+            category,
+          ];
 
-        data.dispatch('core/blocks').setCategories(categories);
+          data.dispatch('core/blocks').setCategories(categories);
 
-        /* eslint no-restricted-syntax: ["error", "never"] */
-        for (const id in definitions) {
-          if ({}.hasOwnProperty.call(definitions, id)) {
-            const definition = definitions[id];
-            if (definition) {
-              registerBlock(id, definition);
+          /* eslint no-restricted-syntax: ["error", "never"] */
+          for (const id in definitions) {
+            if ({}.hasOwnProperty.call(definitions, id)) {
+              const definition = definitions[id];
+              if (definition) {
+                registerBlock(id, definition);
+              }
             }
           }
-        }
-        resolve();
-      });
+          resolve();
+        },
+      );
     });
   }
 

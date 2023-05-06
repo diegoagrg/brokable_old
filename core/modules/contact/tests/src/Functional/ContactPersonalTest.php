@@ -4,7 +4,6 @@ namespace Drupal\Tests\contact\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Render\PlainTextOutput;
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
@@ -26,7 +25,7 @@ class ContactPersonalTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['contact', 'dblog', 'mail_html_test'];
+  protected static $modules = ['contact', 'dblog'];
 
   /**
    * {@inheritdoc}
@@ -54,23 +53,15 @@ class ContactPersonalTest extends BrowserTestBase {
    */
   private $contactUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create an admin user.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer contact forms',
-      'administer users',
-      'administer account settings',
-      'access site reports',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer contact forms', 'administer users', 'administer account settings', 'access site reports']);
 
     // Create some normal users with their contact forms enabled by default.
     $this->config('contact.settings')->set('user_default_enabled', TRUE)->save();
-    $this->webUser = $this->drupalCreateUser([
-      'access user profiles',
-      'access user contact forms',
-    ]);
+    $this->webUser = $this->drupalCreateUser(['access user profiles', 'access user contact forms']);
     $this->contactUser = $this->drupalCreateUser();
   }
 
@@ -117,20 +108,6 @@ class ContactPersonalTest extends BrowserTestBase {
     $this->assertRaw(new FormattableMarkup('@sender_name (@sender_email) sent @recipient_name an email.', $placeholders));
     // Ensure an unescaped version of the email does not exist anywhere.
     $this->assertNoRaw($this->webUser->getEmail());
-
-    // Test HTML mails.
-    $mail_config = $this->config('system.mail');
-    $mail_config->set('interface.default', 'test_html_mail_collector');
-    $mail_config->save();
-
-    $this->drupalLogin($this->webUser);
-    $message['message[0][value]'] = 'This <i>is</i> a more <b>specific</b> <sup>test</sup>, the emails are formatted now.';
-    $message = $this->submitPersonalContact($this->contactUser, $message);
-
-    // Assert mail content.
-    $this->assertMailString('body', 'Hello ' . $variables['@recipient-name'], 1);
-    $this->assertMailString('body', $this->webUser->getDisplayName(), 1);
-    $this->assertMailString('body', Html::Escape($message['message[0][value]']), 1);
   }
 
   /**
@@ -341,8 +318,8 @@ class ContactPersonalTest extends BrowserTestBase {
    */
   protected function submitPersonalContact(AccountInterface $account, array $message = []) {
     $message += [
-      'subject[0][value]' => $this->randomMachineName(16) . '< " =+ >',
-      'message[0][value]' => $this->randomMachineName(64) . '< " =+ >',
+      'subject[0][value]' => $this->randomMachineName(16),
+      'message[0][value]' => $this->randomMachineName(64),
     ];
     $this->drupalPostForm('user/' . $account->id() . '/contact', $message, t('Send message'));
     return $message;

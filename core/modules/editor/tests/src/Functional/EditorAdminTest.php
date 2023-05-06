@@ -20,7 +20,7 @@ class EditorAdminTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'editor'];
+  protected static $modules = ['filter', 'editor'];
 
   /**
    * {@inheritdoc}
@@ -34,7 +34,7 @@ class EditorAdminTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Add text format.
@@ -153,23 +153,6 @@ class EditorAdminTest extends BrowserTestBase {
     // Edit again the node.
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertRaw($text);
-  }
-
-  /**
-   * Tests switching text editor to none does not throw a TypeError.
-   */
-  public function testSwitchEditorToNone() {
-    $this->enableUnicornEditor();
-    $this->drupalLogin($this->adminUser);
-    $this->drupalGet('admin/config/content/formats/manage/filtered_html');
-    $edit = $this->selectUnicornEditor();
-
-    // Switch editor to 'None'.
-    $edit = [
-      'editor[editor]' => '',
-    ];
-    $this->submitForm($edit, 'Configure');
-    $this->submitForm($edit, 'Save configuration');
   }
 
   /**

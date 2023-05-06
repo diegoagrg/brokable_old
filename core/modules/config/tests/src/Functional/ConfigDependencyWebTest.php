@@ -22,7 +22,7 @@ class ConfigDependencyWebTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['config_test'];
+  protected static $modules = ['config_test'];
 
   /**
    * {@inheritdoc}
@@ -35,9 +35,7 @@ class ConfigDependencyWebTest extends BrowserTestBase {
    * @see \Drupal\Core\Config\Entity\ConfigDependencyDeleteFormTrait
    */
   public function testConfigDependencyDeleteFormTrait() {
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer site configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer site configuration']));
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorage $storage */
     $storage = $this->container->get('entity_type.manager')->getStorage('config_test');

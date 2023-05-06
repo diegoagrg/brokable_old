@@ -22,7 +22,7 @@ class FeedParserTest extends AggregatorTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Do not delete old aggregator items during these tests, since our sample
     // feeds have hardcoded dates in them (which may be expired when this test
@@ -64,16 +64,16 @@ class FeedParserTest extends AggregatorTestBase {
     $this->assertText('Atom-Powered Robots Run Amok');
     $this->assertLinkByHref('http://example.org/2003/12/13/atom03');
     $this->assertText('Some text.');
-    $item_ids = \Drupal::entityQuery('aggregator_item')->condition('link', 'http://example.org/2003/12/13/atom03')->execute();
-    $item = Item::load(array_values($item_ids)[0]);
+    $iids = \Drupal::entityQuery('aggregator_item')->condition('link', 'http://example.org/2003/12/13/atom03')->execute();
+    $item = Item::load(array_values($iids)[0]);
     $this->assertEqual('urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a', $item->getGuid(), 'Atom entry id element is parsed correctly.');
 
     // Check for second feed entry.
     $this->assertText('We tried to stop them, but we failed.');
     $this->assertLinkByHref('http://example.org/2003/12/14/atom03');
     $this->assertText('Some other text.');
-    $item_ids = \Drupal::entityQuery('aggregator_item')->condition('link', 'http://example.org/2003/12/14/atom03')->execute();
-    $item = Item::load(array_values($item_ids)[0]);
+    $iids = \Drupal::entityQuery('aggregator_item')->condition('link', 'http://example.org/2003/12/14/atom03')->execute();
+    $item = Item::load(array_values($iids)[0]);
     $this->assertEqual('urn:uuid:1225c695-cfb8-4ebb-bbbb-80da344efa6a', $item->getGuid(), 'Atom entry id element is parsed correctly.');
   }
 

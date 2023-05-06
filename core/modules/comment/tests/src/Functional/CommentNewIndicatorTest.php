@@ -22,7 +22,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
    *
    * @todo Remove this dependency.
    */
-  public static $modules = ['views'];
+  protected static $modules = ['views'];
 
   /**
    * {@inheritdoc}
@@ -60,8 +60,8 @@ class CommentNewIndicatorTest extends CommentTestBase {
     // node.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('node');
-    $this->assertSession()->linkNotExists(t('@count comments', ['@count' => 0]));
-    $this->assertSession()->linkExists(t('Read more'));
+    $this->assertNoLink(t('@count comments', ['@count' => 0]));
+    $this->assertLink(t('Read more'));
     // Verify the data-history-node-last-comment-timestamp attribute, which is
     // used by the drupal.node-new-comments-link library to determine whether
     // a "x new comments" link might be necessary or not. We do this in

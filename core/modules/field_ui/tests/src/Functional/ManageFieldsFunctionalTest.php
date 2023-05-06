@@ -7,7 +7,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\node\Entity\NodeType;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
@@ -28,14 +27,13 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'field_ui',
     'field_test',
     'taxonomy',
     'image',
     'block',
-    'node_access_test',
   ];
 
   /**
@@ -74,7 +72,7 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('system_breadcrumb_block');
@@ -83,19 +81,7 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
     $this->drupalPlaceBlock('page_title_block');
 
     // Create a test user.
-    $admin_user = $this->drupalCreateUser([
-      'access content',
-      'administer content types',
-      'administer node fields',
-      'administer node form display',
-      'administer node display',
-      'administer taxonomy',
-      'administer taxonomy_term fields',
-      'administer taxonomy_term display',
-      'administer users',
-      'administer account settings',
-      'administer user display',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access content', 'administer content types', 'administer node fields', 'administer node form display', 'administer node display', 'administer taxonomy', 'administer taxonomy_term fields', 'administer taxonomy_term display', 'administer users', 'administer account settings', 'administer user display', 'bypass node access']);
     $this->drupalLogin($admin_user);
 
     // Create content type, with underscores.
@@ -131,12 +117,6 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
       ->getFormDisplay('node', 'article')
       ->setComponent('field_' . $vocabulary->id())
       ->save();
-
-    // Setup node access testing.
-    node_access_rebuild();
-    node_access_test_add_field(NodeType::load('article'));
-    \Drupal::state()->set('node_access_test.private', TRUE);
-
   }
 
   /**
@@ -178,7 +158,7 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
     }
 
     // Test the "Add field" action link.
-    $this->assertSession()->linkExists('Add field');
+    $this->assertLink('Add field');
 
     // Assert entity operations for all fields.
     $number_of_links = 3;
@@ -298,9 +278,9 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
     $this->assertFieldByXPath("//input[@name='cardinality_number']", 6);
 
     // Check that tabs displayed.
-    $this->assertSession()->linkExists(t('Edit'));
+    $this->assertLink(t('Edit'));
     $this->assertLinkByHref('admin/structure/types/manage/article/fields/node.article.body');
-    $this->assertSession()->linkExists(t('Field settings'));
+    $this->assertLink(t('Field settings'));
     $this->assertLinkByHref($field_edit_path);
 
     // Add two entries in the body.
@@ -351,47 +331,6 @@ class ManageFieldsFunctionalTest extends BrowserTestBase {
       'cardinality_number' => 3,
     ];
     $this->drupalPostForm($field_edit_path, $edit, t('Save field settings'));
-
-    // Test the cardinality validation is not access sensitive.
-
-    // Remove the cardinality limit 4 so we can add a node the user doesn't have
-    // access to.
-    $edit = [
-      'cardinality' => (string) FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED,
-    ];
-    $this->drupalPostForm($field_edit_path, $edit, 'Save field settings');
-    $node = $this->drupalCreateNode([
-      'private' => TRUE,
-      'uid' => 0,
-      'type' => 'article',
-    ]);
-    $node->body->appendItem('body 1');
-    $node->body->appendItem('body 2');
-    $node->body->appendItem('body 3');
-    $node->body->appendItem('body 4');
-    $node->save();
-
-    // Assert that you can't set the cardinality to a lower number than the
-    // highest delta of this field (including inaccessible entities) but can
-    // set it to the same.
-    $this->drupalGet($field_edit_path);
-    $edit = [
-      'cardinality' => 'number',
-      'cardinality_number' => 2,
-    ];
-    $this->drupalPostForm($field_edit_path, $edit, 'Save field settings');
-    $this->assertRaw(t('There are @count entities with @delta or more values in this field.', ['@count' => 2, '@delta' => 3]));
-    $edit = [
-      'cardinality' => 'number',
-      'cardinality_number' => 3,
-    ];
-    $this->drupalPostForm($field_edit_path, $edit, 'Save field settings');
-    $this->assertRaw(t('There is @count entity with @delta or more values in this field.', ['@count' => 1, '@delta' => 4]));
-    $edit = [
-      'cardinality' => 'number',
-      'cardinality_number' => 4,
-    ];
-    $this->drupalPostForm($field_edit_path, $edit, 'Save field settings');
   }
 
   /**

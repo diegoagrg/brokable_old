@@ -21,8 +21,7 @@ class BookTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
-    'content_moderation',
+  protected static $modules = [
     'book',
     'block',
     'node_access_test',
@@ -58,7 +57,7 @@ class BookTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->drupalPlaceBlock('system_breadcrumb_block');
     $this->drupalPlaceBlock('page_title_block');
@@ -67,34 +66,10 @@ class BookTest extends BrowserTestBase {
     node_access_rebuild();
 
     // Create users.
-    $this->bookAuthor = $this->drupalCreateUser([
-      'create new books',
-      'create book content',
-      'edit own book content',
-      'add content to books',
-      'view own unpublished content',
-    ]);
-    $this->webUser = $this->drupalCreateUser([
-      'access printer-friendly version',
-      'node test view',
-    ]);
-    $this->webUserWithoutNodeAccess = $this->drupalCreateUser([
-      'access printer-friendly version',
-    ]);
-    $this->adminUser = $this->drupalCreateUser([
-      'create new books',
-      'create book content',
-      'edit any book content',
-      'delete any book content',
-      'add content to books',
-      'administer blocks',
-      'administer permissions',
-      'administer book outlines',
-      'node test view',
-      'administer content types',
-      'administer site configuration',
-      'view any unpublished content',
-    ]);
+    $this->bookAuthor = $this->drupalCreateUser(['create new books', 'create book content', 'edit own book content', 'add content to books']);
+    $this->webUser = $this->drupalCreateUser(['access printer-friendly version', 'node test view']);
+    $this->webUserWithoutNodeAccess = $this->drupalCreateUser(['access printer-friendly version']);
+    $this->adminUser = $this->drupalCreateUser(['create new books', 'create book content', 'edit any book content', 'delete any book content', 'add content to books', 'administer blocks', 'administer permissions', 'administer book outlines', 'node test view', 'administer content types', 'administer site configuration']);
   }
 
   /**
@@ -250,7 +225,7 @@ class BookTest extends BrowserTestBase {
 
     // Load the book and verify there is no printer-friendly version link.
     $this->drupalGet('node/' . $this->book->id());
-    $this->assertSession()->linkNotExists(t('Printer-friendly version'), 'Anonymous user is not shown link to printer-friendly version.');
+    $this->assertNoLink(t('Printer-friendly version'), 'Anonymous user is not shown link to printer-friendly version.');
 
     // Try getting the URL directly, and verify it fails.
     $this->drupalGet('book/export/html/' . $this->book->id());
@@ -432,13 +407,13 @@ class BookTest extends BrowserTestBase {
     // Create new node not yet a book.
     $empty_book = $this->drupalCreateNode(['type' => 'book']);
     $this->drupalGet('node/' . $empty_book->id() . '/outline');
-    $this->assertSession()->linkNotExists(t('Book outline'), 'Book Author is not allowed to outline');
+    $this->assertNoLink(t('Book outline'), 'Book Author is not allowed to outline');
 
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('node/' . $empty_book->id() . '/outline');
     $this->assertRaw(t('Book outline'));
     $this->assertOptionSelected('edit-book-bid', 0, 'Node does not belong to a book');
-    $this->assertSession()->linkNotExists(t('Remove from book outline'));
+    $this->assertNoLink(t('Remove from book outline'));
 
     $edit = [];
     $edit['book[bid]'] = '1';
@@ -504,54 +479,16 @@ class BookTest extends BrowserTestBase {
    * Tests the listing of all books.
    */
   public function testBookListing() {
-    // Uninstall 'node_access_test' as this interferes with the test.
-    \Drupal::service('module_installer')->uninstall(['node_access_test']);
-
     // Create a new book.
-    $nodes = $this->createBook();
+    $this->createBook();
+
+    // Must be a user with 'node test view' permission since node_access_test is installed.
+    $this->drupalLogin($this->webUser);
 
     // Load the book page and assert the created book title is displayed.
     $this->drupalGet('book');
 
     $this->assertText($this->book->label(), 'The book title is displayed on the book listing page.');
-
-    // Unpublish the top book page and confirm that the created book title is
-    // not displayed for anonymous.
-    $this->book->setUnpublished();
-    $this->book->save();
-
-    $this->drupalGet('book');
-    $this->assertSession()->pageTextNotContains($this->book->label());
-
-    // Publish the top book page and unpublish a page in the book and confirm
-    // that the created book title is displayed for anonymous.
-    $this->book->setPublished();
-    $this->book->save();
-    $nodes[0]->setUnpublished();
-    $nodes[0]->save();
-
-    $this->drupalGet('book');
-    $this->assertSession()->pageTextContains($this->book->label());
-
-    // Unpublish the top book page and confirm that the created book title is
-    // displayed for user which has 'view own unpublished content' permission.
-    $this->drupalLogin($this->bookAuthor);
-    $this->book->setUnpublished();
-    $this->book->save();
-
-    $this->drupalGet('book');
-    $this->assertSession()->pageTextContains($this->book->label());
-
-    // Ensure the user doesn't see the book if they don't own it.
-    $this->book->setOwner($this->webUser)->save();
-    $this->drupalGet('book');
-    $this->assertSession()->pageTextNotContains($this->book->label());
-
-    // Confirm that the created book title is displayed for user which has
-    // 'view any unpublished content' permission.
-    $this->drupalLogin($this->adminUser);
-    $this->drupalGet('book');
-    $this->assertSession()->pageTextContains($this->book->label());
   }
 
   /**
@@ -625,11 +562,7 @@ class BookTest extends BrowserTestBase {
     $this->createBook();
 
     // Create administrator user.
-    $administratorUser = $this->drupalCreateUser([
-      'administer blocks',
-      'administer nodes',
-      'bypass node access',
-    ]);
+    $administratorUser = $this->drupalCreateUser(['administer blocks', 'administer nodes', 'bypass node access']);
     $this->drupalLogin($administratorUser);
 
     // Enable the block with "Show block only on book pages" mode.
@@ -642,14 +575,6 @@ class BookTest extends BrowserTestBase {
     // Test node page.
     $this->drupalGet('node/' . $this->book->id());
     $this->assertText($this->book->label(), 'Unpublished book with "Show block only on book pages" book navigation settings.');
-  }
-
-  /**
-   * Tests that the book settings form can be saved without error.
-   */
-  public function testSettingsForm() {
-    $this->drupalLogin($this->adminUser);
-    $this->drupalPostForm('admin/structure/book/settings', [], 'Save configuration');
   }
 
 }

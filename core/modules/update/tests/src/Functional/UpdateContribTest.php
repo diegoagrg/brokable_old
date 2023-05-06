@@ -30,7 +30,7 @@ class UpdateContribTest extends UpdateTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'update_test',
     'update',
     'aaa_update_test',
@@ -43,7 +43,7 @@ class UpdateContribTest extends UpdateTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $admin_user = $this->drupalCreateUser(['administer site configuration']);
     $this->drupalLogin($admin_user);
@@ -507,10 +507,7 @@ class UpdateContribTest extends UpdateTestBase {
    */
   public function testHookUpdateStatusAlter() {
     $update_test_config = $this->config('update_test.settings');
-    $update_admin_user = $this->drupalCreateUser([
-      'administer site configuration',
-      'administer software updates',
-    ]);
+    $update_admin_user = $this->drupalCreateUser(['administer site configuration', 'administer software updates']);
     $this->drupalLogin($update_admin_user);
 
     $system_info = [

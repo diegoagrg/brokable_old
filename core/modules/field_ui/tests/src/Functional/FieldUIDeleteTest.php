@@ -23,7 +23,7 @@ class FieldUIDeleteTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'field_ui',
     'field_test',
@@ -46,7 +46,7 @@ class FieldUIDeleteTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('system_breadcrumb_block');
@@ -54,17 +54,7 @@ class FieldUIDeleteTest extends BrowserTestBase {
     $this->drupalPlaceBlock('page_title_block');
 
     // Create a test user.
-    $admin_user = $this->drupalCreateUser([
-      'access content',
-      'administer content types',
-      'administer node fields',
-      'administer node form display',
-      'administer node display',
-      'administer users',
-      'administer account settings',
-      'administer user display',
-      'bypass node access',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access content', 'administer content types', 'administer node fields', 'administer node form display', 'administer node display', 'administer users', 'administer account settings', 'administer user display', 'bypass node access']);
     $this->drupalLogin($admin_user);
   }
 

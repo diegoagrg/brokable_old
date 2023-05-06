@@ -2,7 +2,8 @@
 
 namespace Drupal\gutenberg;
 
-use Drupal\Component\Utility\Random;
+use Drupal\Component\Utility\Bytes;
+use Drupal\Component\Utility\Environment;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\editor\Entity\Editor;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,43 +35,54 @@ class MediaUploader implements MediaUploaderInterface {
   /**
    * {@inheritDoc}
    */
-  public function upload(UploadedFile $uploaded_file, Editor $editor) {
+  public function upload(string $form_field_name, UploadedFile $uploaded_file, Editor $editor, array $file_settings = []) {
     $image_settings = $editor->getImageUploadSettings();
-    $directory = "{$image_settings['scheme']}://{$image_settings['directory']}";
+    // @todo use the relevant media file settings over the Editor's "Image" plugin one?
+    //   Or ultimately just use Drupal's builtin file_managed in a modal to
+    //   handle all of this logic like CKeditor does.
+    $destination = $image_settings['scheme'] . '://' . $image_settings['directory'];
 
-    if (!$this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY)) {
+    if (!$this->fileSystem->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY)) {
       return NULL;
     }
 
-    // @todo: find better solution for saving file itself.
-    $data = file_get_contents($uploaded_file->getPathname());
-    $file_name = $this->getRandomFileName($uploaded_file->getClientOriginalExtension() ?: '');
-    $file = file_save_data($data, "{$directory}/{$file_name}", FileSystemInterface::EXISTS_RENAME);
-    $file->setTemporary();
-    $file->setFilename($uploaded_file->getClientOriginalName());
+    $validators = [];
 
-    try {
-      $file->save();
+    if (explode('/', $uploaded_file->getClientMimeType())[0] === 'image') {
+      // Validate file type.
+      // Image type.
+      if (!empty($image_settings['max_dimensions']['width']) || !empty($image_settings['max_dimensions']['height'])) {
+        $max_dimensions = $image_settings['max_dimensions']['width'] . 'x' . $image_settings['max_dimensions']['height'];
+      }
+      else {
+        $max_dimensions = 0;
+      }
+      if (version_compare(\Drupal::VERSION, '9.1', '<')) {
+        // @see https://www.drupal.org/node/3162663
+        $max_filesize = min(Bytes::toInt($image_settings['max_size']), Environment::getUploadMaxSize());
+      }
+      else {
+        $max_filesize = min(Bytes::toNumber($image_settings['max_size']), Environment::getUploadMaxSize());
+      }
+
+      $validators['file_validate_size'] = [$max_filesize];
+      $validators['file_validate_image_resolution'] = [$max_dimensions];
     }
-    catch (\Throwable $exception) {
-      return NULL;
+
+    if (!empty($file_settings['file_extensions'])) {
+      // Validate the media file extensions.
+      $validators['file_validate_extensions'] = [$file_settings['file_extensions']];
     }
 
-    return $file;
-  }
+    // Upload a temporary file.
+    $result = file_save_upload($form_field_name, $validators, $destination);
+    if (is_array($result) && $result[0]) {
+      /** @var \Drupal\file\Entity\File $file */
+      $file = $result[0];
+      return $file;
+    }
 
-  /**
-   * Generate random file name.
-   *
-   * @param \Drupal\gutenberg\string $extension
-   *   (optional) File extension.
-   *
-   * @return string
-   *   The file name.
-   */
-  protected function getRandomFileName(string $extension = '') {
-    $name = (new Random())->name(50, TRUE);
-    return $extension ? sprintf('%s.%s', $name, $extension) : $name;
+    return NULL;
   }
 
 }

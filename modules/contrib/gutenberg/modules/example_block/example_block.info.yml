@@ -2,11 +2,11 @@ name: Example Block
 type: module
 description: Example block for Gutenberg.
 package: Gutenberg
-core: 8.x
+core_version_requirement: ^9 || ^10
 dependencies:
   - gutenberg
 
-# Information added by Drupal.org packaging script on 2021-10-08
-version: '8.x-1.14'
+# Information added by Drupal.org packaging script on 2023-03-08
+version: '8.x-2.7'
 project: 'gutenberg'
-datestamp: 1633702148
+datestamp: 1678297676

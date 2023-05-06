@@ -26,14 +26,14 @@ class FieldEntityOperationsTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'language', 'views_ui'];
+  protected static $modules = ['node', 'language', 'views_ui'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     // Create Article content type.
@@ -44,8 +44,8 @@ class FieldEntityOperationsTest extends ViewTestBase {
    * Tests entity operations field.
    */
   public function testEntityOperations() {
-    // Add languages and refresh the container so the entity manager will have
-    // fresh data.
+    // Add languages and refresh the container so the entity type manager will
+    // have fresh data.
     ConfigurableLanguage::createFromLangcode('hu')->save();
     ConfigurableLanguage::createFromLangcode('es')->save();
     $this->rebuildContainer();
@@ -66,11 +66,7 @@ class FieldEntityOperationsTest extends ViewTestBase {
       $entities[$i] = $entity;
     }
 
-    $admin_user = $this->drupalCreateUser([
-      'access administration pages',
-      'administer nodes',
-      'bypass node access',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access administration pages', 'administer nodes', 'bypass node access']);
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('test-entity-operations');
     /** @var $entity \Drupal\entity_test\Entity\EntityTest */

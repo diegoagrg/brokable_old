@@ -2,12 +2,16 @@
 
 namespace Drupal\gutenberg\Controller;
 
+use Drupal\block_content\BlockContentInterface;
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Returns responses for our blocks routes.
@@ -34,39 +38,34 @@ class ReusableBlocksController extends ControllerBase {
     ];
 
     if ($block_id && $block_id > 0) {
-      $block = BlockContent::load($block_id);
+      $block = $this->loadBlockOrThrow($block_id);
 
-      return new JsonResponse([
-        'id' => (int) $block->id(),
-        'title' => ['raw' => $block->info->value],
-        'content' => ['protected' => FALSE, 'raw' => $block->body->value],
-        'type' => 'wp_block',
-        'status' => 'publish',
-        'slug' => 'reusable_block_' . $block->id(),
-      // Kind of a hack but accepted by Gutenberg ;)
-        'headers' => $headers,
-      ], 200, $headers);
+      return new JsonResponse(
+        $this->getBlockAttributes($block) + [
+          // Kind of a hack but accepted by Gutenberg ;)
+          'headers' => $headers,
+        ], Response::HTTP_OK, $headers
+      );
     }
 
+    /*
+     * TODO this should probably be paginated and lazy loaded in case a site
+     *  has hundreds of reusable blocks.
+     */
     $ids = \Drupal::entityQuery('block_content')
       ->condition('type', 'reusable_block')
+      ->accessCheck(TRUE)
       ->execute();
 
     $blocks = BlockContent::loadMultiple($ids);
     $result = [];
 
+    /** @var \Drupal\block_content\BlockContentInterface[] $blocks */
     foreach ($blocks as $key => $block) {
-      $result[] = [
-        'id' => (int) $block->id(),
-        'title' => ['raw' => $block->info->value],
-        'content' => ['protected' => FALSE, 'raw' => $block->body->value],
-        'type' => 'wp_block',
-        'status' => 'publish',
-        'slug' => 'reusable_block_' . $block->id(),
-      ];
+      $result[] = $this->getBlockAttributes($block);
     }
 
-    return new JsonResponse($result, 200, $headers);
+    return new JsonResponse($result, Response::HTTP_OK, $headers);
   }
 
   /**
@@ -79,22 +78,33 @@ class ReusableBlocksController extends ControllerBase {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function save(Request $request, $block_id = NULL) {
+    $updating_block = $block_id && $block_id > 0;
 
-    if ($block_id && $block_id > 0) {
-      $data = json_decode($request->getContent(), TRUE);
-      $block = BlockContent::load($block_id);
-      $block->body->value = $data['content'];
-      $block->info->value = $data['title'];
+    // The request may come with either properties null.
+    // Update property only if not null.
+    // For new blocks, no need to check null.
+    $title = $request->request->get('title');
+    $content = $request->request->get('content');
+
+    if ($updating_block) {
+      $block = $this->loadBlockOrThrow($block_id);
+      if (!is_null($title)) {
+        $block->set('info', $title);
+      }
+      if (!is_null($content)) {
+        $block->set('body', $content);
+      }
     }
     else {
-      $params = $request->request->all();
       $block = BlockContent::create([
-        'info' => $params['title'],
+        'info' => $title,
         'type' => 'reusable_block',
         'body' => [
-          'value' => $params['content'],
+          'value' => $content,
           'format' => 'full_html',
         ],
       ]);
@@ -107,18 +117,14 @@ class ReusableBlocksController extends ControllerBase {
       'Access-Control-Allow-Methods' => 'OPTIONS, GET, POST, PUT, PATCH, DELETE',
     ];
 
-    return new JsonResponse([
-      'id' => (int) $block->id(),
-      'title' => ['raw' => $block->info->value],
-      'content' => [
-        'block_version' => 1,
-        'protected' => FALSE,
-        'raw' => $block->body->value,
-      ],
-      'slug' => 'reusable_block_' . $block->id(),
-      'type' => 'wp_block',
-      'status' => 'publish',
-    ], ($block_id && $block_id > 0 ? 200 : 201), $headers);
+    if ($updating_block) {
+      $response_code = Response::HTTP_OK;
+    }
+    else {
+      $response_code = Response::HTTP_CREATED;
+    }
+
+    return new JsonResponse($this->getBlockAttributes($block), $response_code, $headers);
   }
 
   /**
@@ -131,9 +137,11 @@ class ReusableBlocksController extends ControllerBase {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function delete(Request $request, $block_id = NULL) {
-    $block = BlockContent::load($block_id);
+    $block = $this->loadBlockOrThrow($block_id);
     $block->delete();
 
     return new JsonResponse([
@@ -153,25 +161,76 @@ class ReusableBlocksController extends ControllerBase {
    *   Allowed access result if all conditions are met.
    */
   public function access(AccountInterface $account, $block_id) {
-    return AccessResult::allowedIf(
-      $account->hasPermission('gutenberg administer')
-      && $this->isBundleOfReusableBlock($block_id)
-    );
+    $block = BlockContent::load($block_id);
+
+    // Check if the user has the proper permissions.
+    $access = AccessResult::allowedIfHasPermission($account, 'use gutenberg');
+    if ($access->isAllowed()) {
+      // Only throw the 404 if the user is allowed to access the route.
+      // Avoids anonymous users scanning for a block's existence.
+      if (!$block) {
+        throw new NotFoundHttpException();
+      }
+    }
+    // Check if it's a reusable block.
+    $access = $access->andIf(AccessResult::allowedIf($block && $block->bundle() === 'reusable_block'));
+    // Add it as a cache dependency.
+    $access->addCacheableDependency($block);
+
+    return $access;
   }
 
   /**
-   * Creates block from given id and check its bundle.
+   * Load a reusable block content entity or throw an HTTP exception.
    *
-   * @param string $block_id
-   *   Block ID.
+   * An HTTP exception is thrown if the block could not be loaded or it's not a
+   * reusable block type.
    *
-   * @return bool
-   *   TRUE if the block is bundle of reusable_block, FALSE otherwise.
+   * @param int $block_id
+   *   The block ID.
+   *
+   * @return \Drupal\block_content\BlockContentInterface
+   *   The block instance.
    */
-  protected function isBundleOfReusableBlock($block_id) {
-    $block = BlockContent::load($block_id);
+  protected function loadBlockOrThrow($block_id) {
+    $block_id = (int) $block_id;
 
-    return $block->bundle() === 'reusable_block';
+    if ($block_id > 0 && $block = BlockContent::load($block_id)) {
+      /** @var \Drupal\block_content\BlockContentInterface $block */
+      if ($block->bundle() !== 'reusable_block') {
+        // Avoid accidental/malicious manipulation of non reusable blocks in
+        // this controller.
+        throw new BadRequestHttpException("Block '$block_id' is not a reusable block.");
+      }
+      return $block;
+    }
+
+    throw new NotFoundHttpException("Block '$block_id' does not exist.");
+  }
+
+  /**
+   * Get the block as a response array.
+   *
+   * @param \Drupal\block_content\BlockContentInterface $block
+   *   The block instance.
+   *
+   * @return array
+   *   The block response array.
+   */
+  protected function getBlockAttributes(BlockContentInterface $block) {
+    return [
+      'id' => (int) $block->id(),
+      'title' => [
+        'raw' => (string) $block->get('info')->value,
+      ],
+      'content' => [
+        'block_version' => 1,
+        'raw' => (string) $block->get('body')->value,
+      ],
+      'type' => 'wp_block',
+      'status' => 'publish',
+      'slug' => 'reusable_block_' . $block->id(),
+    ];
   }
 
 }

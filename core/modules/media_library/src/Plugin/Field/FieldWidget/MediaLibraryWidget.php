@@ -86,18 +86,10 @@ class MediaLibraryWidget extends WidgetBase implements ContainerFactoryPluginInt
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, AccountInterface $current_user = NULL, ModuleHandlerInterface $module_handler = NULL) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, AccountInterface $current_user, ModuleHandlerInterface $module_handler) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->entityTypeManager = $entity_type_manager;
-    if (!$current_user) {
-      @trigger_error('The current_user service must be passed to MediaLibraryWidget::__construct(), it is required before Drupal 9.0.0.', E_USER_DEPRECATED);
-      $current_user = \Drupal::currentUser();
-    }
     $this->currentUser = $current_user;
-    if (!$module_handler) {
-      @trigger_error('The module_handler service must be passed to MediaLibraryWidget::__construct(), it is required before Drupal 9.0.0.', E_USER_DEPRECATED);
-      $module_handler = \Drupal::moduleHandler();
-    }
     $this->moduleHandler = $module_handler;
   }
 
@@ -473,10 +465,6 @@ class MediaLibraryWidget extends WidgetBase implements ContainerFactoryPluginInt
     // tamper-proof hash in a consistent way.
     if (!$entity->isNew()) {
       $opener_parameters['entity_id'] = (string) $entity->id();
-
-      if ($entity->getEntityType()->isRevisionable()) {
-        $opener_parameters['revision_id'] = (string) $entity->getRevisionId();
-      }
     }
     $state = MediaLibraryState::create('media_library.opener.field_widget', $allowed_media_type_ids, $selected_type_id, $remaining, $opener_parameters);
 
@@ -512,19 +500,8 @@ class MediaLibraryWidget extends WidgetBase implements ContainerFactoryPluginInt
     // JavaScript by adding the 'data-disabled-focus' attribute.
     // @see Drupal.behaviors.MediaLibraryWidgetDisableButton
     if (!$cardinality_unlimited && $remaining === 0) {
-      $triggering_element = $form_state->getTriggeringElement();
-      if ($triggering_element && ($trigger_parents = $triggering_element['#array_parents']) && end($trigger_parents) === 'media_library_update_widget') {
-        // The widget is being rebuilt from a selection change.
-        $element['open_button']['#attributes']['data-disabled-focus'] = 'true';
-        $element['open_button']['#attributes']['class'][] = 'visually-hidden';
-      }
-      else {
-        // The widget is being built without a selection change, so we can just
-        // set the item to disabled now, there is no need to set the focus
-        // first.
-        $element['open_button']['#disabled'] = TRUE;
-        $element['open_button']['#attributes']['class'][] = 'visually-hidden';
-      }
+      $element['open_button']['#attributes']['data-disabled-focus'] = 'true';
+      $element['open_button']['#attributes']['class'][] = 'visually-hidden';
     }
 
     // This hidden field and button are used to add new items to the widget.

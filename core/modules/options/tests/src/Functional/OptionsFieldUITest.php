@@ -19,7 +19,7 @@ class OptionsFieldUITest extends FieldTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'options',
     'field_test',
@@ -60,21 +60,11 @@ class OptionsFieldUITest extends FieldTestBase {
    */
   protected $adminPath;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create test user.
-    $admin_user = $this->drupalCreateUser([
-      'access content',
-      'administer taxonomy',
-      'access administration pages',
-      'administer site configuration',
-      'administer content types',
-      'administer nodes',
-      'bypass node access',
-      'administer node fields',
-      'administer node display',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access content', 'administer taxonomy', 'access administration pages', 'administer site configuration', 'administer content types', 'administer nodes', 'bypass node access', 'administer node fields', 'administer node display']);
     $this->drupalLogin($admin_user);
 
     // Create content type, with underscores.

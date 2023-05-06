@@ -48,7 +48,7 @@ class ContextualDynamicContextTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'contextual',
     'node',
     'views',
@@ -57,7 +57,7 @@ class ContextualDynamicContextTest extends BrowserTestBase {
     'menu_test',
   ];
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
@@ -66,15 +66,8 @@ class ContextualDynamicContextTest extends BrowserTestBase {
     ConfigurableLanguage::createFromLangcode('it')->save();
     $this->rebuildContainer();
 
-    $this->editorUser = $this->drupalCreateUser([
-      'access content',
-      'access contextual links',
-      'edit any article content',
-    ]);
-    $this->authenticatedUser = $this->drupalCreateUser([
-      'access content',
-      'access contextual links',
-    ]);
+    $this->editorUser = $this->drupalCreateUser(['access content', 'access contextual links', 'edit any article content']);
+    $this->authenticatedUser = $this->drupalCreateUser(['access content', 'access contextual links']);
     $this->anonymousUser = $this->drupalCreateUser(['access content']);
   }
 

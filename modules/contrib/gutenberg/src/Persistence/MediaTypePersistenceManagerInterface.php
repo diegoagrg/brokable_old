@@ -26,4 +26,15 @@ interface MediaTypePersistenceManagerInterface {
    */
   public function save(string $media_type, File $file_entity);
 
+  /**
+   * Returns the media source file settings.
+   *
+   * @param string $media_type
+   *   Media type machine name.
+   *
+   * @return array
+   *   List of media file settings.
+   */
+  public function getFileSettings(string $media_type);
+
 }

@@ -21,7 +21,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'field',
     'node',
     // We use telephone module instead of test_field because test_field is
@@ -34,7 +34,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article']);
@@ -96,10 +96,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
 
     // Test that the module can't be uninstalled from the UI while there is data
     // for its fields.
-    $admin_user = $this->drupalCreateUser([
-      'access administration pages',
-      'administer modules',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access administration pages', 'administer modules']);
     $this->drupalLogin($admin_user);
     $this->drupalGet('admin/modules/uninstall');
     $this->assertText("The Telephone number field type is used in the following field: node.field_telephone");

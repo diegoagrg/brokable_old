@@ -24,7 +24,7 @@ class LocaleConfigTranslationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['locale', 'contact', 'contact_test'];
+  protected static $modules = ['locale', 'contact', 'contact_test'];
 
   /**
    * {@inheritdoc}
@@ -34,7 +34,7 @@ class LocaleConfigTranslationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Add a default locale storage for all these tests.
     $this->storage = $this->container->get('locale.storage');
@@ -48,15 +48,7 @@ class LocaleConfigTranslationTest extends BrowserTestBase {
 
     // Add custom language.
     $this->langcode = 'xx';
-    $admin_user = $this->drupalCreateUser([
-      'administer languages',
-      'access administration pages',
-      'translate interface',
-      'administer modules',
-      'access site-wide contact form',
-      'administer contact forms',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer languages', 'access administration pages', 'translate interface', 'administer modules', 'access site-wide contact form', 'administer contact forms', 'administer site configuration']);
     $this->drupalLogin($admin_user);
     $name = $this->randomMachineName(16);
     $edit = [

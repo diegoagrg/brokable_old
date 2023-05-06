@@ -16,7 +16,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
    *
    * @var string[]
    */
-  public static $modules = ['block'];
+  protected static $modules = ['block'];
 
   /**
    * {@inheritdoc}
@@ -26,7 +26,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('local_actions_block');
@@ -83,7 +83,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
       $title = $shortcut->getTitle();
 
       // Confirm that a link to the shortcut is found within the table.
-      $this->assertSession()->linkExists($title);
+      $this->assertLink($title);
 
       // Look for a test shortcut weight select form element.
       $this->assertFieldByName('shortcuts[links][' . $shortcut->id() . '][weight]');

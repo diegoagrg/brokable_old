@@ -18,7 +18,7 @@ class TelephoneFieldTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'field',
     'node',
     'telephone',
@@ -39,14 +39,11 @@ class TelephoneFieldTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article']);
-    $this->webUser = $this->drupalCreateUser([
-      'create article content',
-      'edit own article content',
-    ]);
+    $this->webUser = $this->drupalCreateUser(['create article content', 'edit own article content']);
     $this->drupalLogin($this->webUser);
 
     // Add the telephone field to the article content type.

@@ -31,14 +31,14 @@ class AdminTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['locale'];
+  protected static $modules = ['locale'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     // testAdminPages() requires Locale module.
     parent::setUp();
 
@@ -63,7 +63,7 @@ class AdminTest extends BrowserTestBase {
     // Verify that all visible, top-level administration links are listed on
     // the main administration page.
     foreach ($this->getTopLevelMenuLinks() as $item) {
-      $this->assertSession()->linkExists($item->getTitle());
+      $this->assertLink($item->getTitle());
       $this->assertLinkByHref($item->getUrlObject()->toString());
       // The description should appear below the link.
       $this->assertText($item->getDescription());

@@ -17,7 +17,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
   use RequirementsPageTrait;
 
-  const HANDBOOK_MESSAGE = 'Review the suggestions for resolving this incompatibility to repair your installation, and then re-run update.php.';
+  protected const HANDBOOK_MESSAGE = 'Review the suggestions for resolving this incompatibility to repair your installation, and then re-run update.php.';
 
   /**
    * Modules to enable.
@@ -63,7 +63,7 @@ class UpdateScriptTest extends BrowserTestBase {
    */
   private $updateUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->updateUrl = Url::fromRoute('system.db_update');
     $this->statusReportUrl = Url::fromRoute('system.status');
@@ -86,7 +86,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
     // Check that a link to the update page is not accessible to regular users.
     $this->drupalGet('/update-script-test/database-updates-menu-item');
-    $this->assertSession()->linkNotExists('Run database updates');
+    $this->assertNoLink('Run database updates');
 
     // Try accessing update.php as an anonymous user.
     $this->drupalLogout();
@@ -96,7 +96,7 @@ class UpdateScriptTest extends BrowserTestBase {
     // Check that a link to the update page is not accessible to anonymous
     // users.
     $this->drupalGet('/update-script-test/database-updates-menu-item');
-    $this->assertSession()->linkNotExists('Run database updates');
+    $this->assertNoLink('Run database updates');
 
     // Access the update page with the proper permission.
     $this->drupalLogin($this->updateUser);
@@ -106,7 +106,7 @@ class UpdateScriptTest extends BrowserTestBase {
     // Check that a link to the update page is accessible to users with proper
     // permissions.
     $this->drupalGet('/update-script-test/database-updates-menu-item');
-    $this->assertSession()->linkExists('Run database updates');
+    $this->assertLink('Run database updates');
 
     // Access the update page as user 1.
     $this->drupalLogin($this->rootUser);
@@ -115,7 +115,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
     // Check that a link to the update page is accessible to user 1.
     $this->drupalGet('/update-script-test/database-updates-menu-item');
-    $this->assertSession()->linkExists('Run database updates');
+    $this->assertLink('Run database updates');
   }
 
   /**
@@ -275,17 +275,6 @@ class UpdateScriptTest extends BrowserTestBase {
     $incompatible_module_message = "The following module is installed, but it is incompatible with Drupal " . \Drupal::VERSION . ":";
     $incompatible_theme_message = "The following theme is installed, but it is incompatible with Drupal " . \Drupal::VERSION . ":";
     return [
-      'module: core key incompatible' => [
-        [
-          'core_version_requirement' => '^8 || ^9',
-          'type' => 'module',
-        ],
-        [
-          'core' => '7.x',
-          'type' => 'module',
-        ],
-        $incompatible_module_message,
-      ],
       'module: core_version_requirement key incompatible' => [
         [
           'core_version_requirement' => '^8 || ^9',
@@ -296,17 +285,6 @@ class UpdateScriptTest extends BrowserTestBase {
           'type' => 'module',
         ],
         $incompatible_module_message,
-      ],
-      'theme: core key incompatible' => [
-        [
-          'core_version_requirement' => '^8 || ^9',
-          'type' => 'theme',
-        ],
-        [
-          'core' => '7.x',
-          'type' => 'theme',
-        ],
-        $incompatible_theme_message,
       ],
       'theme: core_version_requirement key incompatible' => [
         [
@@ -344,6 +322,28 @@ class UpdateScriptTest extends BrowserTestBase {
           'php' => 1000000000,
         ],
         'The following theme is installed, but it is incompatible with PHP ' . phpversion() . ":",
+      ],
+      'module: core_version_requirement key missing' => [
+        [
+          'core_version_requirement' => '^8 || ^9',
+          'type' => 'module',
+        ],
+        [
+          'core' => '8.x',
+          'type' => 'module',
+        ],
+        $incompatible_module_message,
+      ],
+      'theme: core_version_requirement key missing' => [
+        [
+          'core_version_requirement' => '^8 || ^9',
+          'type' => 'theme',
+        ],
+        [
+          'core' => '8.x',
+          'type' => 'theme',
+        ],
+        $incompatible_theme_message,
       ],
     ];
   }
@@ -519,22 +519,19 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
     $this->assertText(t('No pending updates.'));
-    $this->assertSession()->linkNotExists('Administration pages');
+    $this->assertNoLink('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Front page');
     $this->assertSession()->statusCodeEquals(200);
 
     // Click through update.php with 'access administration pages' permission.
-    $admin_user = $this->drupalCreateUser([
-      'administer software updates',
-      'access administration pages',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer software updates', 'access administration pages']);
     $this->drupalLogin($admin_user);
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
     $this->assertText(t('No pending updates.'));
-    $this->assertSession()->linkExists('Administration pages');
+    $this->assertLink('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Administration pages');
     $this->assertSession()->statusCodeEquals(200);
@@ -561,12 +558,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
     // Click through update.php with 'access administration pages' and
     // 'access site reports' permissions.
-    $admin_user = $this->drupalCreateUser([
-      'administer software updates',
-      'access administration pages',
-      'access site reports',
-      'access site in maintenance mode',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer software updates', 'access administration pages', 'access site reports', 'access site in maintenance mode']);
     $this->drupalLogin($admin_user);
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
@@ -574,8 +566,8 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->clickLink(t('Apply pending updates'));
     $this->checkForMetaRefresh();
     $this->assertText('Updates were attempted.');
-    $this->assertSession()->linkExists('logged');
-    $this->assertSession()->linkExists('Administration pages');
+    $this->assertLink('logged');
+    $this->assertLink('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Administration pages');
     $this->assertSession()->statusCodeEquals(200);
@@ -625,13 +617,7 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->assertEqual($schema_version, 8000, 'update_script_test schema version overridden to 8000.');
 
     // Create admin user.
-    $admin_user = $this->drupalCreateUser([
-      'administer software updates',
-      'access administration pages',
-      'access site reports',
-      'access site in maintenance mode',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer software updates', 'access administration pages', 'access site reports', 'access site in maintenance mode', 'administer site configuration']);
     $this->drupalLogin($admin_user);
 
     // Visit status report page and ensure, that link to update.php has no path prefix set.
@@ -648,8 +634,8 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->clickLink(t('Apply pending updates'));
     $this->checkForMetaRefresh();
     $this->assertText('Updates were attempted.');
-    $this->assertSession()->linkExists('logged');
-    $this->assertSession()->linkExists('Administration pages');
+    $this->assertLink('logged');
+    $this->assertLink('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Administration pages');
     $this->assertSession()->statusCodeEquals(200);
@@ -659,26 +645,17 @@ class UpdateScriptTest extends BrowserTestBase {
    * Tests maintenance mode link on update.php.
    */
   public function testMaintenanceModeLink() {
-    $full_admin_user = $this->drupalCreateUser([
+    $admin_user = $this->drupalCreateUser([
       'administer software updates',
       'access administration pages',
       'administer site configuration',
     ]);
-    $this->drupalLogin($full_admin_user);
+    $this->drupalLogin($admin_user);
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->assertSession()->statusCodeEquals(200);
     $this->clickLink('maintenance mode');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementContains('css', 'main h1', 'Maintenance mode');
-
-    // Now login as a user with only 'administer software updates' (but not
-    // 'administer site configuration') permission and try again.
-    $this->drupalLogin($this->updateUser);
-    $this->drupalGet($this->updateUrl, ['external' => TRUE]);
-    $this->assertSession()->statusCodeEquals(200);
-    $this->clickLink('maintenance mode');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementContains('css', 'main h1', 'Maintenance mode');
+    $this->assertEquals('Maintenance mode', $this->cssSelect('main h1')[0]->getText());
   }
 
   /**
@@ -709,7 +686,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
     // Verify that updates were completed successfully.
     $this->assertText('Updates were attempted.');
-    $this->assertSession()->linkExists('site');
+    $this->assertLink('site');
     $this->assertText('The update_script_test_update_8001() update was executed successfully.');
 
     // Verify that no 7.x updates were run.
@@ -717,9 +694,9 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->assertNoText('The update_script_test_update_7201() update was executed successfully.');
 
     // Verify that there are no links to different parts of the workflow.
-    $this->assertSession()->linkNotExists('Administration pages');
+    $this->assertNoLink('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
-    $this->assertSession()->linkNotExists('logged');
+    $this->assertNoLink('logged');
 
     // Verify the front page can be visited following the upgrade.
     $this->clickLink('Front page');

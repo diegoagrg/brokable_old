@@ -43,7 +43,7 @@ class CommentTypeTest extends CommentTestBase {
   /**
    * Sets the test up.
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('page_title_block');
@@ -186,7 +186,7 @@ class CommentTypeTest extends CommentTestBase {
       $this->fail('Exception not thrown.');
     }
     catch (\InvalidArgumentException $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Exception thrown if attempting to re-use comment-type from another entity type.');
     }
 
     // Delete the comment type.

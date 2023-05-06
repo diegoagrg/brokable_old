@@ -119,7 +119,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
           dialogType: 'modal',
           dialog: { width: 800 },
           dialogRenderer: null,
-          url: '/media/' + mediaEntityIds[0] + '/edit?gutenberg',
+          url: Drupal.url('media/' + mediaEntityIds[0] + '/edit?gutenberg'),
           base: clientId
         };
 
@@ -140,7 +140,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             attributes = _props2.attributes,
             setAttributes = _props2.setAttributes,
             isSelected = _props2.isSelected,
-            clientId = _props2.clientId;
+            clientId = _props2.clientId,
+            _props2$title = _props2.title,
+            title = _props2$title === undefined ? __('Media') : _props2$title,
+            _props2$icon = _props2.icon,
+            icon = _props2$icon === undefined ? React.createElement(BlockIcon, { icon: 'admin-media' }) : _props2$icon,
+            isReadOnly = _props2.isReadOnly,
+            _props2$readOnlyInstr = _props2.readOnlyInstructions,
+            readOnlyInstructions = _props2$readOnlyInstr === undefined ? __('Cannot edit this block. Probably mapped to a non-translatable field.') : _props2$readOnlyInstr;
         var _state = this.state,
             value = _state.value,
             loading = _state.loading;
@@ -180,7 +187,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             React.createElement(
               BlockControls,
               null,
-              React.createElement(
+              !isReadOnly && React.createElement(
                 Toolbar,
                 {
                   controls: [{
@@ -206,6 +213,27 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                     '\xA0'
                   )
                 )
+              ),
+              isReadOnly && React.createElement(
+                Toolbar,
+                {
+                  controls: [{
+                    icon: 'edit',
+                    title: __('Edit media'),
+                    onClick: function onClick() {
+                      return _this4.openMediaEdit(mediaEntityIds, clientId);
+                    }
+                  }]
+                },
+                loading && React.createElement(
+                  'div',
+                  { className: 'ajax-progress ajax-progress-throbber' },
+                  React.createElement(
+                    'div',
+                    { className: 'throbber' },
+                    '\xA0'
+                  )
+                )
               )
             )
           );
@@ -213,7 +241,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
         var fetchMedia = function fetchMedia(search) {
           return new Promise(function (resolve) {
-            fetch(drupalSettings.path.baseUrl + 'editor/media/autocomplete?search=' + search).then(function (response) {
+            fetch(Drupal.url('editor/media/autocomplete?search=' + encodeURIComponent(search))).then(function (response) {
               return response.json();
             }).then(function (json) {
               resolve(json);
@@ -263,37 +291,47 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         );
 
         return React.createElement(
-          Placeholder,
-          {
-            icon: React.createElement(BlockIcon, { icon: 'admin-media' }),
-            label: __('Media'),
-            instructions: instructions,
-            className: placeholderClassName
-          },
-          React.createElement(FormFileUpload, {
-            onChange: this.onUpload,
-            accept: 'image/*,video/*,audio/*,application/*',
-            multiple: false,
-            render: function render(_ref) {
-              var openFileDialog = _ref.openFileDialog;
+          Fragment,
+          null,
+          !isReadOnly && React.createElement(
+            Placeholder,
+            {
+              icon: icon,
+              label: title,
+              instructions: instructions,
+              className: placeholderClassName
+            },
+            React.createElement(FormFileUpload, {
+              onChange: this.onUpload,
+              accept: 'image/*,video/*,audio/*,application/*',
+              multiple: false,
+              render: function render(_ref) {
+                var openFileDialog = _ref.openFileDialog;
 
-              return React.createElement(
-                Fragment,
-                null,
-                React.createElement(
-                  Button,
-                  {
-                    isLarge: true,
-                    onClick: openFileDialog,
-                    className: ['block-editor-media-placeholder__button', 'editor-media-placeholder__button', 'block-editor-media-placeholder__upload-button'].join(' '),
-                    icon: 'upload'
-                  },
-                  __('Upload')
-                )
-              );
-            }
-          }),
-          content
+                return React.createElement(
+                  Fragment,
+                  null,
+                  React.createElement(
+                    Button,
+                    {
+                      isLarge: true,
+                      onClick: openFileDialog,
+                      className: ['block-editor-media-placeholder__button', 'editor-media-placeholder__button', 'block-editor-media-placeholder__upload-button'].join(' '),
+                      icon: 'upload'
+                    },
+                    __('Upload')
+                  )
+                );
+              }
+            }),
+            content
+          ),
+          isReadOnly && React.createElement(Placeholder, {
+            icon: icon,
+            label: title,
+            instructions: readOnlyInstructions,
+            className: placeholderClassName
+          })
         );
       }
     }]);

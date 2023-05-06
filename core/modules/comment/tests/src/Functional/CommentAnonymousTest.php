@@ -17,7 +17,7 @@ class CommentAnonymousTest extends CommentTestBase {
    */
   protected $defaultTheme = 'classy';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Enable anonymous and authenticated user comments.
@@ -176,7 +176,7 @@ class CommentAnonymousTest extends CommentTestBase {
     // "Login or register to post comments" type link may be shown.
     $this->drupalGet('node/' . $this->node->id());
     $this->assertSession()->responseNotMatches('@<h2[^>]*>Comments</h2>@', 'Comments were not displayed.');
-    $this->assertSession()->linkNotExists('Add new comment', 'Link to add comment was found.');
+    $this->assertNoLink('Add new comment', 'Link to add comment was found.');
 
     // Attempt to view node-comment form while disallowed.
     $this->drupalGet('comment/reply/node/' . $this->node->id() . '/comment');
@@ -188,10 +188,9 @@ class CommentAnonymousTest extends CommentTestBase {
       'skip comment approval' => FALSE,
     ]);
     $this->drupalGet('node/' . $this->node->id());
-    // Verify that the comment field title is displayed.
-    $this->assertPattern('@<h2[^>]*>Comments</h2>@');
-    $this->assertSession()->linkExists('Log in', 1, 'Link to login was found.');
-    $this->assertSession()->linkExists('register', 1, 'Link to register was found.');
+    $this->assertPattern('@<h2[^>]*>Comments</h2>@', 'Comments were displayed.');
+    $this->assertLink('Log in', 1, 'Link to login was found.');
+    $this->assertLink('register', 1, 'Link to register was found.');
 
     user_role_change_permissions(RoleInterface::ANONYMOUS_ID, [
       'access comments' => FALSE,

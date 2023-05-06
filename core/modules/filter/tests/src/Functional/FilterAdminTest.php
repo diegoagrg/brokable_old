@@ -20,7 +20,7 @@ class FilterAdminTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'filter',
     'node',
@@ -50,7 +50,7 @@ class FilterAdminTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
@@ -111,10 +111,7 @@ class FilterAdminTest extends BrowserTestBase {
       'access site reports',
     ]);
 
-    $this->webUser = $this->drupalCreateUser([
-      'create page content',
-      'edit own page content',
-    ]);
+    $this->webUser = $this->drupalCreateUser(['create page content', 'edit own page content']);
     user_role_grant_permissions('authenticated', [$basic_html_format->getPermissionName()]);
     user_role_grant_permissions('anonymous', [$restricted_html_format->getPermissionName()]);
     $this->drupalLogin($this->adminUser);
@@ -323,7 +320,7 @@ class FilterAdminTest extends BrowserTestBase {
     $edit['body[0][format]'] = $plain;
     $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, t('Save'));
     $this->drupalGet('node/' . $node->id());
-    $this->assertEscaped($text);
+    $this->assertEscaped($text, 'The "Plain text" text format escapes all HTML tags.');
     $this->config('filter.settings')
       ->set('always_show_fallback_choice', FALSE)
       ->save();

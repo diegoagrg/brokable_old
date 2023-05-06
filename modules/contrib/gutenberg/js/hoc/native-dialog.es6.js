@@ -10,34 +10,34 @@
       }, 0);
     };
 
-    const getDefaultMediaSelections = () => {
-      return (Drupal.MediaLibrary.currentSelection || []).filter(selection => +selection);
-    };
+    const getDefaultMediaSelections = () =>
+      (Drupal.MediaLibrary.currentSelection || []).filter(
+        selection => +selection,
+      );
 
-    const getSpecialMediaSelections = () => {
-      return [...Drupal.SpecialMediaSelection.currentSelection || []].map(selection => {
-        return JSON.stringify({
-          [selection.processor]: selection.data,
-        });
-      });
-    };
+    const getSpecialMediaSelections = () =>
+      [...(Drupal.SpecialMediaSelection.currentSelection || [])].map(
+        selection =>
+          JSON.stringify({
+            [selection.processor]: selection.data,
+          }),
+      );
 
     async function onDialogInsert(element, props) {
-      const {
-        onSelect,
-        handlesMediaEntity,
-        multiple,
-      } = props;
+      const { onSelect, handlesMediaEntity, multiple } = props;
 
       let selectionData = [];
-      let selections = [...getDefaultMediaSelections(), ...getSpecialMediaSelections()];
+      let selections = [
+        ...getDefaultMediaSelections(),
+        ...getSpecialMediaSelections(),
+      ];
       selections = multiple ? selections : selections.slice(0, 1);
 
       const endpointUrl = handlesMediaEntity
-        ? `${drupalSettings.path.baseUrl}editor/media/render`
-        : `${drupalSettings.path.baseUrl}editor/media/load-media`;
+        ? Drupal.url('editor/media/render')
+        : Drupal.url('editor/media/load-media');
 
-      for (let selection of selections) {
+      for (const selection of selections) {
         const response = await fetch(
           `${endpointUrl}/${encodeURIComponent(selection)}`,
         );
@@ -45,7 +45,10 @@
       }
 
       if (handlesMediaEntity) {
-          selectionData = selectionData.map(selectionItem => selectionItem.media_entity && selectionItem.media_entity.id);
+        selectionData = selectionData.map(
+          selectionItem =>
+            selectionItem.media_entity && selectionItem.media_entity.id,
+        );
       }
 
       onSelect(multiple ? selectionData : selectionData[0]);
@@ -57,35 +60,41 @@
         modal.remove();
       }
 
-      const nodes = document.querySelectorAll('[aria-describedby="media-entity-browser-modal"]');
+      const nodes = document.querySelectorAll(
+        '[aria-describedby="media-entity-browser-modal"]',
+      );
       nodes.forEach(node => node.remove());
     };
 
-    const getDialog = ({allowedTypes}) => {
-      return new Promise((resolve, reject) => {
+    const getDialog = ({ allowedTypes, allowedBundles }) =>
+      new Promise((resolve, reject) => {
         wp.apiFetch({
           path: 'load-media-library-dialog',
-          data: {allowedTypes}
+          data: { allowedTypes, allowedBundles },
         })
           .then(result => {
             resolve({
               component: props => (
-                <div {...props} dangerouslySetInnerHTML={{__html: result.html}}/>
-              )
+                <div
+                  {...props}
+                  dangerouslySetInnerHTML={{ __html: result.html }}
+                />
+              ),
             });
           })
           .catch(reason => {
             reject(reason);
-          })
+          });
       });
-    };
 
     return props => (
-      <Component {...props}
-                 onDialogCreate={onDialogCreate}
-                 onDialogInsert={onDialogInsert}
-                 onDialogClose={onDialogClose}
-                 getDialog={getDialog}/>
+      <Component
+        {...props}
+        onDialogCreate={onDialogCreate}
+        onDialogInsert={onDialogInsert}
+        onDialogClose={onDialogClose}
+        getDialog={getDialog}
+      />
     );
   };
 

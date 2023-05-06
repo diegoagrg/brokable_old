@@ -21,7 +21,7 @@ class ToolbarCacheContextsTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['toolbar', 'test_page_test'];
+  protected static $modules = ['toolbar', 'test_page_test'];
 
   /**
    * {@inheritdoc}
@@ -56,7 +56,7 @@ class ToolbarCacheContextsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->adminUser = $this->drupalCreateUser($this->perms);
@@ -131,7 +131,12 @@ class ToolbarCacheContextsTest extends BrowserTestBase {
     $this->drupalGet('test-page');
     $return = $return && $this->assertCacheContexts($cache_contexts);
 
-    $this->assertTrue($return, $message);
+    if ($return) {
+      $this->pass($message);
+    }
+    else {
+      $this->fail($message);
+    }
     return $return;
   }
 

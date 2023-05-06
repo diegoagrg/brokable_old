@@ -16,7 +16,7 @@ class BlockAdminThemeTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'contextual'];
+  protected static $modules = ['block', 'contextual'];
 
   /**
    * {@inheritdoc}
@@ -28,10 +28,7 @@ class BlockAdminThemeTest extends BrowserTestBase {
    */
   public function testAdminTheme() {
     // Create administrative user.
-    $admin_user = $this->drupalCreateUser([
-      'administer blocks',
-      'administer themes',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer blocks', 'administer themes']);
     $this->drupalLogin($admin_user);
 
     // Ensure that access to block admin page is denied when theme is not

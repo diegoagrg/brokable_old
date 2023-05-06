@@ -22,7 +22,7 @@ use Drupal\Tests\BrowserTestBase;
  */
 class UrlTest extends BrowserTestBase {
 
-  public static $modules = ['common_test', 'url_alter_test'];
+  protected static $modules = ['common_test', 'url_alter_test'];
 
   /**
    * {@inheritdoc}
@@ -71,6 +71,7 @@ class UrlTest extends BrowserTestBase {
         '#url' => Url::fromUri($uri),
       ];
       \Drupal::service('renderer')->renderRoot($link);
+      $this->pass($title);
       $this->assertEqual($expected_cacheability, $link['#cache']);
       $this->assertEqual($expected_attachments, $link['#attached']);
     }
@@ -309,11 +310,6 @@ class UrlTest extends BrowserTestBase {
 
     // Verify external URL can contain a query string.
     $url = $test_url . '?drupal=awesome';
-    $result = Url::fromUri($url)->toString();
-    $this->assertEqual($url, $result);
-
-    // Verify external URL can contain a query string with an integer key.
-    $url = $test_url . '?120=1';
     $result = Url::fromUri($url)->toString();
     $this->assertEqual($url, $result);
 

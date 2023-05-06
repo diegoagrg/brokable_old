@@ -21,7 +21,12 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['toolbar', 'shortcut', 'test_page_test', 'block'];
+  protected static $modules = [
+    'toolbar',
+    'shortcut',
+    'test_page_test',
+    'block',
+  ];
 
   /**
    * {@inheritdoc}
@@ -31,7 +36,7 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Give anonymous users permission to customize shortcut links, so that we
@@ -117,7 +122,7 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
     // Verify that users without the 'access shortcuts' permission can't see the
     // shortcuts.
     $this->drupalLogin($this->drupalCreateUser(['access toolbar']));
-    $this->assertSession()->linkNotExists('Shortcuts');
+    $this->assertNoLink('Shortcuts');
     $this->verifyDynamicPageCache($test_page_url, 'MISS');
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
 
@@ -129,8 +134,8 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
     ]));
     $this->verifyDynamicPageCache($test_page_url, 'MISS');
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
-    $this->assertSession()->linkExists('Shortcuts');
-    $this->assertSession()->linkNotExists('Cron');
+    $this->assertLink('Shortcuts');
+    $this->assertNoLink('Cron');
 
     // Create a role with access to shortcuts as well as the necessary
     // permissions to see specific shortcuts.
@@ -155,14 +160,14 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
     $this->verifyDynamicPageCache($test_page_url, 'MISS');
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
     $this->assertCacheContexts(['user', 'url.query_args:_wrapper_format']);
-    $this->assertSession()->linkExists('Shortcuts');
-    $this->assertSession()->linkExists('Cron');
+    $this->assertLink('Shortcuts');
+    $this->assertLink('Cron');
 
     $this->drupalLogin($site_configuration_user2);
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
     $this->assertCacheContexts(['user', 'url.query_args:_wrapper_format']);
-    $this->assertSession()->linkExists('Shortcuts');
-    $this->assertSession()->linkExists('Cron');
+    $this->assertLink('Shortcuts');
+    $this->assertLink('Cron');
 
     // Add another shortcut.
     $shortcut = Shortcut::create([
@@ -176,21 +181,21 @@ class ShortcutCacheTagsTest extends EntityCacheTagsTestBase {
     // The shortcuts are displayed in a lazy builder, so the page is still a
     // cache HIT but shows the new shortcut immediately.
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
-    $this->assertSession()->linkExists('Cron');
-    $this->assertSession()->linkExists('Llama');
+    $this->assertLink('Cron');
+    $this->assertLink('Llama');
 
     // Update the shortcut title and assert that it is updated.
     $shortcut->set('title', 'Alpaca');
     $shortcut->save();
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
-    $this->assertSession()->linkExists('Cron');
-    $this->assertSession()->linkExists('Alpaca');
+    $this->assertLink('Cron');
+    $this->assertLink('Alpaca');
 
     // Delete the shortcut and assert that the link is gone.
     $shortcut->delete();
     $this->verifyDynamicPageCache($test_page_url, 'HIT');
-    $this->assertSession()->linkExists('Cron');
-    $this->assertSession()->linkNotExists('Alpaca');
+    $this->assertLink('Cron');
+    $this->assertNoLink('Alpaca');
   }
 
 }

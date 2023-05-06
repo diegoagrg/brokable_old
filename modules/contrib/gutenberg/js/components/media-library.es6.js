@@ -11,7 +11,7 @@
       this.closeDialog = this.closeDialog.bind(this);
     }
 
-    closeDialog() {
+    closeDialog(callback) {
       if (this.frame) {
         this.frame.close();
         delete this.frame;
@@ -22,20 +22,24 @@
         delete this.mediaBrowserWrapper;
       }
       this.props.onDialogClose && this.props.onDialogClose();
+      callback && callback();
     }
 
     openDialog() {
       const {
         allowedTypes = [],
+        allowedBundles = [],
         onDialogInsert,
         onDialogCreate,
+        onClose = () => {},
         getDialog,
         multiple,
       } = this.props;
 
       getDialog({
         allowedTypes,
-        onSelect: this.closeDialog
+        allowedBundles,
+        onSelect: () => this.closeDialog(onClose)
       }).then(result => {
         this.mediaBrowserWrapper = document.createElement('div');
         this.mediaBrowserWrapper.setAttribute('id', 'media-entity-browser-modal');
@@ -51,12 +55,12 @@
               buttons: {
                 [__('Insert')]: () => {
                   onDialogInsert && onDialogInsert(this.mediaBrowserWrapper, this.props);
-                  this.closeDialog();
+                  this.closeDialog(onClose);
                 },
-                [__('Cancel')]: this.closeDialog,
+                [__('Cancel')]: () => this.closeDialog(onClose),
               },
               create: event => onDialogCreate(event.target, multiple),
-              close: this.closeDialog,
+              // close: () => { onClose(); /*this.closeDialog();*/ },
             });
 
             this.frame && this.frame.showModal();

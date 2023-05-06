@@ -22,16 +22,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 (function (wp, Drupal, DrupalGutenberg, drupalSettings) {
   var components = wp.components,
       element = wp.element,
+      blockEditor = wp.blockEditor,
       editor = wp.editor;
   var Component = element.Component,
-      Fragment = element.Fragment;
+      Fragment = element.Fragment,
+      createPortal = element.createPortal,
+      useRef = element.useRef;
   var MediaBrowserDetails = DrupalGutenberg.Components.MediaBrowserDetails;
   var Button = components.Button,
       FormFileUpload = components.FormFileUpload;
   var mediaUpload = editor.mediaUpload;
 
 
-  var __ = Drupal.t;
+  function ModalActions(_ref) {
+    var element = _ref.element,
+        children = _ref.children;
+
+    if (!element.current) {
+      return React.createElement(
+        Fragment,
+        null,
+        children
+      );
+    }
+
+    var pane = element.current.parentNode.parentNode.querySelector('.ui-dialog-buttonpane');
+    pane.querySelector('.ui-dialog-buttonset').innerHTML = '';
+    return createPortal(children, pane);
+  }
 
   var MediaBrowser = function (_Component) {
     _inherits(MediaBrowser, _Component);
@@ -52,6 +70,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
       _this.selectMedia = _this.selectMedia.bind(_this);
       _this.toggleMedia = _this.toggleMedia.bind(_this);
       _this.uncheckMedia = _this.uncheckMedia.bind(_this);
+      _this.wrapper = React.createRef();
       return _this;
     }
 
@@ -70,7 +89,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         var selected = {} && (multiple && value ? _extends({}, value.reduce(function (result, item) {
           result[item] = true;
           return result;
-        }, {})) : _defineProperty({}, value, true));
+        }, {})) : value && value.length > 0 ? _defineProperty({}, value, true) : {});
 
         this.setState({
           selected: selected,
@@ -89,7 +108,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
           allowedTypes.push('*');
         }
 
-        fetch('\n        ' + drupalSettings.path.baseUrl + 'editor/media/search/' + allowedTypes.join('+') + '/*').then(function (response) {
+        var search = allowedTypes.join('+');
+
+        fetch(Drupal.url('editor/media/search/' + search + '/*')).then(function (response) {
           return response.json();
         }).then(function (json) {
           _this2.setState({ data: json });
@@ -119,7 +140,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     }, {
       key: 'selectMedia',
       value: function () {
-        var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+        var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
           var _this4 = this;
 
           var _state, selected, data, onSelect, medias;
@@ -136,46 +157,26 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
                   medias.map(function () {
-                    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee(media) {
+                    var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee(media) {
                       var title, caption, alt_text;
                       return regeneratorRuntime.wrap(function _callee$(_context) {
                         while (1) {
                           switch (_context.prev = _context.next) {
                             case 0:
-                              title = { raw: null, rendered: null };
-                              caption = { raw: null, rendered: null };
-
-
-                              if (typeof media.title === 'string') {
-                                title.raw = media.title;
-                              } else if (media.title && media.title.raw) {
-                                title.raw = media.title.raw;
-                                media.title = media.title.raw;
-                              } else if (!media.title.raw) {
-                                media.title = '';
-                              }
-
-                              if (typeof media.caption === 'string') {
-                                caption.raw = media.caption;
-                              } else if (media.caption && media.caption.raw) {
-                                caption.raw = media.caption.raw;
-                                media.caption = media.caption.raw;
-                              } else if (!media.caption.raw) {
-                                media.caption = '';
-                              }
-
+                              title = typeof media.title === 'string' ? media.title : '';
+                              caption = typeof media.caption === 'string' ? media.caption : '';
                               alt_text = media.alt_text;
-                              _context.next = 7;
-                              return fetch(drupalSettings.path.baseUrl + 'editor/media/update_data/' + media.id, {
+                              _context.next = 5;
+                              return fetch(Drupal.url('editor/media/update_data/' + media.id), {
                                 method: 'post',
                                 body: JSON.stringify({
-                                  title: title.raw,
-                                  caption: caption.raw,
+                                  title: title,
+                                  caption: caption,
                                   alt_text: alt_text
                                 })
                               });
 
-                            case 7:
+                            case 5:
                             case 'end':
                               return _context.stop();
                           }
@@ -184,7 +185,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                     }));
 
                     return function (_x) {
-                      return _ref3.apply(this, arguments);
+                      return _ref4.apply(this, arguments);
                     };
                   }());
 
@@ -199,7 +200,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         }));
 
         function selectMedia() {
-          return _ref2.apply(this, arguments);
+          return _ref3.apply(this, arguments);
         }
 
         return selectMedia;
@@ -277,7 +278,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
         return React.createElement(
           'div',
-          { className: 'media-browser' },
+          { ref: this.wrapper, className: 'media-browser' },
           React.createElement(
             'div',
             { className: 'content' },
@@ -290,7 +291,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 React.createElement('input', {
                   name: 'media-browser-search',
                   className: 'text-full',
-                  placeHolder: __('Search'),
+                  placeHolder: Drupal.t('Search'),
                   type: 'text',
                   onChange: function onChange(value) {
                     _this5.setState({ search: value.target.value.toLowerCase() });
@@ -302,7 +303,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
               'ul',
               { className: 'list' },
               data.filter(function (item) {
-                return item.media_details.file.toLowerCase().includes(search) || item.title && item.title.raw && typeof item.title.raw === 'string' && item.title.raw.toLowerCase().includes(search);
+                return item.media_details.file.toLowerCase().includes(search) || typeof item.title === 'string' && item.title.toLowerCase().includes(search) || typeof item.caption === 'string' && item.caption.toLowerCase().includes(search) || typeof item.alt === 'string' && item.alt.toLowerCase().includes(search);
               }).map(function (media, index) {
                 return React.createElement(
                   'li',
@@ -371,7 +372,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 React.createElement(
                   'h2',
                   null,
-                  __('Media details')
+                  Drupal.t('Media details')
                 ),
                 React.createElement(MediaBrowserDetails, {
                   key: activeMedia.id,
@@ -382,40 +383,44 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             )
           ),
           React.createElement(
-            'div',
-            { className: 'form-actions' },
-            multiple && React.createElement(
-              'div',
-              { className: 'selected-summary' },
-              __('Total selected') + ': ' + Object.values(selected).filter(function (item) {
-                return item;
-              }).length
-            ),
+            ModalActions,
+            { element: this.wrapper },
             React.createElement(
               'div',
-              { className: 'buttons' },
-              React.createElement(
-                FormFileUpload,
-                {
-                  isLarge: true,
-                  className: 'editor-media-placeholder__button',
-                  onChange: this.uploadFromFiles,
-                  accept: 'image',
-                  multiple: multiple
-                },
-                __('Upload')
+              { className: 'form-actions' },
+              multiple && React.createElement(
+                'div',
+                { className: 'selected-summary' },
+                Drupal.t('Total selected') + ': ' + Object.values(selected).filter(function (item) {
+                  return item;
+                }).length
               ),
               React.createElement(
-                Button,
-                {
-                  isLarge: true,
-                  disabled: Object.values(selected).filter(function (item) {
-                    return item;
-                  }).length === 0,
-                  isPrimary: true,
-                  onClick: this.selectMedia
-                },
-                __('Select')
+                'div',
+                { className: 'buttons' },
+                React.createElement(
+                  FormFileUpload,
+                  {
+                    isLarge: true,
+                    className: 'editor-media-placeholder__button',
+                    onChange: this.uploadFromFiles,
+                    accept: 'image',
+                    multiple: multiple
+                  },
+                  Drupal.t('Upload')
+                ),
+                React.createElement(
+                  Button,
+                  {
+                    isLarge: true,
+                    disabled: Object.values(selected).filter(function (item) {
+                      return item;
+                    }).length == 0 || !selected,
+                    isPrimary: true,
+                    onClick: this.selectMedia
+                  },
+                  Drupal.t('Select')
+                )
               )
             )
           )

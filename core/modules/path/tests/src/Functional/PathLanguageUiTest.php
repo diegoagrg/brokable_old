@@ -16,25 +16,18 @@ class PathLanguageUiTest extends PathTestBase {
    *
    * @var array
    */
-  public static $modules = ['path', 'locale', 'locale_test'];
+  protected static $modules = ['path', 'locale', 'locale_test'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create and log in user.
-    $web_user = $this->drupalCreateUser([
-      'edit any page content',
-      'create page content',
-      'administer url aliases',
-      'create url aliases',
-      'administer languages',
-      'access administration pages',
-    ]);
+    $web_user = $this->drupalCreateUser(['edit any page content', 'create page content', 'administer url aliases', 'create url aliases', 'administer languages', 'access administration pages']);
     $this->drupalLogin($web_user);
 
     // Enable French language.

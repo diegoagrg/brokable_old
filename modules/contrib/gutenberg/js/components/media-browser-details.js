@@ -19,11 +19,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
   var Component = element.Component,
       Fragment = element.Fragment;
   var TextControl = components.TextControl,
-      TextareaControl = components.TextareaControl,
-      SelectControl = components.SelectControl;
+      TextareaControl = components.TextareaControl;
 
   var customTypes = ['image', 'audio', 'video'];
-  var __ = Drupal.t;
 
   function toSize(bytes) {
     var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -45,9 +43,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         width: null,
         height: null,
         duration: null,
-        title: media.title ? media.title.raw : null,
-        altText: media.alt_text,
-        caption: media.caption ? media.caption.raw : null
+        title: media.title,
+        altText: media.alt,
+        caption: media.caption
       };
       _this.updateVideo = _this.updateVideo.bind(_this);
       _this.updateAudio = _this.updateAudio.bind(_this);
@@ -151,7 +149,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             React.createElement(
               'figure',
               null,
-              React.createElement('video', { onLoadedData: this.updateVideo, controls: true, src: media.source_url }),
+              React.createElement('video', {
+                onLoadedData: this.updateVideo,
+                controls: true,
+                src: media.source_url
+              }),
               React.createElement(
                 'figcaption',
                 null,
@@ -180,7 +182,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             React.createElement(
               'figure',
               null,
-              React.createElement('audio', { onLoadedData: this.updateAudio, controls: true, src: media.source_url }),
+              React.createElement('audio', {
+                onLoadedData: this.updateAudio,
+                controls: true,
+                src: media.source_url
+              }),
               React.createElement(
                 'figcaption',
                 null,

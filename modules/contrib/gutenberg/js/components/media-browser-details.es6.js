@@ -1,9 +1,8 @@
 ((wp, Drupal, moment) => {
   const { element, components } = wp;
   const { Component, Fragment } = element;
-  const { TextControl, TextareaControl, SelectControl } = components;
+  const { TextControl, TextareaControl } = components;
   const customTypes = ['image', 'audio', 'video'];
-  const __ = Drupal.t;
 
   function toSize(bytes) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -19,9 +18,9 @@
         width: null,
         height: null,
         duration: null,
-        title: media.title ? media.title.raw : null,
-        altText: media.alt_text,
-        caption: media.caption ? media.caption.raw : null,
+        title: media.title,
+        altText: media.alt,
+        caption: media.caption,
       };
       this.updateVideo = this.updateVideo.bind(this);
       this.updateAudio = this.updateAudio.bind(this);
@@ -84,7 +83,11 @@
           {media.media_type === 'video' && (
             <Fragment>
               <figure>
-                <video onLoadedData={this.updateVideo} controls src={media.source_url} />
+                <video
+                  onLoadedData={this.updateVideo}
+                  controls
+                  src={media.source_url}
+                />
                 <figcaption>{media.media_details.file}</figcaption>
               </figure>
               <div>{`${width} x ${height}`}</div>
@@ -95,7 +98,11 @@
           {media.media_type === 'audio' && (
             <Fragment>
               <figure>
-                <audio onLoadedData={this.updateAudio} controls src={media.source_url} />
+                <audio
+                  onLoadedData={this.updateAudio}
+                  controls
+                  src={media.source_url}
+                />
                 <figcaption>{media.media_details.file}</figcaption>
               </figure>
               <div>{toSize(media.media_details.filesize)}</div>

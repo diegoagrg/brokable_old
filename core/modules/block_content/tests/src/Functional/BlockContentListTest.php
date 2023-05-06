@@ -20,7 +20,7 @@ class BlockContentListTest extends BlockContentTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'block_content', 'config_translation'];
+  protected static $modules = ['block', 'block_content', 'config_translation'];
 
   /**
    * {@inheritdoc}
@@ -31,10 +31,7 @@ class BlockContentListTest extends BlockContentTestBase {
    * Tests the custom block listing page.
    */
   public function testListing() {
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer blocks',
-      'translate configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer blocks', 'translate configuration']));
     $this->drupalGet('admin/structure/block/block-content');
 
     // Test for the page title.
@@ -58,7 +55,7 @@ class BlockContentListTest extends BlockContentTestBase {
     $new_label = 'Albatross';
     // Add a new entity using the operations link.
     $link_text = t('Add custom block');
-    $this->assertSession()->linkExists($link_text);
+    $this->assertLink($link_text);
     $this->clickLink($link_text);
     $this->assertSession()->statusCodeEquals(200);
     $edit = [];

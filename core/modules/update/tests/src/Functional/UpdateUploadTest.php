@@ -23,20 +23,16 @@ class UpdateUploadTest extends UpdateTestBase {
    *
    * @var array
    */
-  public static $modules = ['update', 'update_test'];
+  protected static $modules = ['update', 'update_test'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
-    $admin_user = $this->drupalCreateUser([
-      'administer modules',
-      'administer software updates',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer modules', 'administer software updates', 'administer site configuration']);
     $this->drupalLogin($admin_user);
   }
 
@@ -92,11 +88,11 @@ class UpdateUploadTest extends UpdateTestBase {
     $this->assertFileExists($installedInfoFilePath);
     // Ensure the links are relative to the site root and not
     // core/authorize.php.
-    $this->assertSession()->linkExists(t('Install another module'));
+    $this->assertLink(t('Install another module'));
     $this->assertLinkByHref(Url::fromRoute('update.module_install')->toString());
-    $this->assertSession()->linkExists(t('Enable newly added modules'));
+    $this->assertLink(t('Enable newly added modules'));
     $this->assertLinkByHref(Url::fromRoute('system.modules_list')->toString());
-    $this->assertSession()->linkExists(t('Administration pages'));
+    $this->assertLink(t('Administration pages'));
     $this->assertLinkByHref(Url::fromRoute('system.admin')->toString());
     // Ensure we can reach the "Install another module" link.
     $this->clickLink(t('Install another module'));
@@ -147,9 +143,9 @@ class UpdateUploadTest extends UpdateTestBase {
   public function testFileNameExtensionMerging() {
     $this->drupalGet('admin/modules/install');
     // Make sure the bogus extension supported by update_test.module is there.
-    $this->assertPattern('/file extensions are supported:.*update-test-extension/');
+    $this->assertPattern('/file extensions are supported:.*update-test-extension/', "Found 'update-test-extension' extension.");
     // Make sure it didn't clobber the first option from core.
-    $this->assertPattern('/file extensions are supported:.*tar/');
+    $this->assertPattern('/file extensions are supported:.*tar/', "Found 'tar' extension.");
   }
 
   /**

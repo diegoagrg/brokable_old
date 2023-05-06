@@ -14,7 +14,7 @@ class ThemeTest extends TaxonomyTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Make sure we are using distinct default and administrative themes for
@@ -27,10 +27,7 @@ class ThemeTest extends TaxonomyTestBase {
 
     // Create and log in as a user who has permission to add and edit taxonomy
     // terms and view the administrative theme.
-    $admin_user = $this->drupalCreateUser([
-      'administer taxonomy',
-      'view the administration theme',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer taxonomy', 'view the administration theme']);
     $this->drupalLogin($admin_user);
   }
 

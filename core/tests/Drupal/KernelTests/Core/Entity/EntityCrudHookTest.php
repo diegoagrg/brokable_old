@@ -41,7 +41,7 @@ class EntityCrudHookTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'block_test',
     'entity_crud_hook_test',
@@ -53,7 +53,7 @@ class EntityCrudHookTest extends EntityKernelTestBase {
 
   protected $ids = [];
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installSchema('user', ['users_data']);
@@ -551,7 +551,7 @@ class EntityCrudHookTest extends EntityKernelTestBase {
       $this->fail('Expected exception has not been thrown.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Expected exception has been thrown.');
     }
 
     if (Database::getConnection()->supportsTransactions()) {

@@ -7,9 +7,54 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 (function (Drupal, DrupalGutenberg, drupalSettings, wp, $) {
+  var updateDrupalBlockBasedOnMediaEntity = function () {
+    var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(id) {
+      var dispatch, response, mediaEntity;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              dispatch = wp.data.dispatch;
+              _context5.next = 3;
+              return fetch(Drupal.url('editor/media/render/' + id));
+
+            case 3:
+              response = _context5.sent;
+
+              if (!response.ok) {
+                _context5.next = 9;
+                break;
+              }
+
+              _context5.next = 7;
+              return response.json();
+
+            case 7:
+              mediaEntity = _context5.sent;
+
+
+              if (mediaEntity && mediaEntity.view_modes) {
+                dispatch('drupal').setMediaEntity(id, mediaEntity);
+              }
+
+            case 9:
+            case 'end':
+              return _context5.stop();
+          }
+        }
+      }, _callee5, this);
+    }));
+
+    return function updateDrupalBlockBasedOnMediaEntity(_x3) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+
   Drupal.isMediaEnabled = function () {
     return (drupalSettings.gutenberg || false) && drupalSettings.gutenberg['media-enabled'];
   };
@@ -20,25 +65,26 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
   Drupal.toggleGutenbergLoader = function (state) {
     var $gutenbergLoader = $('#gutenberg-loading');
-    switch (state) {
-      case 'show':
-        $gutenbergLoader.removeClass('hide');
-        break;
-      case 'hide':
-        $gutenbergLoader.addClass('hide');
-        break;
+    if (state === 'show') {
+      $gutenbergLoader.removeClass('hide');
+    } else if (state === 'hide') {
+      $gutenbergLoader.addClass('hide');
     }
   };
 
   Drupal.notifyError = function (message) {
+    var rawHTML = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     return wp.data.dispatch('core/notices').createErrorNotice(message, {
-      isDismissible: true
+      isDismissible: true,
+      __unstableHTML: rawHTML
     });
   };
 
   Drupal.notifySuccess = function (message) {
+    var rawHTML = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     return wp.data.dispatch('core/notices').createSuccessNotice(message, {
-      isDismissible: true
+      isDismissible: true,
+      __unstableHTML: rawHTML
     });
   };
 
@@ -65,14 +111,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
               });
 
             case 2:
-              console.log('yo 1!', clientId, mediaEntityIds);
+
               setTimeout(function () {
                 dispatch('core/block-editor').updateBlock(clientId, {
                   attributes: { mediaEntityIds: mediaEntityIds }
                 });
               }, 100);
 
-            case 4:
+            case 3:
             case 'end':
               return _context.stop();
           }
@@ -81,34 +127,40 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     }))();
   };
 
+  wp.galleryBlockV2Enabled = false;
+
   Drupal.editors.gutenberg = {
     attach: function attach(element, format) {
       var _this2 = this;
 
       return _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
-        var _format$editorSetting, contentType, allowedBlocks, blackList, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, registerBlockType, getBlockType, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, categories, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
+        var $gutenbergLoader, _format$editorSetting, contentType, allowedBlocks, blackList, data, blocks, hooks, dispatch, addFilter, unregisterBlockType, unregisterBlockVariation, registerDrupalStore, registerDrupalBlocks, registerDrupalMedia, key, value, isWelcomeGuide, metaboxesContainer, metaboxForm, isFormValid, formSubmitted;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
+                $gutenbergLoader = $('#gutenberg-loading');
+
+                $gutenbergLoader.html(Drupal.theme.ajaxProgressThrobber(Drupal.t('Loading')));
+
                 if (!drupalSettings.gutenbergLoaded) {
-                  _context3.next = 2;
+                  _context3.next = 4;
                   break;
                 }
 
                 return _context3.abrupt('return', false);
 
-              case 2:
+              case 4:
                 drupalSettings.gutenbergLoaded = true;
 
                 _format$editorSetting = format.editorSettings, contentType = _format$editorSetting.contentType, allowedBlocks = _format$editorSetting.allowedBlocks, blackList = _format$editorSetting.blackList;
                 data = wp.data, blocks = wp.blocks, hooks = wp.hooks;
                 dispatch = data.dispatch;
                 addFilter = hooks.addFilter;
-                unregisterBlockType = blocks.unregisterBlockType, registerBlockType = blocks.registerBlockType, getBlockType = blocks.getBlockType;
+                unregisterBlockType = blocks.unregisterBlockType, unregisterBlockVariation = blocks.unregisterBlockVariation;
                 registerDrupalStore = DrupalGutenberg.registerDrupalStore, registerDrupalBlocks = DrupalGutenberg.registerDrupalBlocks, registerDrupalMedia = DrupalGutenberg.registerDrupalMedia;
-                _context3.next = 11;
+                _context3.next = 13;
                 return addFilter('blocks.registerBlockType', 'drupalgutenberg/custom-attributes', function (settings, name) {
                   settings.attributes = Object.assign(settings.attributes, {
                     mappingField: {
@@ -130,23 +182,26 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   return settings;
                 });
 
-              case 11:
-                _context3.next = 13;
-                return registerDrupalStore(data);
-
               case 13:
                 _context3.next = 15;
-                return registerDrupalBlocks(contentType);
+                return registerDrupalStore(data);
 
               case 15:
                 _context3.next = 17;
-                return registerDrupalMedia();
+                return registerDrupalBlocks(contentType);
 
               case 17:
                 _context3.next = 19;
-                return _this2._initGutenberg(element);
+                return registerDrupalMedia();
 
               case 19:
+                _context3.next = 21;
+                return _this2._initGutenberg(element);
+
+              case 21:
+                setTimeout(function () {
+                  window.dispatchEvent(new Event('resize'));
+                }, 200);
 
                 if (drupalSettings.gutenberg._listeners.init) {
                   drupalSettings.gutenberg._listeners.init.forEach(function (callback) {
@@ -206,33 +261,33 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   if (allowedBlocks.hasOwnProperty(key)) {
                     value = allowedBlocks[key];
 
-                    if (!value && !key.includes('/all') && !blackList.includes(key)) {
+                    if (!value && !key.includes('/all') && !key.includes('core-embed/') && !blackList.includes(key)) {
                       unregisterBlockType(key);
+                    }
+
+                    if (!value && key.includes('core-embed/')) {
+                      unregisterBlockVariation('core/embed', key.split('core-embed/')[1]);
                     }
                   }
                 }
 
-                categories = data.select('core/blocks').getCategories().filter(function (item) {
-                  if (item.slug === 'widgets') {
-                    return false;
-                  }
-                  return true;
-                });
-
-
-                data.dispatch('core/blocks').setCategories(categories);
-
                 data.dispatch('core/edit-post').openGeneralSidebar('edit-post/document');
-
-                data.dispatch('core/nux').disableTips();
 
                 data.dispatch('core/edit-post').setAvailableMetaBoxesPerLocation({
                   advanced: ['drupalSettings']
                 });
 
+                data.dispatch('core/edit-post').removeEditorPanel('post-status');
+
+                isWelcomeGuide = data.select('core/edit-post').isFeatureActive('welcomeGuide');
+
+
+                if (isWelcomeGuide) {
+                  data.dispatch('core/edit-post').toggleFeature('welcomeGuide');
+                }
 
                 setTimeout(function () {
-                  var $metaBoxContainer = $('.edit-post-meta-boxes-area__container');
+                  var $metaBoxContainer = $('.edit-post-meta-boxes-area.is-advanced .edit-post-meta-boxes-area__container');
                   drupalSettings.gutenberg.metaboxes.forEach(function (id) {
                     var $metabox = $('#' + id);
                     var metabox = $metabox.get(0);
@@ -263,26 +318,54 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 isFormValid = false;
 
 
-                $('#edit-submit, #edit-preview').on('click', function (e) {
-                  $(e.currentTarget).attr('active', true);
+                $('.gutenberg-header-settings .form-submit').on('mousedown', function (e) {
+                  var _data$dispatch = data.dispatch('core/edit-post'),
+                      openGeneralSidebar = _data$dispatch.openGeneralSidebar;
 
-                  data.dispatch('core/edit-post').openGeneralSidebar('edit-post/document');
+                  if (typeof element.form.checkValidity === 'function') {
+                    isFormValid = element.form.checkValidity();
+                  } else {
+                    isFormValid = true;
+                  }
+
+                  if (!isFormValid) {
+                    var isMetaboxValid = true;
+
+                    $('#edit-metabox-fields :input').each(function (index, el) {
+                      if (!el.checkValidity()) {
+                        $('#edit-metabox-fields').attr('open', '');
+                        isMetaboxValid = false;
+                        return false;
+                      }
+                    });
+
+                    if (isMetaboxValid) {
+                      openGeneralSidebar('edit-post/document');
+                      openGeneralSidebar('edit-post/document');
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }
+                });
+
+                $('.gutenberg-header-settings .form-submit').on('click', function (e) {
+                  $(e.currentTarget).attr('active', true);
 
                   $('#edit-additional-fields').attr('open', '');
 
                   $(element.form).removeAttr('novalidate');
 
-                  setTimeout(function () {
-                    isFormValid = element.form.reportValidity();
+                  isFormValid = element.form.reportValidity();
 
-                    if (isFormValid) {
-                      $(e.currentTarget).click();
-                    } else {
-                      $(e.currentTarget).removeAttr('active');
-                    }
+                  if (!isFormValid) {
+                    $(e.currentTarget).removeAttr('active');
+                  } else {
+                    element.form.requestSubmit(e.currentTarget);
+                  }
 
-                    $(element.form).attr('novalidate', true);
-                  });
+                  $(element.form).attr('novalidate', true);
 
                   if (!isFormValid) {
                     e.preventDefault();
@@ -298,7 +381,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
                   $source.removeAttr('active');
 
-                  if ($source.attr('id') !== 'edit-submit' && $source.attr('id') !== 'edit-preview' && $source.attr('id') !== 'edit-delete') {
+                  if (!$source.hasClass('form-submit') && $source.attr('id') !== 'edit-delete') {
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
@@ -309,39 +392,107 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   $(element).data({ 'editor-value-is-changed': true });
                   $(element).attr('data-editor-value-is-changed', true);
 
-                  data.dispatch('core/edit-post').openGeneralSidebar('edit-post/document');
-
                   if (!formSubmitted) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
                     _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+                      var entitiesToSave, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _ref3, _ref4, index, _ref4$, kind, name, _key, property;
+
                       return regeneratorRuntime.wrap(function _callee2$(_context2) {
                         while (1) {
                           switch (_context2.prev = _context2.next) {
                             case 0:
                               _context2.next = 2;
-                              return data.dispatch('core/editor').savePost();
+                              return data.select('drupal').getEntitiesToSave();
 
                             case 2:
+                              entitiesToSave = _context2.sent;
+                              _iteratorNormalCompletion = true;
+                              _didIteratorError = false;
+                              _iteratorError = undefined;
+                              _context2.prev = 6;
+                              _iterator = Object.entries(entitiesToSave)[Symbol.iterator]();
+
+                            case 8:
+                              if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                                _context2.next = 22;
+                                break;
+                              }
+
+                              _ref3 = _step.value;
+                              _ref4 = _slicedToArray(_ref3, 2);
+                              index = _ref4[0];
+                              _ref4$ = _ref4[1];
+                              kind = _ref4$.kind;
+                              name = _ref4$.name;
+                              _key = _ref4$.key;
+                              property = _ref4$.property;
+                              _context2.next = 19;
+                              return data.dispatch('core').saveEditedEntityRecord(kind, name, _key, property);
+
+                            case 19:
+                              _iteratorNormalCompletion = true;
+                              _context2.next = 8;
+                              break;
+
+                            case 22:
+                              _context2.next = 28;
+                              break;
+
+                            case 24:
+                              _context2.prev = 24;
+                              _context2.t0 = _context2['catch'](6);
+                              _didIteratorError = true;
+                              _iteratorError = _context2.t0;
+
+                            case 28:
+                              _context2.prev = 28;
+                              _context2.prev = 29;
+
+                              if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                              }
+
+                            case 31:
+                              _context2.prev = 31;
+
+                              if (!_didIteratorError) {
+                                _context2.next = 34;
+                                break;
+                              }
+
+                              throw _iteratorError;
+
+                            case 34:
+                              return _context2.finish(31);
+
+                            case 35:
+                              return _context2.finish(28);
+
+                            case 36:
+                              _context2.next = 38;
+                              return data.dispatch('core/editor').savePost({ isAutosave: false });
+
+                            case 38:
 
                               formSubmitted = true;
 
                               $source.click();
 
-                            case 4:
+                            case 40:
                             case 'end':
                               return _context2.stop();
                           }
                         }
-                      }, _callee2, _this2);
+                      }, _callee2, _this2, [[6, 24, 28, 36], [29,, 31, 35]]);
                     }))();
-
-                    e.preventDefault();
-                    e.stopPropagation();
                   }
                 });
 
                 return _context3.abrupt('return', true);
 
-              case 45:
+              case 49:
               case 'end':
                 return _context3.stop();
             }
@@ -362,40 +513,11 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       var _this3 = this;
 
       return _asyncToGenerator(regeneratorRuntime.mark(function _callee4() {
-        var editPost, data, $textArea, target, $editor, defaultThemeSupport, editorSettings, hasOpenedSidebar, hasClosedSidebar;
+        var editPost, data, $textArea, target, $editor, editorSettings;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                hasClosedSidebar = function hasClosedSidebar() {
-                  if (!$(document.body).hasClass('gutenberg-sidebar-open')) {
-                    return;
-                  }
-
-                  $(document.body).removeClass('gutenberg-sidebar-open');
-
-                  $('.gutenberg-sidebar').append($('.edit-post-sidebar .components-panel .tab'));
-                };
-
-                hasOpenedSidebar = function hasOpenedSidebar(sidebarName) {
-                  if ($(document.body).hasClass('gutenberg-sidebar-open')) {
-                    return;
-                  }
-
-                  var tab = sidebarName.replace(/edit-post\//g, '');
-                  tab = tab.replace(/drupal\//g, '');
-
-                  var $tabG = $('.edit-post-sidebar .components-panel .tab');
-                  $('.gutenberg-sidebar').append($tabG);
-
-                  setTimeout(function () {
-                    var $tabD = $('.gutenberg-sidebar .tab.' + tab);
-                    $('.edit-post-sidebar .components-panel').append($tabD);
-                  }, 0);
-
-                  $(document.body).addClass('gutenberg-sidebar-open');
-                };
-
                 editPost = wp.editPost, data = wp.data;
                 $textArea = $(element);
                 target = 'editor-' + $textArea.data('drupal-selector');
@@ -423,12 +545,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   slug: ''
                 };
 
-                defaultThemeSupport = {
-                  disableCustomColors: false,
-                  disableCustomFontSizes: false,
-                  alignWide: true
-                };
-                editorSettings = _extends({}, defaultThemeSupport, drupalSettings.gutenberg['theme-support'], {
+                editorSettings = _extends({}, DrupalGutenberg.defaultSettings ? DrupalGutenberg.defaultSettings : {}, drupalSettings.gutenberg['theme-support'], {
                   availableTemplates: [],
                   allowedBlockTypes: true,
                   disablePostFormats: false,
@@ -437,7 +554,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                   imageSizes: drupalSettings.gutenberg['image-sizes'],
                   titlePlaceholder: Drupal.t('Add title'),
                   bodyPlaceholder: Drupal.t('Add text or type / to add content'),
-                  isRTL: false,
+                  isRTL: drupalSettings.gutenberg['is-rtl'],
                   localAutosaveInterval: 0,
                   autosaveInterval: 0,
                   template: drupalSettings.gutenberg.template || '',
@@ -446,14 +563,63 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 
                 data.subscribe(function () {
-                  var isOpen = data.select('core/edit-post').isEditorSidebarOpened();
-                  var sidebar = data.select('core/edit-post').getActiveGeneralSidebarName();
+                  var isFullscreenMode = data.select('core/edit-post').isFeatureActive('fullscreenMode');
 
-                  if (isOpen && sidebar === 'edit-post/document') {
-                    hasOpenedSidebar(sidebar);
-                  } else {
-                    hasClosedSidebar();
-                  }
+                  setTimeout(function () {
+                    var fullscreenLink = $('.edit-post-header a.edit-post-fullscreen-mode-close:not(.drupal)');
+
+                    var drupalFullscreenLink = $('.edit-post-header a.edit-post-fullscreen-mode-close.drupal');
+
+                    if (isFullscreenMode && fullscreenLink.length > 0 && drupalFullscreenLink.length === 0) {
+                      var params = new URLSearchParams(window.location.search);
+                      var backUrl = drupalSettings.path.baseUrl + 'admin/content';
+
+                      if (RegExp(/node\/\d+\/edit/g).test(drupalSettings.path.currentPath)) {
+                        backUrl = drupalSettings.path.baseUrl + drupalSettings.path.currentPath.replace('/edit', '');
+                      }
+
+                      backUrl = params.get('destination') || backUrl;
+
+                      var domContainer = $('<div style="display: contents"></div>');
+                      fullscreenLink.after(domContainer);
+
+                      var icon = React.createElement(
+                        'svg',
+                        {
+                          version: '1.1',
+                          id: 'Layer_1',
+                          x: '0px',
+                          y: '0px',
+                          className: 'dashicon',
+                          viewBox: '0 0 42.2 55.5'
+                        },
+                        React.createElement(
+                          'g',
+                          { id: 'Livello_2' },
+                          React.createElement(
+                            'g',
+                            { id: 'Livello_1-2' },
+                            React.createElement('path', {
+                              d: 'M29.8,11.7C25.9,7.9,22.2,4.2,21.1,0c-1.1,4.2-4.8,7.9-8.7,11.7C6.6,17.5,0,24.1,0,34 c-0.3,11.6,9,21.3,20.6,21.5s21.3-9,21.5-20.6c0-0.3,0-0.6,0-0.9C42.2,24.1,35.6,17.5,29.8,11.7z M10.8,35.9 c-0.6,0.8-1.2,1.7-1.6,2.6c-0.1,0.1-0.2,0.3-0.4,0.3H8.7c-0.5,0-1-0.9-1-0.9l0,0c-0.1-0.2-0.3-0.5-0.4-0.7L7.2,37 C5.9,34.2,7,30.3,7,30.3l0,0c0.5-1.9,1.4-3.8,2.5-5.4c0.7-1,1.5-2,2.3-3l1,1l4.7,4.8c0.2,0.2,0.2,0.5,0,0.7l-4.9,5.5l0,0 L10.8,35.9z M21.3,49.7c-4,0-7.3-3.3-7.2-7.3c0-1.8,0.7-3.5,1.8-4.8c1.5-1.8,3.4-3.6,5.5-6c2.4,2.6,4,4.3,5.5,6.3 c0.1,0.1,0.2,0.3,0.3,0.5c0.8,1.2,1.3,2.6,1.3,4.1C28.6,46.5,25.3,49.7,21.3,49.7C21.3,49.7,21.3,49.7,21.3,49.7z M35,38.1 L35,38.1c-0.1,0.3-0.4,0.5-0.7,0.6h-0.1c-0.3-0.1-0.5-0.3-0.7-0.5l0,0c-1.3-1.9-2.7-3.7-4.3-5.3l-1.9-2l-6.4-6.6 c-1.3-1.2-2.6-2.6-3.8-3.9c0-0.1-0.1-0.1-0.1-0.1c-0.2-0.3-0.4-0.6-0.5-1c0-0.1,0-0.1,0-0.2c-0.2-1.1,0.2-2.2,1-3 c1.2-1.2,2.5-2.5,3.7-3.8c1.3,1.4,2.7,2.8,4.1,4.2l0,0c2.8,2.6,5.3,5.5,7.6,8.6c1.9,2.7,2.9,5.8,2.9,9.1 C35.6,35.4,35.4,36.8,35,38.1z'
+                            })
+                          )
+                        )
+                      );
+
+                      var render = wp.element.render;
+                      var Button = wp.components.Button;
+
+                      var drupalButton = React.createElement(Button, {
+                        className: 'edit-post-fullscreen-mode-close drupal',
+                        icon: icon,
+                        iconSize: 36,
+                        href: backUrl,
+                        label: Drupal.t('Back')
+                      });
+
+                      render(drupalButton, domContainer[0]);
+                    }
+                  });
 
                   if (!data.select('core/block-editor').isValidTemplate()) {
                     data.dispatch('core/block-editor').setTemplateValidity(true);
@@ -463,10 +629,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 sessionStorage.removeItem('wp-autosave-block-editor-post-1');
                 localStorage.removeItem('wp-autosave-block-editor-post-1');
 
-                _context4.next = 16;
+                _context4.next = 13;
                 return editPost.initializeEditor(target, 'page', 1, editorSettings);
 
-              case 16:
+              case 13:
               case 'end':
                 return _context4.stop();
             }
@@ -477,14 +643,52 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
   };
 
   Drupal.behaviors.gutenbergMediaLibrary = {
-    attach: function attach() {
+    attach: function attach(context) {
       var $form = $('#media-entity-browser-modal .media-library-add-form');
+      var $context = $(context);
+      var $dialog = $context.closest('.ui-dialog-content');
 
       if (!$form.length) {
         return;
       }
 
       $form.find('[data-drupal-selector="edit-save-insert"]').css('display', 'none');
+
+      if (context && context.id === 'media-library-add-form-wrapper') {
+        var saveAndSelectButton = $form.find('[data-drupal-selector="edit-save-select"]');
+        if (saveAndSelectButton.length) {
+          saveAndSelectButton.css({
+            display: 'none'
+          });
+
+          var originalButtons = $dialog.dialog('option', 'buttons');
+          var buttons = [];
+          buttons.push({
+            text: saveAndSelectButton.html() || saveAndSelectButton.attr('value'),
+            class: saveAndSelectButton.attr('class'),
+            click: function click(e) {
+              saveAndSelectButton.trigger('mousedown').trigger('mouseup').trigger('click');
+
+              $dialog.dialog('option', 'buttons', originalButtons);
+              e.preventDefault();
+            }
+          });
+          $dialog.dialog('option', 'buttons', buttons);
+        }
+      }
     }
+  };
+
+  Drupal.AjaxCommands.prototype.gutenbergUpdateMediaEntities = function () {
+    var _wp$data2 = wp.data,
+        select = _wp$data2.select,
+        dispatch = _wp$data2.dispatch;
+
+    var selectedBlock = select('core/block-editor').getSelectedBlock();
+    var clientId = selectedBlock.clientId,
+        attributes = selectedBlock.attributes;
+    var mediaEntityIds = attributes.mediaEntityIds;
+
+    updateDrupalBlockBasedOnMediaEntity(mediaEntityIds[0]);
   };
 })(Drupal, DrupalGutenberg, drupalSettings, window.wp, jQuery);

@@ -36,7 +36,7 @@ class StyleSerializerTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'views_ui',
     'entity_test',
     'hal',
@@ -72,17 +72,12 @@ class StyleSerializerTest extends ViewTestBase {
    */
   protected $renderer;
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     ViewTestData::createTestViews(get_class($this), ['rest_test_views']);
 
-    $this->adminUser = $this->drupalCreateUser([
-      'administer views',
-      'administer entity_test content',
-      'access user profiles',
-      'view test entity',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer views', 'administer entity_test content', 'access user profiles', 'view test entity']);
 
     // Save some entity_test entities.
     for ($i = 1; $i <= 10; $i++) {

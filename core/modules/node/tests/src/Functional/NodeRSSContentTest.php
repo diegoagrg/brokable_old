@@ -20,24 +20,20 @@ class NodeRSSContentTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_test', 'views'];
+  protected static $modules = ['node_test', 'views'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Use bypass node access permission here, because the test class uses
     // hook_grants_alter() to deny access to everyone on node_access
     // queries.
-    $user = $this->drupalCreateUser([
-      'bypass node access',
-      'access content',
-      'create article content',
-    ]);
+    $user = $this->drupalCreateUser(['bypass node access', 'access content', 'create article content']);
     $this->drupalLogin($user);
   }
 

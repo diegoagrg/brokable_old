@@ -20,7 +20,7 @@ class EditorLoadingTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'editor', 'editor_test', 'node'];
+  protected static $modules = ['filter', 'editor', 'editor_test', 'node'];
 
   /**
    * {@inheritdoc}
@@ -48,7 +48,7 @@ class EditorLoadingTest extends BrowserTestBase {
    */
   protected $privilegedUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Let there be T-rex.
@@ -105,23 +105,9 @@ class EditorLoadingTest extends BrowserTestBase {
       ->save();
 
     // Create 3 users, each with access to different text formats.
-    $this->untrustedUser = $this->drupalCreateUser([
-      'create article content',
-      'edit any article content',
-    ]);
-    $this->normalUser = $this->drupalCreateUser([
-      'create article content',
-      'edit any article content',
-      'use text format filtered_html',
-    ]);
-    $this->privilegedUser = $this->drupalCreateUser([
-      'create article content',
-      'edit any article content',
-      'create page content',
-      'edit any page content',
-      'use text format filtered_html',
-      'use text format full_html',
-    ]);
+    $this->untrustedUser = $this->drupalCreateUser(['create article content', 'edit any article content']);
+    $this->normalUser = $this->drupalCreateUser(['create article content', 'edit any article content', 'use text format filtered_html']);
+    $this->privilegedUser = $this->drupalCreateUser(['create article content', 'edit any article content', 'create page content', 'edit any page content', 'use text format filtered_html', 'use text format full_html']);
   }
 
   /**

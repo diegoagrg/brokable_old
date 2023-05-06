@@ -45,7 +45,7 @@ class UnroutedUrlTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->urlAssembler = $this->createMock('Drupal\Core\Utility\UnroutedUrlAssemblerInterface');
@@ -124,6 +124,7 @@ class UnroutedUrlTest extends UnitTestCase {
       // Disallowed characters in the authority (host name) that are valid
       // elsewhere in the path.
       ['base://(:;2&+h^'],
+      ['base://AKI@&hO@'],
     ];
   }
 

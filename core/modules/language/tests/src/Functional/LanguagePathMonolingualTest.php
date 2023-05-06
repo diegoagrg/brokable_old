@@ -16,22 +16,18 @@ class LanguagePathMonolingualTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'language', 'path'];
+  protected static $modules = ['block', 'language', 'path'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create and log in user.
-    $web_user = $this->drupalCreateUser([
-      'administer languages',
-      'access administration pages',
-      'administer site configuration',
-    ]);
+    $web_user = $this->drupalCreateUser(['administer languages', 'access administration pages', 'administer site configuration']);
     $this->drupalLogin($web_user);
 
     // Enable French language.

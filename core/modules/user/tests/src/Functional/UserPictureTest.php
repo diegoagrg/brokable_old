@@ -3,7 +3,6 @@
 namespace Drupal\Tests\user\Functional;
 
 use Drupal\Core\Database\Database;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\file\Entity\File;
 use Drupal\image\Entity\ImageStyle;
@@ -43,7 +42,7 @@ class UserPictureTest extends BrowserTestBase {
    */
   protected $webUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // This test expects unused managed files to be marked temporary and then
@@ -158,23 +157,6 @@ class UserPictureTest extends BrowserTestBase {
     $user_storage->resetCache([$this->webUser->id()]);
     $account = $user_storage->load($this->webUser->id());
     return File::load($account->user_picture->target_id);
-  }
-
-  /**
-   * Tests user picture field with a non-standard field formatter.
-   *
-   * @see user_user_view_alter()
-   */
-  public function testUserViewAlter() {
-    \Drupal::service('module_installer')->install(['image_module_test']);
-    // Set dummy_image_formatter to the default view mode of user entity.
-    EntityViewDisplay::load('user.user.default')->setComponent('user_picture', [
-      'region' => 'content',
-      'type' => 'dummy_image_formatter',
-    ])->save();
-    $this->drupalLogin($this->webUser);
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContains('Dummy');
   }
 
 }

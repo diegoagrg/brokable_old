@@ -21,7 +21,7 @@ class RouteCachingNonPathLanguageNegotiationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['language', 'block'];
+  protected static $modules = ['language', 'block'];
 
   /**
    * {@inheritdoc}
@@ -35,15 +35,11 @@ class RouteCachingNonPathLanguageNegotiationTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create and log in user.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer blocks',
-      'administer languages',
-      'access administration pages',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer blocks', 'administer languages', 'access administration pages']);
     $this->drupalLogin($this->adminUser);
 
     // Add language.

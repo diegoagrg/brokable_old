@@ -18,7 +18,7 @@ class BooleanFormatterSettingsTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['field', 'field_ui', 'text', 'node', 'user'];
+  protected static $modules = ['field', 'field_ui', 'text', 'node', 'user'];
 
   /**
    * {@inheritdoc}
@@ -42,7 +42,7 @@ class BooleanFormatterSettingsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a content type. Use Node because it has Field UI pages that work.
@@ -50,14 +50,7 @@ class BooleanFormatterSettingsTest extends BrowserTestBase {
     $type = $this->drupalCreateContentType(['name' => $type_name, 'type' => $type_name]);
     $this->bundle = $type->id();
 
-    $admin_user = $this->drupalCreateUser([
-      'access content',
-      'administer content types',
-      'administer node fields',
-      'administer node display',
-      'bypass node access',
-      'administer nodes',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access content', 'administer content types', 'administer node fields', 'administer node display', 'bypass node access', 'administer nodes']);
     $this->drupalLogin($admin_user);
 
     $this->fieldName = mb_strtolower($this->randomMachineName(8));

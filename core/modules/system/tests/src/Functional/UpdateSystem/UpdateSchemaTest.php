@@ -19,7 +19,7 @@ class UpdateSchemaTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['update_test_schema'];
+  protected static $modules = ['update_test_schema'];
 
   /**
    * {@inheritdoc}
@@ -41,14 +41,11 @@ class UpdateSchemaTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     require_once $this->root . '/core/includes/update.inc';
-    $this->user = $this->drupalCreateUser([
-      'administer software updates',
-      'access site in maintenance mode',
-    ]);
+    $this->user = $this->drupalCreateUser(['administer software updates', 'access site in maintenance mode']);
     $this->updateUrl = Url::fromRoute('system.db_update');
   }
 

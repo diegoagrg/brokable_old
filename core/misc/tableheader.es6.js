@@ -139,12 +139,12 @@
   // Bind to custom Drupal events.
   $(document).on({
     /**
-     * Recalculate columns width when window is resized, when show/hide weight
-     * is triggered, or when toolbar tray is toggled.
+     * Recalculate columns width when window is resized and when show/hide
+     * weight is triggered.
      *
      * @ignore
      */
-    'columnschange.TableHeader drupalToolbarTrayChange': tableHeaderResizeHandler,
+    'columnschange.TableHeader': tableHeaderResizeHandler,
 
     /**
      * Recalculate TableHeader.topOffset when viewport is resized.

@@ -21,7 +21,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'config_test',
     'config_translation',
@@ -54,7 +54,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
    */
   protected $localeStorage;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $permissions = [
       'translate configuration',
@@ -126,7 +126,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
       $this->assertRaw('<th>' . t('Language') . '</th>');
 
       $this->drupalGet($base_url);
-      $this->assertSession()->linkExists(t('Translate @title', ['@title' => $entity_type->getSingularLabel()]));
+      $this->assertLink(t('Translate @title', ['@title' => $entity_type->getSingularLabel()]));
     }
   }
 

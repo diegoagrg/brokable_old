@@ -22,7 +22,7 @@ class EntityReferenceFieldDefaultValueTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['field_ui', 'node'];
+  protected static $modules = ['field_ui', 'node'];
 
   /**
    * {@inheritdoc}
@@ -36,7 +36,7 @@ class EntityReferenceFieldDefaultValueTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create default content type.
@@ -44,13 +44,7 @@ class EntityReferenceFieldDefaultValueTest extends BrowserTestBase {
     $this->drupalCreateContentType(['type' => 'referenced_content']);
 
     // Create admin user.
-    $this->adminUser = $this->drupalCreateUser([
-      'access content',
-      'administer content types',
-      'administer node fields',
-      'administer node form display',
-      'bypass node access',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access content', 'administer content types', 'administer node fields', 'administer node form display', 'bypass node access']);
     $this->drupalLogin($this->adminUser);
   }
 

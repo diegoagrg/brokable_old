@@ -17,14 +17,14 @@ class PathTaxonomyTermTest extends PathTestBase {
    *
    * @var array
    */
-  public static $modules = ['taxonomy'];
+  protected static $modules = ['taxonomy'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a Tags vocabulary for the Article node type.
@@ -35,11 +35,7 @@ class PathTaxonomyTermTest extends PathTestBase {
     $vocabulary->save();
 
     // Create and log in user.
-    $web_user = $this->drupalCreateUser([
-      'administer url aliases',
-      'administer taxonomy',
-      'access administration pages',
-    ]);
+    $web_user = $this->drupalCreateUser(['administer url aliases', 'administer taxonomy', 'access administration pages']);
     $this->drupalLogin($web_user);
   }
 

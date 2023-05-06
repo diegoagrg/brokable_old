@@ -1,17 +1,31 @@
-/* eslint func-names: ["error", "never"] */
-(function(Drupal, drupalSettings) {
+(function url(Drupal, drupalSettings) {
   function addQueryArgs(url, args) {
-    const qs = Object.keys(args).map(
-      key => `${key}=${encodeURIComponent(args[key])}`,
-    );
+    const esc = encodeURIComponent;
+    const qs = Object.keys(args).map(key => `${esc(key)}=${esc(args[key])}`).join('&');
 
     if (url === 'edit.php') {
       // 'Manage All Reusable Blocks'
-      if (args.post_type && args.post_type === 'wp_block') {
-        return `${drupalSettings.path.baseUrl}admin/content/reusable-blocks`;
+      if (args && args.post_type === 'wp_block') {
+        return Drupal.url('admin/content/reusable-blocks');
+      }
+    } else if (url === 'post.php') {
+      if (args.post && args.action === 'edit') {
+        // The post's edit url.
+        return Drupal.url(drupalSettings.path.currentPath);
       }
     }
-    return url + (qs ? `?${qs.join('&')}` : '');
+
+    // Always add language code
+    url = `${url}?langcode=${drupalSettings.path.currentLanguage}`;
+
+    if (qs) {
+      if (url.indexOf('?') === -1) {
+        return `${url}?${qs}`;
+      }
+      return `${url}&${qs}`;
+    }
+
+    return url;
   }
 
   window.wp = window.wp || {};

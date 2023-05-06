@@ -36,7 +36,7 @@ class SessionHttpsTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['session_test'];
+  protected static $modules = ['session_test'];
 
   /**
    * {@inheritdoc}
@@ -46,7 +46,7 @@ class SessionHttpsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $request = Request::createFromGlobals();
@@ -254,7 +254,10 @@ class SessionHttpsTest extends BrowserTestBase {
    *   has the given insecure and secure session IDs.
    */
   protected function assertSessionIds($sid, $assertion_text) {
-    return $this->assertNotEmpty(\Drupal::database()->select('sessions', 's')->fields('s', ['timestamp'])->condition('sid', Crypt::hashBase64($sid))->execute()->fetchField(), $assertion_text);
+    $args = [
+      ':sid' => Crypt::hashBase64($sid),
+    ];
+    return $this->assertNotEmpty(\Drupal::database()->query('SELECT timestamp FROM {sessions} WHERE sid = :sid', $args)->fetchField(), $assertion_text);
   }
 
   /**

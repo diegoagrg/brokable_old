@@ -57,6 +57,13 @@
         padding: 0;
         margin: 0;
 
+        img {
+          max-height: 200px;
+          margin-left: auto;
+          margin-right: auto;
+          display: block;
+        }
+
         figcaption {
           overflow-wrap: break-word;
         }

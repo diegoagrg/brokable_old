@@ -46,7 +46,11 @@ class MediaTypePersistenceManager implements MediaTypePersistenceManagerInterfac
    */
   public function save(string $media_type, File $file_entity) {
     $media_type_entity = $this->entityTypeManager->getStorage('media_type')->load($media_type);
-    $field_config = $media_type_entity->getSource()->getSourceFieldDefinition($media_type_entity);
+    $source = $media_type_entity->getSource();
+    if (!$source) {
+      return NULL;
+    }
+    $field_config = $source->getSourceFieldDefinition($media_type_entity);
     $field_name = $field_config->getName();
 
     $media_entity = $this->entityTypeManager->getStorage('media')->create([
@@ -66,6 +70,21 @@ class MediaTypePersistenceManager implements MediaTypePersistenceManagerInterfac
     }
 
     return $media_entity;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function getFileSettings(string $media_type) {
+    /** @var \Drupal\media\MediaTypeInterface $media_type_entity */
+    $media_type_entity = $this->entityTypeManager->getStorage('media_type')->load($media_type);
+    $source = $media_type_entity->getSource();
+    $source_field_definition = $source->getSourceFieldDefinition($media_type_entity);
+    if ($source_field_definition) {
+      return $source_field_definition->getSettings();
+    }
+
+    return [];
   }
 
 }

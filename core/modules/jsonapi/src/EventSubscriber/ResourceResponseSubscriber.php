@@ -9,7 +9,7 @@ use Drupal\jsonapi\ResourceResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  * @internal JSON:API maintains no PHP API. The API is the HTTP API. This class
  *   may change at any time and could break any dependencies on it.
  *
- * @see https://www.drupal.org/project/drupal/issues/3032787
+ * @see https://www.drupal.org/project/jsonapi/issues/3032787
  * @see jsonapi.api.php
  *
  * This is 99% identical to:
@@ -71,10 +71,10 @@ class ResourceResponseSubscriber implements EventSubscriberInterface {
   /**
    * Serializes ResourceResponse responses' data, and removes that data.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    */
-  public function onResponse(FilterResponseEvent $event) {
+  public function onResponse(ResponseEvent $event) {
     $response = $event->getResponse();
     if (!$response instanceof ResourceResponse) {
       return;

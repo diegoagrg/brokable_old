@@ -29,7 +29,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
                 selections = multiple ? selections : selections.slice(0, 1);
 
-                endpointUrl = handlesMediaEntity ? drupalSettings.path.baseUrl + 'editor/media/render' : drupalSettings.path.baseUrl + 'editor/media/load-media';
+                endpointUrl = handlesMediaEntity ? Drupal.url('editor/media/render') : Drupal.url('editor/media/load-media');
                 _iteratorNormalCompletion = true;
                 _didIteratorError = false;
                 _iteratorError = undefined;
@@ -153,16 +153,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     };
 
     var getDialog = function getDialog(_ref2) {
-      var allowedTypes = _ref2.allowedTypes;
-
+      var allowedTypes = _ref2.allowedTypes,
+          allowedBundles = _ref2.allowedBundles;
       return new Promise(function (resolve, reject) {
         wp.apiFetch({
           path: 'load-media-library-dialog',
-          data: { allowedTypes: allowedTypes }
+          data: { allowedTypes: allowedTypes, allowedBundles: allowedBundles }
         }).then(function (result) {
           resolve({
             component: function component(props) {
-              return React.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { __html: result.html } }));
+              return React.createElement('div', _extends({}, props, {
+                dangerouslySetInnerHTML: { __html: result.html }
+              }));
             }
           });
         }).catch(function (reason) {
@@ -176,7 +178,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         onDialogCreate: onDialogCreate,
         onDialogInsert: onDialogInsert,
         onDialogClose: onDialogClose,
-        getDialog: getDialog }));
+        getDialog: getDialog
+      }));
     };
   };
 

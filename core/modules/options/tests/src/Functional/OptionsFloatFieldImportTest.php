@@ -18,7 +18,7 @@ class OptionsFloatFieldImportTest extends FieldTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'options',
     'field_ui',
@@ -31,21 +31,11 @@ class OptionsFloatFieldImportTest extends FieldTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create test user.
-    $admin_user = $this->drupalCreateUser([
-      'synchronize configuration',
-      'access content',
-      'access administration pages',
-      'administer site configuration',
-      'administer content types',
-      'administer nodes',
-      'bypass node access',
-      'administer node fields',
-      'administer node display',
-    ]);
+    $admin_user = $this->drupalCreateUser(['synchronize configuration', 'access content', 'access administration pages', 'administer site configuration', 'administer content types', 'administer nodes', 'bypass node access', 'administer node fields', 'administer node display']);
     $this->drupalLogin($admin_user);
   }
 

@@ -18,7 +18,7 @@ class MigrateImageCacheTest extends MigrateDrupal6TestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->installConfig(['image']);
   }
@@ -35,10 +35,15 @@ class MigrateImageCacheTest extends MigrateDrupal6TestBase {
       ->condition('type', 'module')
       ->execute();
 
-    $this->expectException(RequirementsException::class);
-    $this->getMigration('d6_imagecache_presets')
-      ->getSourcePlugin()
-      ->checkRequirements();
+    try {
+      $this->getMigration('d6_imagecache_presets')
+        ->getSourcePlugin()
+        ->checkRequirements();
+      $this->fail('Did not catch expected RequirementsException.');
+    }
+    catch (RequirementsException $e) {
+      $this->pass('Caught expected RequirementsException: ' . $e->getMessage());
+    }
   }
 
   /**
@@ -157,7 +162,7 @@ class MigrateImageCacheTest extends MigrateDrupal6TestBase {
 
       if ($effect_config['id'] == $id && $effect_config['data'] == $config) {
         // We found this effect so succeed and return.
-        return TRUE;
+        return $this->pass('Effect ' . $id . ' imported correctly');
       }
     }
     // The loop did not find the effect so we it was not imported correctly.

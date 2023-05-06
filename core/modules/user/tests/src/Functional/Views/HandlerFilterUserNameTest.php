@@ -19,7 +19,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['views_ui', 'user_test_views'];
+  protected static $modules = ['views_ui', 'user_test_views'];
 
   /**
    * {@inheritdoc}
@@ -56,7 +56,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
     'uid' => 'uid',
   ];
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     ViewTestData::createTestViews(get_class($this), ['user_test_views']);
@@ -90,10 +90,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
    * Tests using the user interface.
    */
   public function testAdminUserInterface() {
-    $admin_user = $this->drupalCreateUser([
-      'administer views',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer views', 'administer site configuration']);
     $this->drupalLogin($admin_user);
 
     $path = 'admin/structure/views/nojs/handler/test_user_name/default/filter/uid';

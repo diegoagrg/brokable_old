@@ -27,15 +27,15 @@ class TranslationLinkTest extends ContentTranslationTestBase {
    *
    * @var array
    */
-  public static $modules = ['content_translation_test_views'];
+  protected static $modules = ['content_translation_test_views'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
-    // @todo Use entity_type once it has multilingual Views integration.
+  protected function setUp(): void {
+    // @todo Use entity_type once it is has multilingual Views integration.
     $this->entityTypeId = 'user';
 
     parent::setUp();

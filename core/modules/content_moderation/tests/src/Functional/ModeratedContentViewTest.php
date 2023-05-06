@@ -26,7 +26,7 @@ class ModeratedContentViewTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'content_moderation',
     'node',
     'views',
@@ -42,7 +42,7 @@ class ModeratedContentViewTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page'])->save();
@@ -54,12 +54,7 @@ class ModeratedContentViewTest extends BrowserTestBase {
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'article');
     $workflow->save();
 
-    $this->adminUser = $this->drupalCreateUser([
-      'access administration pages',
-      'view any unpublished content',
-      'administer nodes',
-      'bypass node access',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages', 'view any unpublished content', 'administer nodes', 'bypass node access']);
   }
 
   /**

@@ -7,18 +7,33 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-(function (Drupal, drupalSettings) {
+(function url(Drupal, drupalSettings) {
   function addQueryArgs(url, args) {
+    var esc = encodeURIComponent;
     var qs = Object.keys(args).map(function (key) {
-      return key + '=' + encodeURIComponent(args[key]);
-    });
+      return esc(key) + '=' + esc(args[key]);
+    }).join('&');
 
     if (url === 'edit.php') {
-      if (args.post_type && args.post_type === 'wp_block') {
-        return drupalSettings.path.baseUrl + 'admin/content/reusable-blocks';
+      if (args && args.post_type === 'wp_block') {
+        return Drupal.url('admin/content/reusable-blocks');
+      }
+    } else if (url === 'post.php') {
+      if (args.post && args.action === 'edit') {
+        return Drupal.url(drupalSettings.path.currentPath);
       }
     }
-    return url + (qs ? '?' + qs.join('&') : '');
+
+    url = url + '?langcode=' + drupalSettings.path.currentLanguage;
+
+    if (qs) {
+      if (url.indexOf('?') === -1) {
+        return url + '?' + qs;
+      }
+      return url + '&' + qs;
+    }
+
+    return url;
   }
 
   window.wp = window.wp || {};

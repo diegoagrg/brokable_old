@@ -33,17 +33,13 @@ class SearchPageTextTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
     // Create user.
-    $this->searchingUser = $this->drupalCreateUser([
-      'search content',
-      'access user profiles',
-      'use advanced search',
-    ]);
+    $this->searchingUser = $this->drupalCreateUser(['search content', 'access user profiles', 'use advanced search']);
     $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('page_title_block');
   }
@@ -56,7 +52,7 @@ class SearchPageTextTest extends BrowserTestBase {
   public function testSearchLabelXSS() {
     $this->drupalLogin($this->drupalCreateUser(['administer search']));
 
-    $keys['label'] = '<script>alert("Don\'t Panic");</script>';
+    $keys['label'] = '<script>alert("Dont Panic");</script>';
     $this->drupalPostForm('admin/config/search/pages/manage/node_search', $keys, t('Save search page'));
 
     $this->drupalLogin($this->searchingUser);

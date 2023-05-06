@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\node\Functional\Views;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\views\Views;
 
@@ -18,7 +19,7 @@ class BulkFormTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_test_views', 'language'];
+  protected static $modules = ['node_test_views', 'language'];
 
   /**
    * {@inheritdoc}
@@ -42,7 +43,7 @@ class BulkFormTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     ConfigurableLanguage::createFromLangcode('en-gb')->save();
@@ -59,6 +60,7 @@ class BulkFormTest extends NodeTestBase {
         'promote' => FALSE,
       ];
       $node = $this->drupalCreateNode($values);
+      $this->pass(new FormattableMarkup('Node %title created with language %langcode.', ['%title' => $node->label(), '%langcode' => $node->language()->getId()]));
       $this->nodes[] = $node;
     }
 
@@ -69,6 +71,7 @@ class BulkFormTest extends NodeTestBase {
         if (!$node->hasTranslation($langcode)) {
           $title = $this->randomMachineName() . ' [' . $node->id() . ':' . $langcode . ']';
           $translation = $node->addTranslation($langcode, ['title' => $title, 'promote' => FALSE]);
+          $this->pass(new FormattableMarkup('Translation %title created with language %langcode.', ['%title' => $translation->label(), '%langcode' => $translation->language()->getId()]));
         }
       }
       $node->save();
@@ -79,6 +82,7 @@ class BulkFormTest extends NodeTestBase {
     $langcode = 'en';
     $title = $this->randomMachineName() . ' [' . $node->id() . ':' . $langcode . ']';
     $translation = $node->addTranslation($langcode, ['title' => $title]);
+    $this->pass(new FormattableMarkup('Translation %title created with language %langcode.', ['%title' => $translation->label(), '%langcode' => $translation->language()->getId()]));
     $node->save();
 
     // Check that all created translations are selected by the test view.
@@ -87,11 +91,7 @@ class BulkFormTest extends NodeTestBase {
     $this->assertCount(10, $view->result, 'All created translations are selected.');
 
     // Check the operations are accessible to the logged in user.
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer nodes',
-      'access content overview',
-      'bypass node access',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer nodes', 'access content overview', 'bypass node access']));
     $this->drupalGet('test-node-bulk-form');
     $elements = $this->xpath('//select[@id="edit-action"]//option');
     $this->assertCount(8, $elements, 'All node operations are found.');

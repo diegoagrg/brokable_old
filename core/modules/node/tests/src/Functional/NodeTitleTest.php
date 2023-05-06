@@ -19,7 +19,7 @@ class NodeTitleTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['comment', 'views', 'block'];
+  protected static $modules = ['comment', 'views', 'block'];
 
   /**
    * {@inheritdoc}
@@ -36,17 +36,12 @@ class NodeTitleTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->drupalPlaceBlock('system_breadcrumb_block');
     $this->drupalPlaceBlock('page_title_block');
 
-    $this->adminUser = $this->drupalCreateUser([
-      'administer nodes',
-      'create article content',
-      'create page content',
-      'post comments',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer nodes', 'create article content', 'create page content', 'post comments']);
     $this->drupalLogin($this->adminUser);
     $this->addDefaultCommentField('node', 'page');
   }

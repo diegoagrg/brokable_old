@@ -71,8 +71,9 @@
             isSelected: isSelected,
             isMediaLibraryEnabled: isMediaLibraryEnabled,
             clientId: clientId,
-            onError: function onError(err) {
-              dispatch('core/notices').createWarningNotice(err[2]);
+            onError: function onError(error) {
+              error = typeof error === 'string' ? error : error[2];
+              dispatch('core/notices').createWarningNotice(error);
             }
           }),
           mediaEntityIds && mediaEntityIds.length > 0 && (!RichText.isEmpty(caption) || isSelected) && React.createElement(RichText, {

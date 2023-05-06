@@ -38,7 +38,7 @@ class FieldCrudTest extends FieldKernelTestBase {
    */
   protected $fieldDefinition;
 
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->fieldStorageDefinition = [
@@ -103,7 +103,7 @@ class FieldCrudTest extends FieldKernelTestBase {
       $this->fail('Cannot create two fields with the same field / bundle combination.');
     }
     catch (EntityStorageException $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Cannot create two fields with the same field / bundle combination.');
     }
 
     // Check that the specified field exists.
@@ -113,7 +113,7 @@ class FieldCrudTest extends FieldKernelTestBase {
       $this->fail('Cannot create a field with a non-existing storage.');
     }
     catch (FieldException $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Cannot create a field with a non-existing storage.');
     }
 
     // TODO: test other failures.

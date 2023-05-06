@@ -12,7 +12,7 @@ use Drupal\language\Entity\ConfigurableLanguage;
  */
 class TermLanguageTest extends TaxonomyTestBase {
 
-  public static $modules = ['language'];
+  protected static $modules = ['language'];
 
   /**
    * {@inheritdoc}
@@ -26,7 +26,7 @@ class TermLanguageTest extends TaxonomyTestBase {
    */
   protected $vocabulary;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create an administrative user.
@@ -142,7 +142,7 @@ class TermLanguageTest extends TaxonomyTestBase {
 
     // Overview page in the other language shows the translated term
     $this->drupalGet('bb/admin/structure/taxonomy/manage/' . $this->vocabulary->id() . '/overview');
-    $this->assertPattern('|<a[^>]*>' . $translated_title . '</a>|');
+    $this->assertPattern('|<a[^>]*>' . $translated_title . '</a>|', 'The term language is correct');
   }
 
 }

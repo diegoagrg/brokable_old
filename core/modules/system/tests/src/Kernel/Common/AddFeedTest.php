@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\system\Kernel\Common;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -15,7 +16,7 @@ class AddFeedTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system'];
+  protected static $modules = ['system'];
 
   /**
    * Tests attaching feeds with paths, URLs, and titles.
@@ -68,7 +69,7 @@ class AddFeedTest extends KernelTestBase {
     $this->setRawContent($response->getContent());
     // Assert that the content contains the RSS links we specified.
     foreach ($urls as $description => $feed_info) {
-      $this->assertPattern($this->urlToRSSLinkPattern($feed_info['url'], $feed_info['title']));
+      $this->assertPattern($this->urlToRSSLinkPattern($feed_info['url'], $feed_info['title']), new FormattableMarkup('Found correct feed header for %description', ['%description' => $description]));
     }
   }
 

@@ -23,14 +23,14 @@ class FilterKernelTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'filter'];
+  protected static $modules = ['system', 'filter'];
 
   /**
    * @var \Drupal\filter\Plugin\FilterInterface[]
    */
   protected $filters;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->installConfig(['system']);
 
@@ -404,8 +404,8 @@ class FilterKernelTest extends KernelTestBase {
    * @todo It is possible to add script, iframe etc. to allowed tags, but this
    *   makes HTML filter completely ineffective.
    *
-   * @todo Class, id, name and xmlns should be added to the list of forbidden
-   *   attributes, or, better yet, use an allowed attribute list.
+   * @todo Class, id, name and xmlns should be added to disallowed attributes,
+   *   or better a whitelist approach should be used for that too.
    */
   public function testHtmlFilter() {
     // Get FilterHtml object.
@@ -460,11 +460,11 @@ class FilterKernelTest extends KernelTestBase {
     $f = (string) $filter->process('<br />', Language::LANGCODE_NOT_SPECIFIED);
     $this->assertNormalized($f, '<br />', 'HTML filter should allow self-closing line breaks.');
 
-    // All attributes of allowed tags are stripped by default.
+    // All attributes of whitelisted tags are stripped by default.
     $f = (string) $filter->process('<a kitten="cute" llama="awesome">link</a>', Language::LANGCODE_NOT_SPECIFIED);
     $this->assertNormalized($f, '<a>link</a>', 'HTML filter should remove attributes that are not explicitly allowed.');
 
-    // Now allow the "llama" attribute on <a>.
+    // Now whitelist the "llama" attribute on <a>.
     $filter->setConfiguration([
       'settings' => [
         'allowed_html' => '<a href llama> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <br>',
@@ -475,7 +475,7 @@ class FilterKernelTest extends KernelTestBase {
     $f = (string) $filter->process('<a kitten="cute" llama="awesome">link</a>', Language::LANGCODE_NOT_SPECIFIED);
     $this->assertNormalized($f, '<a llama="awesome">link</a>', 'HTML filter keeps explicitly allowed attributes, and removes attributes that are not explicitly allowed.');
 
-    // Restrict the allowed "llama" attribute on <a> to only allow the value
+    // Restrict the whitelisted "llama" attribute on <a> to only allow the value
     // "majestical", or "epic".
     $filter->setConfiguration([
       'settings' => [

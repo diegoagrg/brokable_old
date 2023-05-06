@@ -54,7 +54,7 @@ class ToolbarAdminMenuTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'block',
     'menu_ui',
@@ -71,7 +71,7 @@ class ToolbarAdminMenuTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $perms = [
@@ -262,10 +262,7 @@ class ToolbarAdminMenuTest extends BrowserTestBase {
   public function testLocaleTranslationSubtreesHashCacheClear() {
     $admin_user = $this->adminUser;
     // User to translate and delete string.
-    $translate_user = $this->drupalCreateUser([
-      'translate interface',
-      'access administration pages',
-    ]);
+    $translate_user = $this->drupalCreateUser(['translate interface', 'access administration pages']);
 
     // Create a new language with the langcode 'xx'.
     $langcode = 'xx';

@@ -22,7 +22,7 @@ class BulkFormAccessTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_test_views', 'node_access_test'];
+  protected static $modules = ['node_test_views', 'node_access_test'];
 
   /**
    * {@inheritdoc}
@@ -46,7 +46,7 @@ class BulkFormAccessTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     // Create Article node type.
@@ -161,12 +161,7 @@ class BulkFormAccessTest extends NodeTestBase {
       'uid' => $author->id(),
     ]);
     // Create an account that may view the private node, but not delete it.
-    $account = $this->drupalCreateUser([
-      'access content',
-      'administer nodes',
-      'delete own article content',
-      'node test view',
-    ]);
+    $account = $this->drupalCreateUser(['access content', 'administer nodes', 'delete own article content', 'node test view']);
     // Create a node that may be deleted too, to ensure the delete confirmation
     // page is shown later. In node_access_test.module, nodes may only be
     // deleted by the author.

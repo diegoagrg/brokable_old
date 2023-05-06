@@ -31,14 +31,14 @@ class ExposedFormTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'views_ui', 'block', 'entity_test'];
+  protected static $modules = ['node', 'views_ui', 'block', 'entity_test'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'classy';
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     $this->enableViewsTestModule();
@@ -58,7 +58,7 @@ class ExposedFormTest extends ViewTestBase {
     // Test the submit button value defaults to 'Apply'.
     $this->drupalGet('test_exposed_form_buttons');
     $this->assertSession()->statusCodeEquals(200);
-    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', 'Apply');
+    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', t('Apply'));
 
     // Rename the label of the submit button.
     $view = Views::getView('test_exposed_form_buttons');
@@ -84,7 +84,7 @@ class ExposedFormTest extends ViewTestBase {
 
     // Make sure the submit button label shows 'Apply'.
     $this->drupalGet('test_exposed_form_buttons');
-    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', 'Apply');
+    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', t('Apply'));
   }
 
   /**
@@ -264,7 +264,7 @@ class ExposedFormTest extends ViewTestBase {
 
     $this->drupalGet('test_exposed_form_buttons');
     $this->assertSession()->statusCodeEquals(200);
-    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', 'Apply');
+    $this->helperButtonHasLabel('edit-submit-test-exposed-form-buttons', t('Apply'));
 
     // Ensure that no results are displayed.
     $rows = $this->xpath("//div[contains(@class, 'views-row')]");

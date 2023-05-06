@@ -14,23 +14,18 @@ class PathAdminTest extends PathTestBase {
    *
    * @var array
    */
-  public static $modules = ['path'];
+  protected static $modules = ['path'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create test user and log in.
-    $web_user = $this->drupalCreateUser([
-      'create page content',
-      'edit own page content',
-      'administer url aliases',
-      'create url aliases',
-    ]);
+    $web_user = $this->drupalCreateUser(['create page content', 'edit own page content', 'administer url aliases', 'create url aliases']);
     $this->drupalLogin($web_user);
   }
 

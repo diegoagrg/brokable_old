@@ -11,13 +11,13 @@ use Symfony\Component\Console\Input\InputInterface;
 class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
 {
     protected $database;
-    protected $entityManager;
+    protected $entityFieldManager;
     protected $entityTypeManager;
 
-    public function __construct($database, $entityManager, $entityTypeManager)
+    public function __construct($database, $entityFieldManager, $entityTypeManager)
     {
         $this->database = $database;
-        $this->entityManager = $entityManager;
+        $this->entityFieldManager = $entityFieldManager;
         $this->entityTypeManager = $entityTypeManager;
     }
 
@@ -32,9 +32,9 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     /**
      * @return mixed
      */
-    public function getEntityManager()
+    public function getEntityFieldManager()
     {
-        return $this->entityManager;
+        return $this->entityFieldManager;
     }
 
     /**
@@ -50,9 +50,13 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     {
         $options = $commandData->options();
         $conn = $this->getDatabase();
-        $field_definitions = $this->getEntityManager()->getFieldDefinitions('user', 'user');
-        $field_storage = $this->getEntityManager()->getFieldStorageDefinitions('user');
+        $field_definitions = $this->getEntityFieldManager()->getFieldDefinitions('user', 'user');
+        $field_storage = $this->getEntityFieldManager()->getFieldStorageDefinitions('user');
+        /** @deprecated Use $options['allowlist-fields'] instead. */
         foreach (explode(',', $options['whitelist-fields']) as $key) {
+            unset($field_definitions[$key], $field_storage[$key]);
+        }
+        foreach (explode(',', $options['allowlist-fields']) as $key) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
 
@@ -131,9 +135,10 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 
     /**
      * @hook option sql-sanitize
-     * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
+     * @option whitelist-fields Deprecated. Use allowlist-fields instead.
+     * @option allowlist-fields A comma delimited list of fields exempt from sanitization.
      */
-    public function options($options = ['whitelist-fields' => ''])
+    public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => ''])
     {
     }
 }

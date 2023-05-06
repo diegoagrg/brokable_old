@@ -29,7 +29,7 @@ class LinkFieldTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'entity_test',
     'link',
     'node',
@@ -55,7 +55,7 @@ class LinkFieldTest extends BrowserTestBase {
    */
   protected $field;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalLogin($this->drupalCreateUser([
@@ -727,9 +727,7 @@ class LinkFieldTest extends BrowserTestBase {
     $entity_test_link = $entity_test_storage->create(['name' => 'correct link target']);
     $entity_test_link->save();
 
-    // Create a node with the same ID as the test entity to ensure that the link
-    // doesn't match incorrectly.
-    $this->drupalCreateNode(['title' => 'wrong link target']);
+    $node = $this->drupalCreateNode(['wrong link target']);
 
     $correct_link = 'entity:entity_test/' . $entity_test_link->id();
     $entity_test = $entity_test_storage->create([

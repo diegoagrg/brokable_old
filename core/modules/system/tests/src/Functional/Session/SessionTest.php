@@ -18,7 +18,7 @@ class SessionTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['session_test'];
+  protected static $modules = ['session_test'];
 
   /**
    * {@inheritdoc}
@@ -213,7 +213,7 @@ class SessionTest extends BrowserTestBase {
     $this->assertNull($this->drupalGetHeader('Set-Cookie'), 'New session was not started.');
 
     // Verify that no session is created if drupal_save_session(FALSE) is called.
-    $this->drupalGet('session-test/set-message-but-do-not-save');
+    $this->drupalGet('session-test/set-message-but-dont-save');
     $this->assertSessionCookie(FALSE);
     $this->assertSessionEmpty(TRUE);
 
@@ -233,12 +233,8 @@ class SessionTest extends BrowserTestBase {
     $this->drupalLogin($user);
     $connection = Database::getConnection();
 
-    $query = $connection->select('users_field_data', 'u');
-    $query->innerJoin('sessions', 's', 'u.uid = s.uid');
-    $query->fields('u', ['access'])
-      ->fields('s', ['timestamp'])
-      ->condition('u.uid', $user->id());
-    $times1 = $query->execute()->fetchObject();
+    $sql = 'SELECT u.access, s.timestamp FROM {users_field_data} u INNER JOIN {sessions} s ON u.uid = s.uid WHERE u.uid = :uid';
+    $times1 = $connection->query($sql, [':uid' => $user->id()])->fetchObject();
 
     // Before every request we sleep one second to make sure that if the session
     // is saved, its timestamp will change.
@@ -246,21 +242,21 @@ class SessionTest extends BrowserTestBase {
     // Modify the session.
     sleep(1);
     $this->drupalGet('session-test/set/foo');
-    $times2 = $query->execute()->fetchObject();
+    $times2 = $connection->query($sql, [':uid' => $user->id()])->fetchObject();
     $this->assertEqual($times2->access, $times1->access, 'Users table was not updated.');
     $this->assertNotEqual($times2->timestamp, $times1->timestamp, 'Sessions table was updated.');
 
     // Write the same value again, i.e. do not modify the session.
     sleep(1);
     $this->drupalGet('session-test/set/foo');
-    $times3 = $query->execute()->fetchObject();
+    $times3 = $connection->query($sql, [':uid' => $user->id()])->fetchObject();
     $this->assertEqual($times3->access, $times1->access, 'Users table was not updated.');
     $this->assertEqual($times3->timestamp, $times2->timestamp, 'Sessions table was not updated.');
 
     // Do not change the session.
     sleep(1);
     $this->drupalGet('');
-    $times4 = $query->execute()->fetchObject();
+    $times4 = $connection->query($sql, [':uid' => $user->id()])->fetchObject();
     $this->assertEqual($times4->access, $times3->access, 'Users table was not updated.');
     $this->assertEqual($times4->timestamp, $times3->timestamp, 'Sessions table was not updated.');
 
@@ -271,7 +267,7 @@ class SessionTest extends BrowserTestBase {
     ];
     $this->writeSettings($settings);
     $this->drupalGet('');
-    $times5 = $query->execute()->fetchObject();
+    $times5 = $connection->query($sql, [':uid' => $user->id()])->fetchObject();
     $this->assertNotEqual($times5->access, $times4->access, 'Users table was updated.');
     $this->assertNotEqual($times5->timestamp, $times4->timestamp, 'Sessions table was updated.');
   }
@@ -287,12 +283,7 @@ class SessionTest extends BrowserTestBase {
 
     // Reset the sid in {sessions} to a blank string. This may exist in the
     // wild in some cases, although we normally prevent it from happening.
-    Database::getConnection()->update('sessions')
-      ->fields([
-        'sid' => '',
-      ])
-      ->condition('uid', $user->id())
-      ->execute();
+    Database::getConnection()->query("UPDATE {sessions} SET sid = '' WHERE uid = :uid", [':uid' => $user->id()]);
     // Send a blank sid in the session cookie, and the session should no longer
     // be valid. Closing the curl handler will stop the previous session ID
     // from persisting.

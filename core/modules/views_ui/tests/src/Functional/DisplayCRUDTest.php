@@ -23,7 +23,7 @@ class DisplayCRUDTest extends UITestBase {
    *
    * @var array
    */
-  public static $modules = ['contextual'];
+  protected static $modules = ['contextual'];
 
   /**
    * {@inheritdoc}
@@ -47,8 +47,8 @@ class DisplayCRUDTest extends UITestBase {
     $this->drupalPostForm(NULL, [], 'Add Page');
     $this->assertLinkByHref($path_prefix . '/page_1', 0, 'Make sure after adding a display the new display appears in the UI');
 
-    $this->assertSession()->linkNotExists('Master*', 'Make sure the master display is not marked as changed.');
-    $this->assertSession()->linkExists('Page*', 0, 'Make sure the added display is marked as changed.');
+    $this->assertNoLink('Master*', 'Make sure the master display is not marked as changed.');
+    $this->assertLink('Page*', 0, 'Make sure the added display is marked as changed.');
 
     $this->drupalPostForm("admin/structure/views/nojs/display/{$view['id']}/page_1/path", ['path' => 'test/path'], t('Apply'));
     $this->drupalPostForm(NULL, [], t('Save'));

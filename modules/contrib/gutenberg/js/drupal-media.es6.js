@@ -54,8 +54,9 @@
               isSelected={isSelected}
               isMediaLibraryEnabled={isMediaLibraryEnabled}
               clientId={clientId}
-              onError={err => {
-                dispatch('core/notices').createWarningNotice(err[2]);
+              onError={error => {
+                error = typeof error === 'string' ? error : error[2];
+                dispatch('core/notices').createWarningNotice(error);
               }}
             />
             {mediaEntityIds &&

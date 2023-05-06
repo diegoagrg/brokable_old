@@ -20,7 +20,7 @@ class EndOfTransactionQueriesTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'delay_cache_tags_invalidation',
     'entity_test',
     'system',
@@ -30,14 +30,12 @@ class EndOfTransactionQueriesTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
-    parent::setUp();
-
-    // This can only be checked after installing Drupal as it requires functions
-    // from bootstrap.inc.
+  protected function setUp(): void {
     if (!class_exists($this->getDatabaseConnectionInfo()['default']['namespace'] . '\Connection')) {
       $this->markTestSkipped(sprintf('No logging override exists for the %s database driver. Create it, subclass this test class and override ::getDatabaseConnectionInfo().', $this->getDatabaseConnectionInfo()['default']['driver']));
     }
+
+    parent::setUp();
 
     $this->installSchema('system', 'sequences');
     $this->installEntitySchema('entity_test');

@@ -82,7 +82,13 @@ abstract class BaseDataProvider implements DataProviderInterface {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function getSizes(string $source_url, string $uri) {
-    $styles = $this->entityTypeManager->getStorage('image_style')->loadMultiple();
+    // SVG's don't have image styles.
+    if (strtolower(pathinfo($source_url, PATHINFO_EXTENSION)) === 'svg') {
+      return [];
+    }
+
+    $styles = $this->entityTypeManager->getStorage('image_style')
+                                      ->loadMultiple();
     $sizes = [
       'full' => [
         'source_url' => $source_url,
@@ -92,7 +98,7 @@ abstract class BaseDataProvider implements DataProviderInterface {
     foreach ($styles as $style) {
       /** @var \Drupal\image\Entity\ImageStyle $style */
       $sizes[$style->getName()] = [
-        'source_url' => file_url_transform_relative($style->buildUrl($uri)),
+        'source_url' => \Drupal::service('file_url_generator')->transformRelative($style->buildUrl($uri)),
       ];
     }
 

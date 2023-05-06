@@ -21,7 +21,7 @@ class HistoryTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'history'];
+  protected static $modules = ['node', 'history'];
 
   /**
    * {@inheritdoc}
@@ -42,15 +42,12 @@ class HistoryTest extends BrowserTestBase {
    */
   protected $testNode;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
-    $this->user = $this->drupalCreateUser([
-      'create page content',
-      'access content',
-    ]);
+    $this->user = $this->drupalCreateUser(['create page content', 'access content']);
     $this->drupalLogin($this->user);
     $this->testNode = $this->drupalCreateNode(['type' => 'page', 'uid' => $this->user->id()]);
   }

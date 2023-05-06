@@ -20,27 +20,21 @@ class NodeFieldMultilingualTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'language'];
+  protected static $modules = ['node', 'language'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'classy';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create Basic page node type.
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
     // Setup users.
-    $admin_user = $this->drupalCreateUser([
-      'administer languages',
-      'administer content types',
-      'access administration pages',
-      'create page content',
-      'edit own page content',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer languages', 'administer content types', 'access administration pages', 'create page content', 'edit own page content']);
     $this->drupalLogin($admin_user);
 
     // Add a new language.

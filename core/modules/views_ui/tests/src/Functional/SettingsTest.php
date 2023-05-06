@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\views_ui\Functional;
 
+use Drupal\Core\Database\Database;
+
 /**
  * Tests all ui related settings under admin/structure/views/settings.
  *
@@ -24,7 +26,7 @@ class SettingsTest extends UITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
     $this->drupalPlaceBlock('local_tasks_block');
   }
@@ -74,7 +76,7 @@ class SettingsTest extends UITestBase {
     $view['id'] = strtolower($this->randomMachineName());
     $this->drupalPostForm('admin/structure/views/add', $view, t('Save and edit'));
 
-    $this->assertSession()->linkNotExists(t('Master'));
+    $this->assertNoLink(t('Master'));
 
     // Configure to always show the advanced settings.
     // @todo It doesn't seem to be a way to test this as this works just on js.
@@ -122,7 +124,7 @@ class SettingsTest extends UITestBase {
     $xpath = $this->xpath('//div[@class="views-query-info"]//pre');
     $this->assertCount(1, $xpath, 'The views sql is shown.');
     $this->assertStringNotContainsString('db_condition_placeholder', $xpath[0]->getText(), 'No placeholders are shown in the views sql.');
-    $this->assertStringContainsString("node_field_data.status = '1'", $xpath[0]->getText(), 'The placeholders in the views sql is replace by the actual value.');
+    $this->assertStringContainsString(Database::getConnection()->escapeField("node_field_data.status") . " = '1'", $xpath[0]->getText(), 'The placeholders in the views sql is replace by the actual value.');
 
     // Test the advanced settings form.
 

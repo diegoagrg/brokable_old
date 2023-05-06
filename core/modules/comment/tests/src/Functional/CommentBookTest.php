@@ -22,14 +22,14 @@ class CommentBookTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['book', 'comment'];
+  protected static $modules = ['book', 'comment'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create comment field on book.
@@ -60,11 +60,7 @@ class CommentBookTest extends BrowserTestBase {
     ]);
     $comment->save();
 
-    $commenting_user = $this->drupalCreateUser([
-      'access printer-friendly version',
-      'access comments',
-      'post comments',
-    ]);
+    $commenting_user = $this->drupalCreateUser(['access printer-friendly version', 'access comments', 'post comments']);
     $this->drupalLogin($commenting_user);
 
     $this->drupalGet('node/' . $book_node->id());

@@ -50,9 +50,9 @@ class NodeAdminTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['views'];
+  protected static $modules = ['views'];
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Remove the "view own unpublished content" permission which is set
@@ -60,21 +60,10 @@ class NodeAdminTest extends NodeTestBase {
     // correctly.
     user_role_revoke_permissions(RoleInterface::AUTHENTICATED_ID, ['view own unpublished content']);
 
-    $this->adminUser = $this->drupalCreateUser([
-      'access administration pages',
-      'access content overview',
-      'administer nodes',
-      'bypass node access',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages', 'access content overview', 'administer nodes', 'bypass node access']);
     $this->baseUser1 = $this->drupalCreateUser(['access content overview']);
-    $this->baseUser2 = $this->drupalCreateUser([
-      'access content overview',
-      'view own unpublished content',
-    ]);
-    $this->baseUser3 = $this->drupalCreateUser([
-      'access content overview',
-      'bypass node access',
-    ]);
+    $this->baseUser2 = $this->drupalCreateUser(['access content overview', 'view own unpublished content']);
+    $this->baseUser3 = $this->drupalCreateUser(['access content overview', 'bypass node access']);
   }
 
   /**

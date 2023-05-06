@@ -16,7 +16,7 @@ class NodeQueryAlterTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_access_test'];
+  protected static $modules = ['node_access_test'];
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class NodeQueryAlterTest extends NodeTestBase {
    */
   protected $noAccessUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     node_access_rebuild();
@@ -46,19 +46,9 @@ class NodeQueryAlterTest extends NodeTestBase {
 
     // Create user with simple node access permission. The 'node test view'
     // permission is implemented and granted by the node_access_test module.
-    $this->accessUser = $this->drupalCreateUser([
-      'access content overview',
-      'access content',
-      'node test view',
-    ]);
-    $this->noAccessUser = $this->drupalCreateUser([
-      'access content overview',
-      'access content',
-    ]);
-    $this->noAccessUser2 = $this->drupalCreateUser([
-      'access content overview',
-      'access content',
-    ]);
+    $this->accessUser = $this->drupalCreateUser(['access content overview', 'access content', 'node test view']);
+    $this->noAccessUser = $this->drupalCreateUser(['access content overview', 'access content']);
+    $this->noAccessUser2 = $this->drupalCreateUser(['access content overview', 'access content']);
   }
 
   /**

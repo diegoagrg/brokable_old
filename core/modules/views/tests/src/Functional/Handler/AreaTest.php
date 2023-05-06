@@ -27,14 +27,14 @@ class AreaTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'views_ui'];
+  protected static $modules = ['node', 'views_ui'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     $this->enableViewsTestModule();
@@ -57,10 +57,7 @@ class AreaTest extends ViewTestBase {
    * Tests the generic UI of a area handler.
    */
   public function testUI() {
-    $admin_user = $this->drupalCreateUser([
-      'administer views',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer views', 'administer site configuration']);
     $this->drupalLogin($admin_user);
 
     $types = ['header', 'footer', 'empty'];
@@ -161,10 +158,7 @@ class AreaTest extends ViewTestBase {
    * Tests global tokens.
    */
   public function testRenderAreaToken() {
-    $admin_user = $this->drupalCreateUser([
-      'administer views',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer views', 'administer site configuration']);
     $this->drupalLogin($admin_user);
 
     $view = Views::getView('test_example_area');

@@ -16,9 +16,11 @@ mode: default
 content:
   body:
     label: hidden
-    type: text_default
+    type: gutenberg_text
     weight: 0
-    settings: {  }
+    settings:
+      format: gutenberg
+      content_only: true
     third_party_settings: {  }
     region: content
 hidden: {  }

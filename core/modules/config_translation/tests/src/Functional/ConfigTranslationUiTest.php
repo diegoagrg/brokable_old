@@ -29,7 +29,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'config_translation',
     'config_translation_test',
@@ -79,7 +79,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
    */
   protected $localeStorage;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $translator_permissions = [
       'translate configuration',
@@ -299,7 +299,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
     // While translator can access the translation page, the edit link is not
     // present due to lack of permissions.
     $this->drupalGet($translation_base_url);
-    $this->assertSession()->linkNotExists(t('Edit'));
+    $this->assertNoLink(t('Edit'));
 
     // Check 'Add' link for French.
     $this->assertLinkByHref("$translation_base_url/fr/add");
@@ -331,7 +331,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
 
     // Make sure translate tab is present.
     $this->drupalGet('admin/structure/contact/manage/feedback');
-    $this->assertSession()->linkExists(t('Translate @type', ['@type' => 'contact form']));
+    $this->assertLink(t('Translate @type', ['@type' => 'contact form']));
 
     // Visit the form to confirm the changes.
     $this->drupalGet('contact/feedback');
@@ -339,7 +339,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
 
     foreach ($this->langcodes as $langcode) {
       $this->drupalGet($translation_base_url);
-      $this->assertSession()->linkExists(t('Translate @type', ['@type' => 'contact form']));
+      $this->assertLink(t('Translate @type', ['@type' => 'contact form']));
 
       // 'Add' link should be present for $langcode translation.
       $translation_page_url = "$translation_base_url/$langcode/add";
@@ -435,7 +435,7 @@ class ConfigTranslationUiTest extends BrowserTestBase {
     // While translator can access the translation page, the edit link is not
     // present due to lack of permissions.
     $this->drupalGet($translation_base_url);
-    $this->assertSession()->linkNotExists(t('Edit'));
+    $this->assertNoLink(t('Edit'));
 
     // Check 'Add' link for French.
     $this->assertLinkByHref("$translation_base_url/fr/add");
@@ -516,10 +516,10 @@ class ConfigTranslationUiTest extends BrowserTestBase {
     $this->drupalLogin($this->adminUser);
 
     $this->drupalGet('admin/config/people/accounts');
-    $this->assertSession()->linkExists(t('Translate @type', ['@type' => 'account settings']));
+    $this->assertLink(t('Translate @type', ['@type' => 'account settings']));
 
     $this->drupalGet('admin/config/people/accounts/translate');
-    $this->assertSession()->linkExists(t('Translate @type', ['@type' => 'account settings']));
+    $this->assertLink(t('Translate @type', ['@type' => 'account settings']));
     $this->assertLinkByHref('admin/config/people/accounts/translate/fr/add');
 
     // Update account settings fields for French.

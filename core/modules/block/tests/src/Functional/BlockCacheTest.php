@@ -17,7 +17,7 @@ class BlockCacheTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'block_test', 'test_page_test'];
+  protected static $modules = ['block', 'block_test', 'test_page_test'];
 
   /**
    * {@inheritdoc}
@@ -52,14 +52,11 @@ class BlockCacheTest extends BrowserTestBase {
    */
   protected $block;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create an admin user, log in and enable test blocks.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer blocks',
-      'access administration pages',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer blocks', 'access administration pages']);
     $this->drupalLogin($this->adminUser);
 
     // Create additional users to test caching modes.

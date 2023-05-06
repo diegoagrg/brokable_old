@@ -41,7 +41,7 @@ class NodeRevisionsTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'contextual',
     'datetime',
@@ -52,7 +52,7 @@ class NodeRevisionsTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Enable additional languages.
@@ -197,13 +197,8 @@ class NodeRevisionsTest extends NodeTestBase {
       '%title' => $nodes[1]->label(),
     ]), 'Revision deleted.');
     $connection = Database::getConnection();
-    $nids = \Drupal::entityQuery('node')
-      ->accessCheck(FALSE)
-      ->allRevisions()
-      ->condition('nid', $node->id())
-      ->condition('vid', $nodes[1]->getRevisionId())
-      ->execute();
-    $this->assertCount(0, $nids);
+    $this->assertTrue($connection->query('SELECT COUNT(vid) FROM {node_revision} WHERE nid = :nid and vid = :vid', [':nid' => $node->id(), ':vid' => $nodes[1]->getRevisionId()])->fetchField() == 0, 'Revision not found.');
+    $this->assertTrue($connection->query('SELECT COUNT(vid) FROM {node_field_revision} WHERE nid = :nid and vid = :vid', [':nid' => $node->id(), ':vid' => $nodes[1]->getRevisionId()])->fetchField() == 0, 'Field revision not found.');
 
     // Set the revision timestamp to an older date to make sure that the
     // confirmation message correctly displays the stored revision date.

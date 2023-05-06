@@ -16,35 +16,50 @@ class FileEntityDataProvider extends BaseDataProvider {
 
   /**
    * {@inheritDoc}
+   *
+   * @see wp_prepare_attachment_for_js
    */
   public function getData(ContentEntityInterface $entity, array $data = []) {
     $this->assertIsFileEntity($entity);
 
     /** @var \Drupal\file\FileInterface $entity */
     $uri = $entity->getFileUri();
-    $source_url = file_url_transform_relative(file_create_url($uri));
+    $source_url = \Drupal::service('file_url_generator')->generateString($uri);
     $image = $this->imageFactory->get($uri);
     $file_data = $this->getFileData($entity->id());
 
+    $mime = $entity->getMimeType();
+    $mime_type_sections = explode('/', $mime);
+    $mime_type = $mime_type_sections[0];
     $result = [
       'id' => (int) $entity->id(),
-      'link' => $source_url,
-      'source_url' => $source_url,
+      'title' => $file_data['title'] ?? '',
+      'filename' => urldecode($entity->getFilename()),
       'url' => $source_url,
-      'media_type' => explode('/', $entity->getMimeType())[0],
-      'mime_type' => $entity->getMimeType(),
-      'author' => 1,
-      'status' => 'inherit',
-      'type' => 'attachment',
-      'date_gmt' => date('c', $entity->getCreatedTime()),
-      'date' => date('c', $entity->getCreatedTime()),
-      'title' => [
-        'raw' => $file_data['title'] ?? '',
-        'rendered' => $file_data['title'] ?? '',
-      ],
-      // Prop used on inline-image.
+      'link' => \Drupal::service('file_url_generator')->generateAbsoluteString($source_url),
       'alt' => $file_data['alt_text'] ?? '',
-      'alt_text' => $file_data['alt_text'] ?? '',
+      'author' => $entity->getOwnerId(),
+      'description' => '',
+      'caption' => $file_data['caption'] ?? '',
+      'name' => '',
+      'status' => 'inherit',
+      'uploadedTo' => 0,
+      'date' => date('c', $entity->getCreatedTime()),
+      'modified' => date('c', $entity->getChangedTime()),
+      /* 'menuOrder' => 0, */
+      'mime' => $mime,
+      'type' => $mime_type,
+      'subtype' => $mime_type_sections[1],
+      /* 'icon' => '', */
+      /* 'dateFormatted' => date('F j, Y', $entity->getCreatedTime()), */
+      /* 'nonces' => ['update' => FALSE, 'delete' => FALSE, 'edit' => FALSE], */
+      /* 'editLink' => FALSE, */
+      /* 'meta' => FALSE, */
+      // Drupal specific properties below.
+      'source_url' => $source_url,
+      'media_type' => $mime_type,
+      'mime_type' => $mime,
+      'date_gmt' => date('c', $entity->getCreatedTime()),
       // Prop used on inline-image.
       'width' => $image->getWidth(),
       'data' => [
@@ -61,10 +76,6 @@ class FileEntityDataProvider extends BaseDataProvider {
         'image_meta' => [],
         // See issue: https://www.drupal.org/project/gutenberg/issues/3035313
         'sizes' => $this->getSizes($source_url, $uri),
-      ],
-      'caption' => [
-        'raw' => $file_data['caption'] ?? '',
-        'rendered' => $file_data['caption'] ?? '',
       ],
     ];
 

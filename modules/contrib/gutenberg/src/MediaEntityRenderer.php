@@ -15,14 +15,14 @@ class MediaEntityRenderer implements MediaEntityRendererInterface {
   use AssertMediaTrait;
 
   /**
-   * Drupal\Core\Render\RendererInterface instance.
+   * The Drupal renderer.
    *
    * @var \Drupal\Core\Render\RendererInterface
    */
   protected $renderer;
 
   /**
-   * Entity type manager instance.
+   * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
@@ -45,17 +45,25 @@ class MediaEntityRenderer implements MediaEntityRendererInterface {
    * {@inheritDoc}
    */
   public function render($media_entity, string $view_mode = 'full') {
+    $render_array = $this->renderArray($media_entity, $view_mode);
+
+    return (string) $this->renderer->render($render_array);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function renderArray($media_entity, string $view_mode = 'full') {
     try {
       if (is_numeric($media_entity)) {
         $media_entity = $this->entityTypeManager->getStorage('media')->load($media_entity);
       }
 
       $this->assertIsMediaEntity($media_entity);
-      $build = $this->entityTypeManager->getViewBuilder('media')->view($media_entity, $view_mode);
-      return (string) $this->renderer->render($build);
+      return $this->entityTypeManager->getViewBuilder('media')->view($media_entity, $view_mode);
     }
     catch (\Throwable $exception) {
-      return '';
+      return [];
     }
   }
 

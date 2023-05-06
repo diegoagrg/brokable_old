@@ -33,16 +33,10 @@ class UserPermissionsTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser([
-      'administer permissions',
-      'access user profiles',
-      'administer site configuration',
-      'administer modules',
-      'administer account settings',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer permissions', 'access user profiles', 'administer site configuration', 'administer modules', 'administer account settings']);
 
     // Find the new role ID.
     $all_rids = $this->adminUser->getRoles();

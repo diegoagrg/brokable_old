@@ -19,7 +19,7 @@ class PageTitleTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'test_page_test', 'form_test', 'block'];
+  protected static $modules = ['node', 'test_page_test', 'form_test', 'block'];
 
   /**
    * {@inheritdoc}
@@ -32,20 +32,14 @@ class PageTitleTest extends BrowserTestBase {
   /**
    * Implement setUp().
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
     $this->drupalPlaceBlock('page_title_block');
 
-    $this->contentUser = $this->drupalCreateUser([
-      'create page content',
-      'access content',
-      'administer themes',
-      'administer site configuration',
-      'link to any page',
-    ]);
+    $this->contentUser = $this->drupalCreateUser(['create page content', 'access content', 'administer themes', 'administer site configuration', 'link to any page']);
     $this->drupalLogin($this->contentUser);
   }
 

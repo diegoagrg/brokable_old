@@ -38,9 +38,9 @@ class TypedDataTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'field', 'file', 'user'];
+  protected static $modules = ['system', 'field', 'file', 'user'];
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setup();
 
     $this->installEntitySchema('file');
@@ -428,7 +428,7 @@ class TypedDataTest extends KernelTestBase {
       $this->fail('No exception has been thrown when setting an invalid value.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Exception thrown:' . $e->getMessage());
     }
   }
 
@@ -550,7 +550,7 @@ class TypedDataTest extends KernelTestBase {
       $this->fail('No exception has been thrown when getting an invalid value.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Exception thrown:' . $e->getMessage());
     }
 
     // Test setting invalid values.
@@ -559,7 +559,7 @@ class TypedDataTest extends KernelTestBase {
       $this->fail('No exception has been thrown when setting an invalid value.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Exception thrown:' . $e->getMessage());
     }
 
     // Test adding a new property to the map.
@@ -594,7 +594,7 @@ class TypedDataTest extends KernelTestBase {
     // Test translating violation messages when pluralization is used.
     $definition = DataDefinition::create('string')
       ->setConstraints([
-        'Length' => ['min' => 10],
+        'Length' => ['min' => 10, 'allowEmptyString' => FALSE],
       ]);
     $violations = $this->typedDataManager->create($definition, "short")->validate();
     $this->assertEqual($violations->count(), 1);

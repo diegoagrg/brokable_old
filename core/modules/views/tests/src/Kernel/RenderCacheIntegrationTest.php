@@ -27,12 +27,12 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['entity_test', 'user', 'node'];
+  protected static $modules = ['entity_test', 'user', 'node'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp();
 
     $this->installEntitySchema('entity_test');
@@ -89,9 +89,11 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
    *   Whether to check Views' result & output caches.
    */
   protected function assertCacheTagsForFieldBasedView($do_assert_views_caches) {
+    $this->pass('Checking cache tags for field-based view.');
     $view = Views::getview('entity_test_fields');
 
     // Empty result (no entities yet).
+    $this->pass('Test without entities');
     $base_tags = ['config:views.view.entity_test_fields', 'entity_test_list'];
     $this->assertViewsCacheTags($view, $base_tags, $do_assert_views_caches, $base_tags);
     $this->assertViewsCacheTagsFromStaticRenderArray($view, $base_tags, $do_assert_views_caches);
@@ -101,6 +103,7 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $entities[] = $entity = EntityTest::create();
     $entity->save();
 
+    $this->pass('Test with entities');
     $tags_with_entity = Cache::mergeTags($base_tags, $entities[0]->getCacheTags());
     $this->assertViewsCacheTags($view, $tags_with_entity, $do_assert_views_caches, $tags_with_entity);
     $this->assertViewsCacheTagsFromStaticRenderArray($view, $tags_with_entity, $do_assert_views_caches);
@@ -111,8 +114,9 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
       $entity->save();
     }
 
-    // Test pager.
     // Page 1.
+    $this->pass('Test pager');
+    $this->pass('Page 1');
     \Drupal::request()->query->set('page', 0);
     $tags_page_1 = Cache::mergeTags($base_tags, $entities[1]->getCacheTags());
     $tags_page_1 = Cache::mergeTags($tags_page_1, $entities[2]->getCacheTags());
@@ -123,6 +127,7 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $this->assertViewsCacheTagsFromStaticRenderArray($view, $tags_page_1, $do_assert_views_caches);
     $view->destroy();
     // Page 2.
+    $this->pass('Page 2');
     $view->setCurrentPage(1);
     \Drupal::request()->query->set('page', 1);
     $tags_page_2 = Cache::mergeTags($base_tags, $entities[0]->getCacheTags());
@@ -130,7 +135,8 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $view->destroy();
 
     // Ensure that invalidation works on both pages.
-    // Page 2.
+    $this->pass('Page invalidations');
+    $this->pass('Page 2');
     $view->setCurrentPage(1);
     \Drupal::request()->query->set('page', 1);
     $entities[0]->name->value = $random_name = $this->randomMachineName();
@@ -142,7 +148,7 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $this->assertStringContainsString($random_name, (string) $build['#markup']);
     $view->destroy();
 
-    // Page 1.
+    $this->pass('Page 1');
     $view->setCurrentPage(0);
     \Drupal::request()->query->set('page', 0);
     $entities[1]->name->value = $random_name = $this->randomMachineName();
@@ -153,6 +159,8 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $view->destroy();
 
     // Setup arguments to ensure that render caching also varies by them.
+    $this->pass('Test arguments');
+
     // Custom assert for a single result row.
     $single_entity_assertions = function (array $build, EntityInterface $entity) {
       $this->setRawContent($build['#markup']);
@@ -231,6 +239,7 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
    * Tests cache tags on output & result cache items for an entity-based view.
    */
   protected function assertCacheTagsForEntityBasedView($do_assert_views_caches) {
+    $this->pass('Checking cache tags for entity-based view.');
     $view = Views::getview('entity_test_row');
 
     // Empty result (no entities yet).

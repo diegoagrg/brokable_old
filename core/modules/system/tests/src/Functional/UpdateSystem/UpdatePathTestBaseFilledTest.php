@@ -103,7 +103,7 @@ class UpdatePathTestBaseFilledTest extends UpdatePathTestBaseTest {
     // now that we're logged in.
     $this->drupalGet('node/8', ['language' => $spanish]);
     $this->assertText('Test 12');
-    $this->assertSession()->linkExists('drupal');
+    $this->assertLink('drupal');
 
     // Make sure the content for node 8 is still in the edit form.
     $this->drupalGet('node/8/edit');
@@ -135,7 +135,7 @@ class UpdatePathTestBaseFilledTest extends UpdatePathTestBaseTest {
     $this->assertText('usuario_test');
     $this->assertRaw('druplicon.small');
     $this->assertText('Test file field');
-    $this->assertSession()->linkExists('test.txt');
+    $this->assertLink('test.txt');
 
     // Make sure the user is translated.
     $this->drupalGet('user/3/translations');
@@ -235,24 +235,24 @@ class UpdatePathTestBaseFilledTest extends UpdatePathTestBaseTest {
     $this->drupalGet('admin/structure/types/manage/test_content_type/fields');
 
     // Make sure fields are the right type.
-    $this->assertSession()->linkExists('Text (formatted, long, with summary)');
-    $this->assertSession()->linkExists('Boolean');
-    $this->assertSession()->linkExists('Comments');
-    $this->assertSession()->linkExists('Date');
-    $this->assertSession()->linkExists('Email');
-    $this->assertSession()->linkExists('Link');
-    $this->assertSession()->linkExists('List (float)');
-    $this->assertSession()->linkExists('Telephone number');
-    $this->assertSession()->linkExists('Entity reference');
-    $this->assertSession()->linkExists('File');
-    $this->assertSession()->linkExists('Image');
-    $this->assertSession()->linkExists('Text (plain, long)');
-    $this->assertSession()->linkExists('List (text)');
-    $this->assertSession()->linkExists('Text (formatted, long)');
-    $this->assertSession()->linkExists('Text (plain)');
-    $this->assertSession()->linkExists('List (integer)');
-    $this->assertSession()->linkExists('Number (integer)');
-    $this->assertSession()->linkExists('Number (float)');
+    $this->assertLink('Text (formatted, long, with summary)');
+    $this->assertLink('Boolean');
+    $this->assertLink('Comments');
+    $this->assertLink('Date');
+    $this->assertLink('Email');
+    $this->assertLink('Link');
+    $this->assertLink('List (float)');
+    $this->assertLink('Telephone number');
+    $this->assertLink('Entity reference');
+    $this->assertLink('File');
+    $this->assertLink('Image');
+    $this->assertLink('Text (plain, long)');
+    $this->assertLink('List (text)');
+    $this->assertLink('Text (formatted, long)');
+    $this->assertLink('Text (plain)');
+    $this->assertLink('List (integer)');
+    $this->assertLink('Number (integer)');
+    $this->assertLink('Number (float)');
 
     // Make sure our form mode exists.
     $this->drupalGet('admin/structure/display-modes/form');
@@ -327,7 +327,7 @@ class UpdatePathTestBaseFilledTest extends UpdatePathTestBaseTest {
 
     // Make sure the terms are still translated.
     $this->drupalGet('taxonomy/term/2/translations');
-    $this->assertSession()->linkExists('Test root term - Spanish');
+    $this->assertLink('Test root term - Spanish');
 
     // Make sure our contact form exists.
     $this->drupalGet('admin/structure/contact');
@@ -409,7 +409,6 @@ class UpdatePathTestBaseFilledTest extends UpdatePathTestBaseTest {
     // Make sure our themes are still enabled.
     $expected_enabled_themes = [
       'bartik',
-      'classy',
       'seven',
       'stark',
     ];

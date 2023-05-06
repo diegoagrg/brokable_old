@@ -89,14 +89,7 @@ class Query extends QueryBase implements QueryInterface {
       $direction = $sort['direction'] == 'ASC' ? -1 : 1;
       $field = $sort['field'];
       uasort($result, function ($a, $b) use ($field, $direction) {
-        $properties = explode('.', $field);
-        foreach ($properties as $property) {
-          if (isset($a[$property]) || isset($b[$property])) {
-            $a = isset($a[$property]) ? $a[$property] : NULL;
-            $b = isset($b[$property]) ? $b[$property] : NULL;
-          }
-        }
-        return ($a <= $b) ? $direction : -$direction;
+        return ($a[$field] <= $b[$field]) ? $direction : -$direction;
       });
     }
 

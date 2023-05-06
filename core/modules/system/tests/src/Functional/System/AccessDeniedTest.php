@@ -21,7 +21,7 @@ class AccessDeniedTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'system_test'];
+  protected static $modules = ['block', 'node', 'system_test'];
 
   /**
    * {@inheritdoc}
@@ -30,18 +30,13 @@ class AccessDeniedTest extends BrowserTestBase {
 
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('page_title_block');
 
     // Create an administrative user.
-    $this->adminUser = $this->drupalCreateUser([
-      'access administration pages',
-      'administer site configuration',
-      'link to any page',
-      'administer blocks',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages', 'administer site configuration', 'link to any page', 'administer blocks']);
     $this->adminUser->roles[] = 'administrator';
     $this->adminUser->save();
 

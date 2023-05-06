@@ -16,24 +16,18 @@ class ForumIndexTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['taxonomy', 'comment', 'forum'];
+  protected static $modules = ['taxonomy', 'comment', 'forum'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a test user.
-    $web_user = $this->drupalCreateUser([
-      'create forum content',
-      'edit own forum content',
-      'edit any forum content',
-      'administer nodes',
-      'administer forums',
-    ]);
+    $web_user = $this->drupalCreateUser(['create forum content', 'edit own forum content', 'edit any forum content', 'administer nodes', 'administer forums']);
     $this->drupalLogin($web_user);
   }
 

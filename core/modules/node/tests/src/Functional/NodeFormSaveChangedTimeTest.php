@@ -16,7 +16,7 @@ class NodeFormSaveChangedTimeTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
   ];
 
@@ -35,7 +35,7 @@ class NodeFormSaveChangedTimeTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a node type.
@@ -44,11 +44,7 @@ class NodeFormSaveChangedTimeTest extends BrowserTestBase {
       'name' => 'Article',
     ]);
 
-    $this->authorUser = $this->drupalCreateUser([
-      'access content',
-      'create article content',
-      'edit any article content',
-    ], 'author');
+    $this->authorUser = $this->drupalCreateUser(['access content', 'create article content', 'edit any article content'], 'author');
     $this->drupalLogin($this->authorUser);
 
     // Create one node of the above node type .

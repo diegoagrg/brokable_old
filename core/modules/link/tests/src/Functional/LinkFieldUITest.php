@@ -25,7 +25,7 @@ class LinkFieldUITest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'link', 'field_ui', 'block'];
+  protected static $modules = ['node', 'link', 'field_ui', 'block'];
 
   /**
    * {@inheritdoc}
@@ -63,19 +63,13 @@ class LinkFieldUITest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->firstContentType = $this->drupalCreateContentType();
     $this->secondContentType = $this->drupalCreateContentType();
-    $this->adminUser = $this->drupalCreateUser([
-      'administer content types',
-      'administer node fields',
-      'administer node display',
-    ]);
-    $this->helpTextUser = $this->drupalCreateUser([
-      'create ' . $this->secondContentType->id() . ' content',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer content types', 'administer node fields', 'administer node display']);
+    $this->helpTextUser = $this->drupalCreateUser(['create ' . $this->secondContentType->id() . ' content']);
     $this->drupalPlaceBlock('system_breadcrumb_block');
   }
 

@@ -17,7 +17,7 @@ class ConfigEntityListMultilingualTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['config_test', 'language', 'block'];
+  protected static $modules = ['config_test', 'language', 'block'];
 
   /**
    * {@inheritdoc}
@@ -27,7 +27,7 @@ class ConfigEntityListMultilingualTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Delete the override config_test entity. It is not required by this test.
     \Drupal::entityTypeManager()->getStorage('config_test')->load('override')->delete();
@@ -41,10 +41,7 @@ class ConfigEntityListMultilingualTest extends BrowserTestBase {
    */
   public function testListUI() {
     // Log in as an administrative user to access the full menu trail.
-    $this->drupalLogin($this->drupalCreateUser([
-      'access administration pages',
-      'administer site configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['access administration pages', 'administer site configuration']));
 
     // Get the list page.
     $this->drupalGet('admin/structure/config_test');

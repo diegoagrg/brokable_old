@@ -21,24 +21,20 @@ class NodeAccessPagerTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_access_test', 'comment', 'forum'];
+  protected static $modules = ['node_access_test', 'comment', 'forum'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     node_access_rebuild();
     $this->drupalCreateContentType(['type' => 'page', 'name' => t('Basic page')]);
     $this->addDefaultCommentField('node', 'page');
-    $this->webUser = $this->drupalCreateUser([
-      'access content',
-      'access comments',
-      'node test view',
-    ]);
+    $this->webUser = $this->drupalCreateUser(['access content', 'access comments', 'node test view']);
   }
 
   /**

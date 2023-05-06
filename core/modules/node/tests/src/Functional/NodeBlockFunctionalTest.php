@@ -41,22 +41,14 @@ class NodeBlockFunctionalTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'views'];
+  protected static $modules = ['block', 'views'];
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create users and test node.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer content types',
-      'administer nodes',
-      'administer blocks',
-      'access content overview',
-    ]);
-    $this->webUser = $this->drupalCreateUser([
-      'access content',
-      'create article content',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer content types', 'administer nodes', 'administer blocks', 'access content overview']);
+    $this->webUser = $this->drupalCreateUser(['access content', 'create article content']);
   }
 
   /**

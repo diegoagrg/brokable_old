@@ -37,7 +37,7 @@ class ContentTranslationOperationsTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'language',
     'content_translation',
     'node',
@@ -48,7 +48,7 @@ class ContentTranslationOperationsTest extends NodeTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Enable additional languages.
@@ -64,12 +64,7 @@ class ContentTranslationOperationsTest extends NodeTestBase {
     \Drupal::service('router.builder')->rebuild();
 
     $this->baseUser1 = $this->drupalCreateUser(['access content overview']);
-    $this->baseUser2 = $this->drupalCreateUser([
-      'access content overview',
-      'create content translations',
-      'update content translations',
-      'delete content translations',
-    ]);
+    $this->baseUser2 = $this->drupalCreateUser(['access content overview', 'create content translations', 'update content translations', 'delete content translations']);
   }
 
   /**

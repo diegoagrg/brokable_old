@@ -16,36 +16,36 @@ var withSelect = data.withSelect;
 var registerBlockType = blocks.registerBlockType;
 var InnerBlocks = blockEditor.InnerBlocks;
 
-var __ = Drupal.t;
 
-var SECTION_TEMPLATE = [['core/paragraph', { placeholder: 'Summary' }]];
+var style = {
+  minHeight: '40px',
+  margin: '0 -40px',
+  padding: '0 40px'
+};
 
-function SectionEdit(_ref) {
-  var hasInnerBlocks = _ref.hasInnerBlocks;
+var template = [['core/paragraph', {}]];
 
+function SectionEdit() {
   return React.createElement(
     'main',
-    null,
-    React.createElement(InnerBlocks, {
-      templateLock: false,
-      renderAppender: hasInnerBlocks ? undefined : function () {
-        return React.createElement(InnerBlocks.ButtonBlockAppender, null);
-      }
-    })
+    { style: style },
+    React.createElement(InnerBlocks, { templateLock: false, template: template })
   );
 }
 
 var settings = {
-  title: __('Section'),
-  description: __('Section block for template use.'),
+  title: Drupal.t('Section'),
+  description: Drupal.t('Section block for template use.'),
   icon: 'media-document',
   attributes: {},
   supports: {
-    inserter: false
+    inserter: false,
+    align: true,
+    html: false
   },
 
-  edit: compose([withSelect(function (select, _ref2) {
-    var clientId = _ref2.clientId;
+  edit: compose([withSelect(function (select, _ref) {
+    var clientId = _ref.clientId;
 
     var _select = select('core/block-editor'),
         getBlock = _select.getBlock;
@@ -57,8 +57,8 @@ var settings = {
     };
   })])(SectionEdit),
 
-  save: function save(_ref3) {
-    var className = _ref3.className;
+  save: function save(_ref2) {
+    var className = _ref2.className;
 
     return React.createElement(
       'main',

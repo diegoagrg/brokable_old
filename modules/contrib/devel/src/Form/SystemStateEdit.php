@@ -68,10 +68,11 @@ class SystemStateEdit extends FormBase {
 
     }
 
-    // First we will show the user the content of the variable about to be edited.
+    // First we show the user the content of the variable about to be edited.
     $form['value'] = [
       '#type' => 'item',
       '#title' => $this->t('Current value for %name', ['%name' => $state_name]),
+      // phpcs:ignore Drupal.Functions.DiscouragedFunctions
       '#markup' => kpr($old_value, TRUE),
     ];
 
@@ -94,8 +95,8 @@ class SystemStateEdit extends FormBase {
       '#value' => $state_name,
     ];
     // Set the transport format for the new value. Values:
-    //  - plain
-    //  - yaml.
+    // - plain
+    // - yaml.
     $form['transport'] = [
       '#type' => 'value',
       '#value' => $transport,
@@ -162,8 +163,8 @@ class SystemStateEdit extends FormBase {
   /**
    * Helper function to determine if a variable is or contains an object.
    *
-   * @param $data
-   *   Input data to check
+   * @param mixed $data
+   *   Input data to check.
    *
    * @return bool
    *   TRUE if the variable is not an object and does not contain one.

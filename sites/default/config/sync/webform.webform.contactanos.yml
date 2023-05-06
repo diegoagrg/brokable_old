@@ -33,7 +33,7 @@ settings:
   form_previous_submissions: true
   form_confidential: false
   form_confidential_message: ''
-  form_remote_addr: true
+  form_disable_remote_addr: false
   form_convert_anonymous: false
   form_prepopulate: false
   form_prepopulate_source_entity: false
@@ -54,6 +54,9 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_method: ''
+  form_action: ''
+  form_attributes: {  }
   share: false
   share_node: false
   share_theme_name: ''
@@ -99,6 +102,8 @@ settings:
   wizard_toggle: false
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -117,7 +122,7 @@ settings:
   confirmation_type: url_message
   confirmation_title: Gracias
   confirmation_message: 'Hemos recibido tu solicitud y pronto nos pondremos en contacto contigo.'
-  confirmation_url: /solicitud
+  confirmation_url: solicitud
   confirmation_attributes: {  }
   confirmation_back: false
   confirmation_back_label: ''

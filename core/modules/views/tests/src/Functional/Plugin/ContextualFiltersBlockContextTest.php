@@ -21,7 +21,12 @@ class ContextualFiltersBlockContextTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'block_test_views', 'views_ui', 'node'];
+  protected static $modules = [
+    'block',
+    'block_test_views',
+    'views_ui',
+    'node',
+  ];
 
   /**
    * {@inheritdoc}
@@ -52,7 +57,7 @@ class ContextualFiltersBlockContextTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     ViewTestData::createTestViews(get_class($this), ['block_test_views']);
@@ -81,10 +86,7 @@ class ContextualFiltersBlockContextTest extends ViewTestBase {
    * Tests exposed context.
    */
   public function testBlockContext() {
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer views',
-      'administer blocks',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer views', 'administer blocks']));
 
     // Check if context was correctly propagated to the block.
     $definition = $this->container->get('plugin.manager.block')

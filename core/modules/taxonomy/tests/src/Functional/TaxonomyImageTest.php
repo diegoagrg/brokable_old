@@ -32,14 +32,14 @@ class TaxonomyImageTest extends TaxonomyTestBase {
    *
    * @var array
    */
-  public static $modules = ['image'];
+  protected static $modules = ['image'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Remove access content permission from registered users.
@@ -80,11 +80,7 @@ class TaxonomyImageTest extends TaxonomyTestBase {
   }
 
   public function testTaxonomyImageAccess() {
-    $user = $this->drupalCreateUser([
-      'administer site configuration',
-      'administer taxonomy',
-      'access user profiles',
-    ]);
+    $user = $this->drupalCreateUser(['administer site configuration', 'administer taxonomy', 'access user profiles']);
     $this->drupalLogin($user);
 
     // Create a term and upload the image.

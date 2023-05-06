@@ -193,9 +193,14 @@ class ModuleInstaller implements ModuleInstallerInterface {
           }
         }
 
-        // Update the module handler in order to have the correct module list
-        // for the kernel update.
+        // Update the module handler in order to load the module's code.
+        // This allows the module to participate in hooks and its existence to
+        // be discovered by other modules.
+        // The current ModuleHandler instance is obsolete with the kernel
+        // rebuild below.
         $this->moduleHandler->setModuleList($module_filenames);
+        $this->moduleHandler->load($module);
+        module_load_install($module);
 
         // Clear the static cache of the "extension.list.module" service to pick
         // up the new module, since it merges the installation status of modules
@@ -204,10 +209,6 @@ class ModuleInstaller implements ModuleInstallerInterface {
 
         // Update the kernel to include it.
         $this->updateKernel($module_filenames);
-
-        // Load the module's .module and .install files.
-        $this->moduleHandler->load($module);
-        module_load_install($module);
 
         // Replace the route provider service with a version that will rebuild
         // if routes used during installation. This ensures that a module's

@@ -4,16 +4,14 @@
 /**
  * Some default styles for default theme: Bartik
  */
-.gutenberg__editor .edit-post-visual-editor {
+.editor-styles-wrapper {
   font-family: Georgia, 'Times New Roman', Times, serif;
-}
-
-.gutenberg__editor .edit-post-visual-editor [data-type="core/paragraph"] {
   font-size: 15px;
+  line-height: 1.8;
 }
 
-.wp-block-embed-youtube iframe {
-  width: 100%;
+.wp-block {
+  max-width: 937px;
 }
 
 /*# sourceMappingURL=bartik.css.map */

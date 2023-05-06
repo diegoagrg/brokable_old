@@ -18,7 +18,7 @@ class CKEditorLoadingTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'editor', 'ckeditor', 'node'];
+  protected static $modules = ['filter', 'editor', 'ckeditor', 'node'];
 
   /**
    * {@inheritdoc}
@@ -39,7 +39,7 @@ class CKEditorLoadingTest extends BrowserTestBase {
    */
   protected $normalUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create text format, associate CKEditor.
@@ -72,16 +72,8 @@ class CKEditorLoadingTest extends BrowserTestBase {
       'name' => 'Article',
     ]);
 
-    $this->untrustedUser = $this->drupalCreateUser([
-      'create article content',
-      'edit any article content',
-    ]);
-    $this->normalUser = $this->drupalCreateUser([
-      'create article content',
-      'edit any article content',
-      'use text format filtered_html',
-      'use text format full_html',
-    ]);
+    $this->untrustedUser = $this->drupalCreateUser(['create article content', 'edit any article content']);
+    $this->normalUser = $this->drupalCreateUser(['create article content', 'edit any article content', 'use text format filtered_html', 'use text format full_html']);
   }
 
   /**

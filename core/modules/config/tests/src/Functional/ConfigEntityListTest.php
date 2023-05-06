@@ -21,7 +21,7 @@ class ConfigEntityListTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'config_test'];
+  protected static $modules = ['block', 'config_test'];
 
   /**
    * {@inheritdoc}
@@ -31,7 +31,7 @@ class ConfigEntityListTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Delete the override config_test entity since it is not required by this
     // test.
@@ -156,10 +156,7 @@ class ConfigEntityListTest extends BrowserTestBase {
    */
   public function testListUI() {
     // Log in as an administrative user to access the full menu trail.
-    $this->drupalLogin($this->drupalCreateUser([
-      'access administration pages',
-      'administer site configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['access administration pages', 'administer site configuration']));
 
     // Get the list callback page.
     $this->drupalGet('admin/structure/config_test');
@@ -193,7 +190,7 @@ class ConfigEntityListTest extends BrowserTestBase {
     $this->assertNotEmpty($elements[2]->find('xpath', '//ul'), 'Operations list found.');
 
     // Add a new entity using the operations link.
-    $this->assertSession()->linkExists('Add test configuration');
+    $this->assertLink('Add test configuration');
     $this->clickLink('Add test configuration');
     $this->assertSession()->statusCodeEquals(200);
     $edit = [
@@ -257,9 +254,7 @@ class ConfigEntityListTest extends BrowserTestBase {
    * Test paging.
    */
   public function testPager() {
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer site configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer site configuration']));
 
     $storage = \Drupal::service('entity_type.manager')->getListBuilder('config_test')->getStorage();
 

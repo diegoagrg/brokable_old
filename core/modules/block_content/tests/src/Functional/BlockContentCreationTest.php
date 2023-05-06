@@ -21,7 +21,7 @@ class BlockContentCreationTest extends BlockContentTestBase {
    *
    * @var array
    */
-  public static $modules = ['block_content_test', 'dblog', 'field_ui'];
+  protected static $modules = ['block_content_test', 'dblog', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -41,7 +41,7 @@ class BlockContentCreationTest extends BlockContentTestBase {
   /**
    * Sets the test up.
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->drupalLogin($this->adminUser);
   }
@@ -204,7 +204,7 @@ class BlockContentCreationTest extends BlockContentTestBase {
       $this->fail('Expected exception has not been thrown.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Expected exception has been thrown.');
     }
 
     $connection = Database::getConnection();

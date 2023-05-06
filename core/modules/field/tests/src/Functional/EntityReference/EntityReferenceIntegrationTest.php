@@ -45,7 +45,7 @@ class EntityReferenceIntegrationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['config_test', 'entity_test', 'field_ui'];
+  protected static $modules = ['config_test', 'entity_test', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -55,15 +55,11 @@ class EntityReferenceIntegrationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create a test user.
-    $web_user = $this->drupalCreateUser([
-      'administer entity_test content',
-      'administer entity_test fields',
-      'view test entity',
-    ]);
+    $web_user = $this->drupalCreateUser(['administer entity_test content', 'administer entity_test fields', 'view test entity']);
     $this->drupalLogin($web_user);
   }
 

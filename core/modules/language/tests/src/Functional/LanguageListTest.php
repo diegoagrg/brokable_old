@@ -20,7 +20,7 @@ class LanguageListTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['language'];
+  protected static $modules = ['language'];
 
   /**
    * {@inheritdoc}
@@ -33,10 +33,7 @@ class LanguageListTest extends BrowserTestBase {
   public function testLanguageList() {
 
     // User to add and remove language.
-    $admin_user = $this->drupalCreateUser([
-      'administer languages',
-      'access administration pages',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer languages', 'access administration pages']);
     $this->drupalLogin($admin_user);
 
     // Get the weight of the last language.

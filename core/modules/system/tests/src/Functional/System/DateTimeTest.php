@@ -19,7 +19,7 @@ class DateTimeTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'node',
     'language',
@@ -34,7 +34,7 @@ class DateTimeTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create admin user and log in admin user.
@@ -159,8 +159,7 @@ class DateTimeTest extends BrowserTestBase {
     $date_format->save();
 
     $this->drupalGet(Url::fromRoute('entity.date_format.collection'));
-    // Ensure that the date format is properly escaped.
-    $this->assertEscaped("<script>alert('XSS');</script>");
+    $this->assertEscaped("<script>alert('XSS');</script>", 'The date format was properly escaped');
 
     // Add a new date format with HTML in it.
     $date_format_id = strtolower($this->randomMachineName(8));
@@ -217,9 +216,7 @@ class DateTimeTest extends BrowserTestBase {
     $this->drupalLogout();
 
     // Now log in as a regular editor.
-    $this->drupalLogin($this->drupalCreateUser([
-      'create page_with_date content',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['create page_with_date content']));
 
     $this->drupalGet('node/add/page_with_date');
     $edit = [

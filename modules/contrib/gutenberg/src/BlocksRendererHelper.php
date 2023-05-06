@@ -5,10 +5,16 @@ namespace Drupal\gutenberg;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Block\TitleBlockPluginInterface;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Controller\TitleResolverInterface;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+use Drupal\Core\Plugin\Context\ContextRepositoryInterface;
+use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class BlocksRendererHelper.
@@ -37,6 +43,34 @@ class BlocksRendererHelper {
   protected $currentUser;
 
   /**
+   * The context repository service.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextRepositoryInterface
+   */
+  protected $contextRepository;
+
+  /**
+   * The context handler service.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   */
+  protected $contextHandler;
+
+  /**
+   * The title resolver.
+   *
+   * @var \Drupal\Core\Controller\TitleResolverInterface
+   */
+  protected $titleResolver;
+
+  /**
+   * The Gutenberg logger.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * BlocksRendererHelper constructor.
    *
    * @param \Drupal\Core\Render\RendererInterface $renderer
@@ -45,14 +79,31 @@ class BlocksRendererHelper {
    *   Block manager service.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   Current user service.
+   * @param \Drupal\Core\Plugin\Context\ContextRepositoryInterface $context_repository
+   *   The lazy context repository service.
+   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
+   *   The plugin context handler.
+   * @param \Drupal\Core\Controller\TitleResolverInterface $title_resolver
+   *   The title resolver.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Gutenberg logger interface.
    */
   public function __construct(
     RendererInterface $renderer,
     BlockManagerInterface $block_manager,
-    AccountProxyInterface $current_user) {
+    AccountProxyInterface $current_user,
+    ContextRepositoryInterface $context_repository,
+    ContextHandlerInterface $context_handler,
+    TitleResolverInterface $title_resolver,
+    LoggerInterface $logger
+  ) {
     $this->renderer = $renderer;
     $this->blockManager = $block_manager;
     $this->currentUser = $current_user;
+    $this->contextRepository = $context_repository;
+    $this->contextHandler = $context_handler;
+    $this->titleResolver = $title_resolver;
+    $this->logger = $logger;
   }
 
   /**
@@ -63,14 +114,30 @@ class BlocksRendererHelper {
    * @param array $config
    *   Block configuration.
    *
-   * @return object|null
+   * @return \Drupal\Core\Block\BlockPluginInterface|null
    *   Block Plugin instance or null.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\ContextException
    */
   public function getBlockFromPluginId($id, array $config = []) {
     try {
-      return $this->blockManager->createInstance($id, $config);
+      $block_instance = $this->blockManager->createInstance($id, $config);
+
+      // Apply runtime contexts.
+      if ($block_instance instanceof ContextAwarePluginInterface) {
+        $contexts = $this->contextRepository->getRuntimeContexts(
+          $block_instance->getContextMapping()
+        );
+        $this->contextHandler->applyContextMapping(
+          $block_instance, $contexts
+        );
+      }
+
+      return $block_instance;
     }
     catch (PluginException $e) {
+      $this->logger->error($e->getMessage());
+
       return NULL;
     }
   }
@@ -80,11 +147,13 @@ class BlocksRendererHelper {
    *
    * @param \Drupal\Core\Block\BlockPluginInterface $plugin_block
    *   Block Plugin instance.
+   * @param bool $render_markup
+   *   Render the response as markup.
    *
    * @return array|\Drupal\Component\Render\MarkupInterface
    *   Array containing render array, or empty.
    */
-  public function getRenderFromBlockPlugin(BlockPluginInterface $plugin_block) {
+  public function getRenderFromBlockPlugin(BlockPluginInterface $plugin_block, $render_markup = TRUE) {
     $render = [
       '#theme' => 'block',
       '#attributes' => [],
@@ -95,7 +164,16 @@ class BlocksRendererHelper {
       '#derivative_plugin_id' => $plugin_block->getDerivativeId(),
     ];
 
-    // Build the block.
+    // Handle title blocks specially.
+    $is_title_block = $plugin_block instanceof TitleBlockPluginInterface;
+    if ($is_title_block) {
+      $request = \Drupal::request();
+      $route_match = \Drupal::routeMatch();
+      $title = $this->titleResolver->getTitle($request, $route_match->getRouteObject());
+      $plugin_block->setTitle($title);
+    }
+
+    // Build the block content.
     $content = $plugin_block->build();
 
     $this->addPropertiesToRender($render, $content);
@@ -103,22 +181,31 @@ class BlocksRendererHelper {
 
     $render['content'] = $content;
 
-    return $this->renderer->renderRoot($render);
+    if ($is_title_block) {
+      // Add the title block cache context.
+      $build['content']['#cache']['contexts'][] = 'url';
+    }
+
+    if ($render_markup) {
+      return $this->renderer->renderRoot($render);
+    }
+
+    return $render;
   }
 
   /**
-   * Check if the access for current user is forbidden.
+   * Check the access of the block.
    *
    * @param \Drupal\Core\Block\BlockPluginInterface $plugin_block
    *   Block Plugin instance.
+   * @param bool $return_as_object
+   *   Whether to return as an object or not.
    *
-   * @return bool
-   *   True if access if forbidden, false otherwise.
+   * @return bool|\Drupal\Core\Access\AccessResultInterface
+   *   The access result.
    */
-  public function isAccessForbidden(BlockPluginInterface $plugin_block) {
-    $access_result = $plugin_block->access($this->currentUser);
-    // $access_result can be boolean or an AccessResult class.
-    return (is_object($access_result) && $access_result->isForbidden() || is_bool($access_result) && !$access_result);
+  public function getBlockAccess(BlockPluginInterface $plugin_block, $return_as_object = TRUE) {
+    return $plugin_block->access($this->currentUser, $return_as_object);
   }
 
   /**

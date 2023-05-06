@@ -28,7 +28,7 @@ abstract class MigrateUpgradeExecuteTestBase extends MigrateUpgradeTestBase {
     $this->createContent();
 
     // Get the current major version.
-    list($this->destinationSiteVersion) = explode('.', \Drupal::VERSION, 2);
+    [$this->destinationSiteVersion] = explode('.', \Drupal::VERSION, 2);
   }
 
   /**
@@ -100,11 +100,11 @@ abstract class MigrateUpgradeExecuteTestBase extends MigrateUpgradeTestBase {
     }
     $this->drupalPostForm(NULL, $paths + $edits, t('Review upgrade'));
     if ($version == 6) {
-      $session->responseContains('Failed to read from Document root for files.');
+      $session->responseContains('Failed to read from Files directory.');
     }
     else {
-      $session->responseContains('Failed to read from Document root for public files.');
-      $session->responseContains('Failed to read from Document root for private files.');
+      $session->responseContains('Failed to read from Public files directory.');
+      $session->responseContains('Failed to read from Private files directory.');
     }
 
     // Restart the upgrade process.

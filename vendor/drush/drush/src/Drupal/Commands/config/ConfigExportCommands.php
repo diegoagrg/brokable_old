@@ -102,6 +102,8 @@ class ConfigExportCommands extends DrushCommands
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
      * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
      * @option diff Show preview as a diff, instead of a change list.
+     * @usage drush config:export
+     *   Export configuration files to the site's config directory.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
@@ -123,7 +125,7 @@ class ConfigExportCommands extends DrushCommands
     public function doExport($options, $destination_dir)
     {
         // Prepare the configuration storage for the export.
-        if ($destination_dir ==  Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($destination_dir ==  Path::canonicalize(\drush_config_get_config_directory())) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);

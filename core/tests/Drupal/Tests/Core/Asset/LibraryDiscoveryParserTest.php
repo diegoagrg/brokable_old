@@ -73,7 +73,7 @@ class LibraryDiscoveryParserTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->moduleHandler = $this->createMock('Drupal\Core\Extension\ModuleHandlerInterface');
@@ -642,24 +642,6 @@ class LibraryDiscoveryParserTest extends UnitTestCase {
     // The location will be the same as provided in the library definition even
     // though it does not exist.
     $this->assertEquals('libraries/third_party_library/css/example.css', $library['css'][0]['data']);
-  }
-
-  /**
-   * @covers ::parseLibraryInfo
-   */
-  public function testEmptyLibraryFile() {
-    $this->moduleHandler->expects($this->atLeastOnce())
-      ->method('moduleExists')
-      ->with('empty')
-      ->will($this->returnValue(TRUE));
-
-    $path = __DIR__ . '/library_test_files';
-    $path = substr($path, strlen($this->root) + 1);
-    $this->libraryDiscoveryParser->setPaths('module', 'empty', $path);
-
-    $libraries = $this->libraryDiscoveryParser->buildByExtension('empty');
-
-    $this->assertEquals([], $libraries);
   }
 
 }

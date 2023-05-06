@@ -19,7 +19,7 @@ class MediaLibraryGutenbergOpener implements MediaLibraryOpenerInterface {
    * {@inheritdoc}
    */
   public function checkAccess(MediaLibraryState $state, AccountInterface $account) {
-    return AccessResult::allowedIf($account->hasPermission('gutenberg administer'));
+    return AccessResult::allowedIf($account->hasPermission('use gutenberg'));
   }
 
   /**

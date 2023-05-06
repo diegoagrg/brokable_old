@@ -19,7 +19,12 @@ class BlockUiTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'block_test', 'help', 'condition_test'];
+  protected static $modules = [
+    'block',
+    'block_test',
+    'help',
+    'condition_test',
+  ];
 
   /**
    * {@inheritdoc}
@@ -47,7 +52,7 @@ class BlockUiTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Create and log in an administrative user.
     $this->adminUser = $this->drupalCreateUser([
@@ -152,9 +157,9 @@ class BlockUiTest extends BrowserTestBase {
     \Drupal::service('theme_installer')->install(['stable', 'stark']);
     $this->drupalGet('admin/structure/block');
     $theme_handler = \Drupal::service('theme_handler');
-    $this->assertSession()->linkExists($theme_handler->getName('classy'));
-    $this->assertSession()->linkExists($theme_handler->getName('stark'));
-    $this->assertSession()->linkNotExists($theme_handler->getName('stable'));
+    $this->assertLink($theme_handler->getName('classy'));
+    $this->assertLink($theme_handler->getName('stark'));
+    $this->assertNoLink($theme_handler->getName('stable'));
 
     // Ensure that a hidden theme cannot use the block demo page.
     $this->drupalGet('admin/structure/block/list/stable');
@@ -166,7 +171,7 @@ class BlockUiTest extends BrowserTestBase {
     \Drupal::service('router.builder')->rebuildIfNeeded();
     $this->drupalPlaceBlock('local_tasks_block', ['region' => 'header', 'theme' => 'stable']);
     $this->drupalGet('admin/structure/block');
-    $this->assertSession()->linkExists($theme_handler->getName('stable'));
+    $this->assertLink($theme_handler->getName('stable'));
     $this->drupalGet('admin/structure/block/list/stable');
     $this->assertSession()->statusCodeEquals(200);
   }

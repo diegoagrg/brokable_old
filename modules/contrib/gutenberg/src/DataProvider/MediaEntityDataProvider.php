@@ -8,6 +8,8 @@ use Drupal\gutenberg\AssertMediaTrait;
 /**
  * Provides data for media entity type for Gutenberg editor.
  *
+ * Usually called when a media file is uploaded.
+ *
  * @package Drupal\gutenberg\DataProvider
  */
 class MediaEntityDataProvider extends BaseDataProvider {
@@ -22,7 +24,7 @@ class MediaEntityDataProvider extends BaseDataProvider {
 
     /** @var \Drupal\file\FileInterface $entity */
     $uri = $entity->getFileUri();
-    $source_url = file_url_transform_relative(file_create_url($uri));
+    $source_url = \Drupal::service('file_url_generator')->generateString($uri);
     $file_data = $this->getFileData($entity->id());
 
     $result = [
@@ -37,6 +39,8 @@ class MediaEntityDataProvider extends BaseDataProvider {
       'type' => 'attachment',
       'date_gmt' => date('c', $entity->getCreatedTime()),
       'date' => date('c', $entity->getCreatedTime()),
+      // Structure required:
+      // https://github.com/WordPress/gutenberg/blob/8afed75c6f2daa2624b0f91781aa4bee163d4e93/packages/media-utils/src/utils/upload-media.js#L182
       'title' => [
         'raw' => $file_data['title'] ?? '',
         'rendered' => $file_data['title'] ?? '',

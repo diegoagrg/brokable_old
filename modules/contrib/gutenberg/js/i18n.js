@@ -15,18 +15,18 @@
     return Drupal.t(value, {}, { context: context });
   };
   wp.i18n._n = function (single, plural, number) {
-    try {
-      return sprintf(Drupal.formatPlural(number, single, plural), number);
-    } catch (error) {
-      console.warn(error);
+    if (typeof number === 'undefined') {
+      number = 1;
     }
+    number = number || 0;
+    return Drupal.formatPlural(number, single, plural);
   };
   wp.i18n._nx = function (single, plural, number, context) {
-    try {
-      return sprintf(Drupal.formatPlural(number, single, plural, {}, { context: context }), number);
-    } catch (error) {
-      console.warn(error);
+    if (typeof number === 'undefined') {
+      number = 1;
     }
+    number = number || 0;
+    return Drupal.formatPlural(number, single, plural, {}, { context: context });
   };
 
   wp.i18n.isRTL = function () {

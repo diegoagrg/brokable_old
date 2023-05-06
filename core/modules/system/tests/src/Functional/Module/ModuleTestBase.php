@@ -19,17 +19,14 @@ abstract class ModuleTestBase extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['system_test'];
+  protected static $modules = ['system_test'];
 
   protected $adminUser;
 
   protected function setUp() {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser([
-      'access administration pages',
-      'administer modules',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages', 'administer modules']);
     $this->drupalLogin($this->adminUser);
   }
 

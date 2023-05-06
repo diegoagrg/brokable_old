@@ -404,8 +404,7 @@ class Comment extends ContentEntityBase implements CommentInterface {
    * {@inheritdoc}
    */
   public function getAuthorName() {
-    // If their is a valid user id and the user entity exists return the label.
-    if ($this->get('uid')->target_id && $this->get('uid')->entity) {
+    if ($this->get('uid')->target_id) {
       return $this->get('uid')->entity->label();
     }
     return $this->get('name')->value ?: \Drupal::config('user.settings')->get('anonymous');
@@ -483,14 +482,6 @@ class Comment extends ContentEntityBase implements CommentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getStatus() {
-    @trigger_error(__NAMESPACE__ . '\Comment::getStatus() is deprecated in drupal:8.3.0 and is removed from drupal:9.0.0. Use \Drupal\Core\Entity\EntityPublishedInterface::isPublished() instead. See https://www.drupal.org/node/2830201', E_USER_DEPRECATED);
-    return $this->get('status')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getThread() {
     $thread = $this->get('thread');
     if (!empty($thread->value)) {
@@ -511,8 +502,8 @@ class Comment extends ContentEntityBase implements CommentInterface {
    */
   public static function preCreate(EntityStorageInterface $storage, array &$values) {
     if (empty($values['comment_type']) && !empty($values['field_name']) && !empty($values['entity_type'])) {
-      $fields = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($values['entity_type']);
-      $values['comment_type'] = $fields[$values['field_name']]->getSetting('comment_type');
+      $field_storage = FieldStorageConfig::loadByName($values['entity_type'], $values['field_name']);
+      $values['comment_type'] = $field_storage->getSetting('comment_type');
     }
   }
 

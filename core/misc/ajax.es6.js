@@ -559,7 +559,6 @@
         }
       },
       dataType: 'json',
-      jsonp: false,
       type: 'POST',
     };
 

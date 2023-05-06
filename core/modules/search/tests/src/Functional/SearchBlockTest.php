@@ -32,7 +32,7 @@ class SearchBlockTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create and log in user.
@@ -134,7 +134,7 @@ class SearchBlockTest extends BrowserTestBase {
     $name = $this->adminUser->getAccountName();
     $email = $this->adminUser->getEmail();
     $this->drupalPostForm('node', ['keys' => $name], t('Search'));
-    $this->assertSession()->linkExists($name);
+    $this->assertLink($name);
   }
 
 }

@@ -18,7 +18,7 @@ class EntityApiTest extends EntityKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     foreach (entity_test_entity_types() as $entity_type_id) {
@@ -214,6 +214,7 @@ class EntityApiTest extends EntityKernelTestBase {
     try {
       unset($GLOBALS['entity_test_throw_exception']);
       $entity->save();
+      $this->pass('Exception presave not thrown and not caught.');
     }
     catch (EntityStorageException $e) {
       $this->assertNotEqual($e->getCode(), 1, 'Entity presave EntityStorageException caught.');
@@ -235,6 +236,7 @@ class EntityApiTest extends EntityKernelTestBase {
     $entity->save();
     try {
       $entity->delete();
+      $this->pass('Entity predelete EntityStorageException not thrown and not caught.');
     }
     catch (EntityStorageException $e) {
       $this->assertNotEqual($e->getCode(), 2, 'Entity predelete EntityStorageException thrown.');

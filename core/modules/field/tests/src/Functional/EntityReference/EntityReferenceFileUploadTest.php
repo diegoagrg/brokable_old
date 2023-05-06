@@ -17,7 +17,7 @@ class EntityReferenceFileUploadTest extends BrowserTestBase {
 
   use TestFileCreationTrait;
 
-  public static $modules = ['entity_reference', 'node', 'file'];
+  protected static $modules = ['entity_reference', 'node', 'file'];
 
   /**
    * {@inheritdoc}
@@ -45,7 +45,7 @@ class EntityReferenceFileUploadTest extends BrowserTestBase {
    */
   protected $nodeId;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create "referencing" and "referenced" node types.
@@ -121,10 +121,7 @@ class EntityReferenceFileUploadTest extends BrowserTestBase {
    * Tests that the autocomplete input element does not cause ajax fatal.
    */
   public function testFileUpload() {
-    $user1 = $this->drupalCreateUser([
-      'access content',
-      "create $this->referencingType content",
-    ]);
+    $user1 = $this->drupalCreateUser(['access content', "create $this->referencingType content"]);
     $this->drupalLogin($user1);
 
     $test_file = current($this->getTestFiles('text'));

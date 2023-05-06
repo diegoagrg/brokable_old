@@ -17,7 +17,7 @@ class FilterHooksTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'filter_test'];
+  protected static $modules = ['node', 'filter_test'];
 
   /**
    * {@inheritdoc}
@@ -36,11 +36,7 @@ class FilterHooksTest extends BrowserTestBase {
     $type = $this->drupalCreateContentType(['name' => $type_name, 'type' => $type_name]);
     $node_permission = "create $type_name content";
 
-    $admin_user = $this->drupalCreateUser([
-      'administer filters',
-      'administer nodes',
-      $node_permission,
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer filters', 'administer nodes', $node_permission]);
     $this->drupalLogin($admin_user);
 
     // Add a text format.

@@ -113,7 +113,8 @@ class OEmbedResourceConstraintValidator extends ConstraintValidator implements C
     // Verify that resource fetching works, because some URLs might match
     // the schemes but don't support oEmbed.
     try {
-      $resource_url = $this->urlResolver->getResourceUrl($url);
+      $endpoints = $provider->getEndpoints();
+      $resource_url = reset($endpoints)->buildResourceUrl($url);
       $this->resourceFetcher->fetchResource($resource_url);
     }
     catch (ResourceException $e) {

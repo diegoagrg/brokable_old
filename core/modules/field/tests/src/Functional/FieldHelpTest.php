@@ -16,7 +16,7 @@ class FieldHelpTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['field', 'help'];
+  protected static $modules = ['field', 'help'];
 
   /**
    * {@inheritdoc}
@@ -31,14 +31,11 @@ class FieldHelpTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create the admin user.
-    $this->adminUser = $this->drupalCreateUser([
-      'access administration pages',
-      'view the administration theme',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access administration pages', 'view the administration theme']);
   }
 
   /**
@@ -58,10 +55,10 @@ class FieldHelpTest extends BrowserTestBase {
     \Drupal::service('plugin.manager.field.field_type')->clearCachedDefinitions();
 
     $this->drupalGet('admin/help/field');
-    $this->assertSession()->linkExists('Options', 0, 'Options module is listed on the Field help page.');
+    $this->assertLink('Options', 0, 'Options module is listed on the Field help page.');
     $this->assertText('Field API Test', 'Modules with field types that do not implement hook_help are listed.');
-    $this->assertSession()->linkNotExists('Field API Test', 'Modules with field types that do not implement hook_help are not linked.');
-    $this->assertSession()->linkNotExists('Link', 'Modules that have not been installed, are not listed.');
+    $this->assertNoLink('Field API Test', 'Modules with field types that do not implement hook_help are not linked.');
+    $this->assertNoLink('Link', 'Modules that have not been installed, are not listed.');
   }
 
 }

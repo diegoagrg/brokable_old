@@ -29,7 +29,7 @@ class ContactSitewideTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'text',
     'contact',
     'field_ui',
@@ -47,7 +47,7 @@ class ContactSitewideTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->drupalPlaceBlock('system_breadcrumb_block');
     $this->drupalPlaceBlock('local_actions_block');
@@ -59,9 +59,7 @@ class ContactSitewideTest extends BrowserTestBase {
    */
   public function testSiteWideContact() {
     // Tests name and email fields for authenticated and anonymous users.
-    $this->drupalLogin($this->drupalCreateUser([
-      'access site-wide contact form',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['access site-wide contact form']));
     $this->drupalGet('contact');
 
     // Ensure that there is no textfield for name.

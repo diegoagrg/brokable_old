@@ -14,7 +14,7 @@ var _wp = wp,
     data = _wp.data,
     element = _wp.element,
     components = _wp.components,
-    editor = _wp.editor;
+    blockEditor = _wp.blockEditor;
 var registerBlockType = blocks.registerBlockType;
 var dispatch = data.dispatch,
     select = data.select;
@@ -26,12 +26,12 @@ var PanelBody = components.PanelBody,
     IconButton = components.IconButton,
     Toolbar = components.Toolbar,
     SelectControl = components.SelectControl;
-var InnerBlocks = editor.InnerBlocks,
-    RichText = editor.RichText,
-    InspectorControls = editor.InspectorControls,
-    PanelColorSettings = editor.PanelColorSettings,
-    MediaUpload = editor.MediaUpload,
-    BlockControls = editor.BlockControls;
+var InnerBlocks = blockEditor.InnerBlocks,
+    RichText = blockEditor.RichText,
+    InspectorControls = blockEditor.InspectorControls,
+    PanelColorSettings = blockEditor.PanelColorSettings,
+    MediaUpload = blockEditor.MediaUpload,
+    BlockControls = blockEditor.BlockControls;
 
 var __ = Drupal.t;
 
@@ -198,6 +198,69 @@ var settings = {
   }
 };
 
+var dynamicBlockSettings = {
+  title: __('Gutenberg Example Dynamic Block'),
+  description: __('Gutenberg example dynamic block that can be rendered server-side.'),
+  icon: 'welcome-learn-more',
+  attributes: {
+    title: {
+      type: 'string'
+    }
+  },
+
+  edit: function edit(_ref3) {
+    var className = _ref3.className,
+        attributes = _ref3.attributes,
+        setAttributes = _ref3.setAttributes,
+        isSelected = _ref3.isSelected;
+    var title = attributes.title;
+
+
+    return React.createElement(
+      'div',
+      { className: className },
+      React.createElement(
+        'div',
+        null,
+        '\u2014 Hello from the Gutenberg JS editor.'
+      ),
+      React.createElement(
+        'div',
+        { className: 'dynamic-block-title' },
+        React.createElement(RichText, {
+          identifier: 'title',
+          tagName: 'h2',
+          value: title,
+          placeholder: __('Title'),
+          onChange: function onChange(title) {
+            setAttributes({
+              title: title
+            });
+          },
+          onSplit: function onSplit() {
+            return null;
+          },
+          unstableOnSplit: function unstableOnSplit() {
+            return null;
+          }
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'dynamic-block-content' },
+        React.createElement(InnerBlocks, null)
+      )
+    );
+  },
+  save: function save(_ref4) {
+    var className = _ref4.className,
+        attributes = _ref4.attributes;
+    var title = attributes.title;
+
+    return React.createElement(InnerBlocks.Content, null);
+  }
+};
+
 var category = {
   slug: 'example',
   title: __('Examples')
@@ -209,3 +272,4 @@ var currentCategories = select('core/blocks').getCategories().filter(function (i
 dispatch('core/blocks').setCategories([category].concat(_toConsumableArray(currentCategories)));
 
 registerBlockType(category.slug + '/example-block', _extends({ category: category.slug }, settings));
+registerBlockType(category.slug + '/dynamic-block', _extends({ category: category.slug }, dynamicBlockSettings));

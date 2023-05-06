@@ -22,7 +22,7 @@ class SiteMaintenanceTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node'];
+  protected static $modules = ['node'];
 
   /**
    * {@inheritdoc}
@@ -31,7 +31,7 @@ class SiteMaintenanceTest extends BrowserTestBase {
 
   protected $adminUser;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Configure 'node' as front page.
@@ -41,10 +41,7 @@ class SiteMaintenanceTest extends BrowserTestBase {
     // Create a user allowed to access site in maintenance mode.
     $this->user = $this->drupalCreateUser(['access site in maintenance mode']);
     // Create an administrative user.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer site configuration',
-      'access site in maintenance mode',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer site configuration', 'access site in maintenance mode']);
     $this->drupalLogin($this->adminUser);
   }
 
@@ -161,6 +158,7 @@ class SiteMaintenanceTest extends BrowserTestBase {
     \Drupal::state()->set('system.maintenance_mode', TRUE);
     $formats = ['json', 'xml', 'non-existing'];
     foreach ($formats as $format) {
+      $this->pass('Testing format ' . $format);
       $this->drupalGet('<front>', ['query' => ['_format' => $format]]);
       $this->assertSession()->statusCodeEquals(503);
       $this->assertRaw('Drupal is currently under maintenance. We should be back shortly. Thank you for your patience.');

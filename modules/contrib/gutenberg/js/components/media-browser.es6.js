@@ -1,11 +1,23 @@
 ((wp, Drupal, DrupalGutenberg, drupalSettings) => {
-  const { components, element, editor } = wp;
-  const { Component, Fragment } = element;
+  const { components, element, blockEditor, editor } = wp;
+  const { Component, Fragment, createPortal, useRef } = element;
   const { MediaBrowserDetails } = DrupalGutenberg.Components;
   const { Button, FormFileUpload } = components;
   const { mediaUpload } = editor;
 
-  const __ = Drupal.t;
+  function ModalActions({element, children}) {
+    if (!element.current) {
+      return (
+        <Fragment>
+          {children}
+        </Fragment>
+      )
+    }
+
+    const pane = element.current.parentNode.parentNode.querySelector('.ui-dialog-buttonpane');
+    pane.querySelector('.ui-dialog-buttonset').innerHTML = '';
+    return createPortal(children, pane);
+  }
 
   class MediaBrowser extends Component {
     constructor() {
@@ -22,6 +34,7 @@
       this.selectMedia = this.selectMedia.bind(this);
       this.toggleMedia = this.toggleMedia.bind(this);
       this.uncheckMedia = this.uncheckMedia.bind(this);
+      this.wrapper = React.createRef();
     }
 
     componentWillMount() {
@@ -39,7 +52,7 @@
                 return result;
               }, {}),
             }
-          : { [value]: true });
+          : value && value.length > 0 ? { [value]: true } : {} );
 
       this.setState({
         selected,
@@ -54,10 +67,9 @@
         allowedTypes.push('*');
       }
 
-      fetch(`
-        ${drupalSettings.path.baseUrl}editor/media/search/${allowedTypes.join(
-        '+',
-      )}/*`)
+      const search = allowedTypes.join('+');
+      // TODO use $.ajax rather than fetch for API consistency.
+      fetch(Drupal.url(`editor/media/search/${search}/*`))
         .then(response => response.json())
         .then(json => {
           this.setState({ data: json });
@@ -86,44 +98,18 @@
       const medias = data.filter(item => selected[item.id]);
 
       medias.map(async media => {
-        const title = { raw: null, rendered: null };
-        const caption = { raw: null, rendered: null };
-
-        if (typeof media.title === 'string') {
-          title.raw = media.title;
-        } else if (media.title && media.title.raw) {
-          title.raw = media.title.raw;
-          media.title = media.title.raw;
-        } else if (!media.title.raw) {
-          media.title = '';
-        }
-
-        if (typeof media.caption === 'string') {
-          caption.raw = media.caption;
-        } else if (media.caption && media.caption.raw) {
-          caption.raw = media.caption.raw;
-          media.caption = media.caption.raw;
-        } else if (!media.caption.raw) {
-          media.caption = '';
-        }
-
-        // eslint-disable-next-line camelcase
+        const title = typeof media.title === 'string' ? media.title : '';
+        const caption = typeof media.caption === 'string' ? media.caption : '';
         const { alt_text } = media;
 
-        await fetch(
-          `${drupalSettings.path.baseUrl}editor/media/update_data/${media.id}`,
-          {
-            method: 'post',
-            body: JSON.stringify({
-              title: title.raw,
-              caption: caption.raw,
-              alt_text,
-              // title: media.title.raw || media.title,
-              // caption: media.caption.raw || media.caption,
-              // alt_text: media.alt || media.alt_text,
-            }),
-          },
-        );
+        await fetch(Drupal.url(`editor/media/update_data/${media.id}`), {
+          method: 'post',
+          body: JSON.stringify({
+            title,
+            caption,
+            alt_text,
+          }),
+        });
       });
 
       onSelect(medias);
@@ -179,14 +165,14 @@
       }
 
       return (
-        <div className="media-browser">
+        <div ref={this.wrapper} className="media-browser">
           <div className="content">
             <div className="toolbar">
               <div className="form-item">
                 <input
                   name="media-browser-search"
                   className="text-full"
-                  placeHolder={__('Search')}
+                  placeHolder={Drupal.t('Search')}
                   type="text"
                   onChange={value => {
                     this.setState({ search: value.target.value.toLowerCase() });
@@ -199,10 +185,12 @@
                 .filter(
                   item =>
                     item.media_details.file.toLowerCase().includes(search) ||
-                    (item.title &&
-                      item.title.raw &&
-                      typeof item.title.raw === 'string' &&
-                      item.title.raw.toLowerCase().includes(search)),
+                    (typeof item.title === 'string' &&
+                      item.title.toLowerCase().includes(search)) ||
+                    (typeof item.caption === 'string' &&
+                      item.caption.toLowerCase().includes(search)) ||
+                    (typeof item.alt === 'string' &&
+                      item.alt.toLowerCase().includes(search)),
                 )
                 .map((media, index) => (
                   // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -266,7 +254,7 @@
             <div className="media-details">
               {activeMedia && (
                 <Fragment>
-                  <h2>{__('Media details')}</h2>
+                  <h2>{Drupal.t('Media details')}</h2>
                   <MediaBrowserDetails
                     key={activeMedia.id}
                     onChange={updateMedia}
@@ -276,37 +264,39 @@
               )}
             </div>
           </div>
-          <div className="form-actions">
-            {multiple && (
-              <div className="selected-summary">
-                {`${__('Total selected')}: ${
-                  Object.values(selected).filter(item => item).length
-                }`}
-              </div>
-            )}
-            <div className="buttons">
-              <FormFileUpload
-                isLarge
-                className="editor-media-placeholder__button"
-                onChange={this.uploadFromFiles}
-                accept="image" // { accept }
-                multiple={multiple}
-              >
-                {__('Upload')}
-              </FormFileUpload>
+          <ModalActions element={this.wrapper}>
+            <div className="form-actions">
+              {multiple && (
+                <div className="selected-summary">
+                  {`${Drupal.t('Total selected')}: ${
+                    Object.values(selected).filter(item => item).length
+                  }`}
+                </div>
+              )}
+              <div className="buttons">
+                <FormFileUpload
+                  isLarge
+                  className="editor-media-placeholder__button"
+                  onChange={this.uploadFromFiles}
+                  accept="image" // { accept }
+                  multiple={multiple}
+                >
+                  {Drupal.t('Upload')}
+                </FormFileUpload>
 
-              <Button
-                isLarge
-                disabled={
-                  Object.values(selected).filter(item => item).length === 0
-                }
-                isPrimary
-                onClick={this.selectMedia}
-              >
-                {__('Select')}
-              </Button>
+                <Button
+                  isLarge
+                  disabled={
+                    Object.values(selected).filter(item => item).length == 0 || !selected
+                  }
+                  isPrimary
+                  onClick={this.selectMedia}
+                >
+                  {Drupal.t('Select')}
+                </Button>
+              </div>
             </div>
-          </div>
+          </ModalActions>
         </div>
       );
     }

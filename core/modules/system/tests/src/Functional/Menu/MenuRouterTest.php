@@ -17,7 +17,7 @@ class MenuRouterTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'menu_test', 'test_page_test'];
+  protected static $modules = ['block', 'menu_test', 'test_page_test'];
 
   /**
    * {@inheritdoc}
@@ -31,7 +31,7 @@ class MenuRouterTest extends BrowserTestBase {
    */
   protected $adminTheme;
 
-  protected function setUp() {
+  protected function setUp(): void {
     // Enable dummy module that implements hook_menu.
     parent::setUp();
 
@@ -65,10 +65,10 @@ class MenuRouterTest extends BrowserTestBase {
     // Confirm correct controller activated.
     $this->assertText('test1');
     // Confirm local task links are displayed.
-    $this->assertSession()->linkExists('Local task A');
-    $this->assertSession()->linkExists('Local task B');
-    $this->assertSession()->linkNotExists('Local task C');
-    $this->assertEscaped("<script>alert('Welcome to the jungle!')</script>");
+    $this->assertLink('Local task A');
+    $this->assertLink('Local task B');
+    $this->assertNoLink('Local task C');
+    $this->assertEscaped("<script>alert('Welcome to the jungle!')</script>", ENT_QUOTES, 'UTF-8');
     // Confirm correct local task href.
     $this->assertLinkByHref(Url::fromRoute('menu_test.router_test1', ['bar' => $machine_name])->toString());
     $this->assertLinkByHref(Url::fromRoute('menu_test.router_test2', ['bar' => $machine_name])->toString());

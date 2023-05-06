@@ -41,9 +41,9 @@ class ArgumentDefaultTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'views_ui', 'block'];
+  protected static $modules = ['node', 'views_ui', 'block'];
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     $this->enableViewsTestModule();
@@ -91,10 +91,7 @@ class ArgumentDefaultTest extends ViewTestBase {
    * Tests the use of a default argument plugin that provides no options.
    */
   public function testArgumentDefaultNoOptions() {
-    $admin_user = $this->drupalCreateUser([
-      'administer views',
-      'administer site configuration',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer views', 'administer site configuration']);
     $this->drupalLogin($admin_user);
 
     // The current_user plugin has no options form, and should pass validation.

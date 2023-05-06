@@ -6,15 +6,67 @@
 **/'use strict';
 
 (function (wp, Drupal, drupalSettings, $) {
-  var __ = Drupal.t;
+  function parseQueryStrings(query) {
+    var match = void 0;
+    var urlParams = {};
+
+    var pl = /\+/g;
+    var search = /([^&=]+)=?([^&]*)/g;
+    var decode = function decode(s) {
+      return decodeURIComponent(s.replace(pl, ' '));
+    };
+
+    while ((match = search.exec(query)) !== null) {
+      if (decode(match[1]) in urlParams) {
+        if (!Array.isArray(urlParams[decode(match[1])])) {
+          urlParams[decode(match[1])] = [urlParams[decode(match[1])]];
+        }
+        urlParams[decode(match[1])].push(decode(match[2]));
+      } else {
+        urlParams[decode(match[1])] = decode(match[2]);
+      }
+    }
+
+    return urlParams;
+  }
+
+  function errorHandler(errorResponse, reject) {
+    var fallbackMessage = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+    var errorMessage = void 0;
+    var rawHTML = false;
+    if (errorResponse && errorResponse.responseJSON) {
+      var responseJSON = errorResponse.responseJSON;
+      if (typeof responseJSON.error === 'string') {
+        errorMessage = responseJSON.error;
+      } else if (typeof responseJSON.message === 'string') {
+        errorMessage = responseJSON.message;
+      }
+      if (errorMessage && responseJSON.rawHTML) {
+        rawHTML = responseJSON.rawHTML;
+      }
+    }
+
+    if (!errorMessage && fallbackMessage) {
+      errorMessage = fallbackMessage;
+    }
+
+    if (errorMessage) {
+      Drupal.notifyError(errorMessage, rawHTML);
+    } else {
+      console.warn('API error: unexpected error message: ' + JSON.stringify(errorResponse));
+    }
+
+    reject(errorResponse);
+  }
 
   var types = {
     page: {
       id: 1,
       labels: {
-        Document: Drupal.t('Node'),
-        document: Drupal.t('Node'),
-        posts: Drupal.t('Nodes')
+        singular_name: drupalSettings.gutenberg.nodeTypeLabel,
+        Document: drupalSettings.gutenberg.nodeTypeLabel,
+        document: drupalSettings.gutenberg.nodeTypeLabel
       },
       name: 'Page',
       rest_base: 'pages',
@@ -29,15 +81,16 @@
         'page-attributes': false,
         revisions: false,
         thumbnail: false,
-        title: false },
-      taxonomies: [],
-      viewable: false,
-      saveable: false,
-      publishable: false,
-      autosaveable: false
+        title: false,
+        layout: false
+      },
+      taxonomies: []
     },
-    block: {
+    wp_block: {
       capabilities: {},
+      labels: {
+        singular_name: 'Block'
+      },
       name: 'Blocks',
       rest_base: 'blocks',
       slug: 'wp_block',
@@ -82,10 +135,6 @@
           type: 'page',
           date: date,
           date_gmt: date,
-          title: {
-            raw: document.title,
-            rendered: document.title
-          },
           status: 'draft',
           content: {
             raw: data.content,
@@ -124,23 +173,35 @@
         });
       }
     },
+    'edit-media': {
+      method: 'POST',
+      regex: /\/wp\/v2\/media\/((\d+)\/edit(.*))/,
+      process: function process(matches, data) {
+        return new Promise(function (resolve, reject) {
+          Drupal.toggleGutenbergLoader('show');
+          $.ajax({
+            method: 'POST',
+            url: Drupal.url('editor/media/edit/' + matches[2]),
+            data: data
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
+          }).always(function () {
+            Drupal.toggleGutenbergLoader('hide');
+          });
+        });
+      }
+    },
     'load-media': {
       method: 'GET',
-      regex: /\/wp\/v2\/media\/(\d*)/g,
+      regex: /\/wp\/v2\/media\/(\d+)/,
       process: function process(matches) {
         return new Promise(function (resolve, reject) {
           Drupal.toggleGutenbergLoader('show');
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'editor/media/load/' + matches[1],
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (error) {
-            error && error.responseJSON && error.responseJSON.error && Drupal.notifyError(error.responseJSON.error);
-            reject(error);
+            url: Drupal.url('editor/media/load/' + matches[1])
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           }).always(function () {
             Drupal.toggleGutenbergLoader('hide');
           });
@@ -194,24 +255,22 @@
           Drupal.toggleGutenbergLoader('show');
           $.ajax({
             method: 'POST',
-            url: drupalSettings.path.baseUrl + 'editor/media/upload/gutenberg',
 
+            url: Drupal.url('editor/media/upload/gutenberg'),
             data: formData,
-            processData: false,
+            dataType: 'json',
+            cache: false,
             contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
+            processData: false
           }).done(function (result) {
             if (Drupal.isMediaEnabled()) {
-              Drupal.notifySuccess(__('File and media entity have been created successfully.'));
+              Drupal.notifySuccess(Drupal.t('File and media entity have been created successfully.'));
             } else {
-              Drupal.notifySuccess(__('File entity has been created successfully.'));
+              Drupal.notifySuccess(Drupal.t('File entity has been created successfully.'));
             }
             resolve(result);
           }).fail(function (error) {
-            error && error.responseJSON && error.responseJSON.error && Drupal.notifyError(error.responseJSON.error);
-            reject(error);
+            errorHandler(error, reject);
           }).always(function () {
             Drupal.toggleGutenbergLoader('hide');
           });
@@ -235,17 +294,13 @@
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'editor/media/dialog?types=' + (data.allowedTypes || []).join(','),
-            processData: false,
-            contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
+            url: Drupal.url('editor/media/dialog'),
+            data: {
+              types: (data.allowedTypes || []).join(','),
+              bundles: (data.allowedBundles || []).join(',')
             }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (error) {
-            error && error.responseJSON && error.responseJSON.error && Drupal.notifyError(error.responseJSON.error);
-            reject(error);
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           }).always(function () {
             Drupal.toggleGutenbergLoader('hide');
           });
@@ -260,17 +315,9 @@
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'media/6/edit',
-            processData: false,
-            contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (error) {
-            error && error.responseJSON && error.responseJSON.error && Drupal.notifyError(error.responseJSON.error);
-            reject(error);
+            url: Drupal.url('media/6/edit')
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           }).always(function () {
             Drupal.toggleGutenbergLoader('hide');
           });
@@ -309,19 +356,15 @@
       regex: /\/oembed\/1\.0\/proxy\?(.*)/g,
       process: function process(matches) {
         return new Promise(function (resolve, reject) {
+          var data = parseQueryStrings(matches[1]);
+          data.maxWidth = data.maxWidth || 800;
+
           $.ajax({
             method: 'GET',
-
-            url: (drupalSettings.path.baseUrl === '/' ? '' : drupalSettings.path.baseUrl) + '/editor/oembed?url=' + encodeURIComponent('http://open.iframe.ly/api/oembed?' + matches[1] + '&origin=drupal'),
-
-            processData: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            url: Drupal.url('editor/oembed'),
+            data: data
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -386,22 +429,15 @@
 
     'update-block': {
       method: 'PUT',
-      regex: /\/wp\/v2\/blocks\/(\d*)/g,
+      regex: /\/wp\/v2\/blocks\/(\d+)/g,
       process: function process(matches, data) {
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'PUT',
-            url: drupalSettings.path.baseUrl + 'editor/reusable-blocks/' + data.id,
-            data: JSON.stringify(data),
-            processData: false,
-            contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            url: Drupal.url('editor/reusable-blocks/' + data.id),
+            data: data
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -409,21 +445,14 @@
 
     'delete-block': {
       method: 'DELETE',
-      regex: /\/wp\/v2\/blocks\/(\d*)/g,
+      regex: /\/wp\/v2\/blocks\/(\d+)/g,
       process: function process(matches) {
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'DELETE',
-            url: drupalSettings.path.baseUrl + 'editor/reusable-blocks/' + matches[1],
-            processData: false,
-            contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            url: Drupal.url('editor/reusable-blocks/' + matches[1])
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -440,17 +469,14 @@
 
           $.ajax({
             method: 'POST',
-            url: drupalSettings.path.baseUrl + 'editor/reusable-blocks',
+            url: Drupal.url('editor/reusable-blocks'),
             data: formData,
-            processData: false,
+            dataType: 'json',
+            cache: false,
             contentType: false,
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            processData: false
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -462,14 +488,9 @@
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'editor/reusable-blocks/' + matches[1],
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            url: Drupal.url('editor/reusable-blocks/' + matches[1])
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -477,18 +498,14 @@
     'load-blocks': {
       method: 'GET',
       regex: /\/wp\/v2\/blocks\?(.*)/g,
-      process: function process() {
+      process: function process(matches) {
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'editor/reusable-blocks',
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
-          }).done(function (result) {
-            resolve(result);
-          }).fail(function (err) {
-            reject(err);
+            url: Drupal.url('editor/reusable-blocks'),
+            data: parseQueryStrings(matches[1])
+          }).done(resolve).fail(function (error) {
+            errorHandler(error, reject);
           });
         });
       }
@@ -518,10 +535,8 @@
         return new Promise(function (resolve, reject) {
           $.ajax({
             method: 'GET',
-            url: drupalSettings.path.baseUrl + 'editor/search?' + matches[1],
-            accepts: {
-              json: 'application/json, text/javascript, */*; q=0.01'
-            }
+            url: Drupal.url('editor/search'),
+            data: parseQueryStrings(matches[1])
           }).done(function (result) {
             resolve(result);
           }).fail(function (err) {

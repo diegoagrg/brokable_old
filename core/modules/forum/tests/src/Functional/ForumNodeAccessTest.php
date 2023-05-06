@@ -17,7 +17,7 @@ class ForumNodeAccessTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'comment',
     'forum',
@@ -32,7 +32,7 @@ class ForumNodeAccessTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     node_access_rebuild();
     node_access_test_add_field(NodeType::load('forum'));
@@ -49,12 +49,7 @@ class ForumNodeAccessTest extends BrowserTestBase {
     // Create some users.
     $access_user = $this->drupalCreateUser(['node test view']);
     $no_access_user = $this->drupalCreateUser();
-    $admin_user = $this->drupalCreateUser([
-      'access administration pages',
-      'administer modules',
-      'administer blocks',
-      'create forum content',
-    ]);
+    $admin_user = $this->drupalCreateUser(['access administration pages', 'administer modules', 'administer blocks', 'create forum content']);
 
     $this->drupalLogin($admin_user);
 

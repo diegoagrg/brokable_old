@@ -1,9 +1,9 @@
-const { blocks, data, element, components, editor } = wp;
+const { blocks, data, element, components, blockEditor } = wp;
 const { registerBlockType } = blocks;
 const { dispatch, select } = data;
 const { Fragment } = element;
 const { PanelBody, BaseControl, Icon, RangeControl, IconButton, Toolbar, SelectControl } = components;
-const { InnerBlocks, RichText, InspectorControls, PanelColorSettings, MediaUpload, BlockControls } = editor;
+const { InnerBlocks, RichText, InspectorControls, PanelColorSettings, MediaUpload, BlockControls } = blockEditor;
 const __ = Drupal.t;
 
 const settings = {
@@ -116,6 +116,54 @@ const settings = {
   },
 };
 
+const dynamicBlockSettings = {
+    title: __('Gutenberg Example Dynamic Block'),
+    description: __('Gutenberg example dynamic block that can be rendered server-side.'),
+    icon: 'welcome-learn-more',
+    attributes: {
+        title: {
+            type: 'string',
+        },
+    },
+
+    edit({ className, attributes, setAttributes, isSelected }) {
+        const { title } = attributes;
+
+        return (
+            <div className={className}>
+                <div>— Hello from the Gutenberg JS editor.</div>
+                <div className="dynamic-block-title">
+                    <RichText
+                        identifier="title"
+                        tagName="h2"
+                        value={title}
+                        placeholder={__('Title')}
+                        onChange={title => {
+                            setAttributes({
+                                title: title,
+                            });
+                        }}
+                        onSplit={() => null}
+                        unstableOnSplit={() => null}
+                    />
+                </div>
+                <div className="dynamic-block-content">
+                    <InnerBlocks />
+                </div>
+            </div>
+        );
+    },
+
+    save({ className, attributes }) {
+        const { title } = attributes;
+
+        // Save the inner content block.
+        return (
+            <InnerBlocks.Content />
+        );
+    },
+};
+
 const category = {
   slug: 'example',
   title: __('Examples'),
@@ -125,3 +173,4 @@ const currentCategories = select('core/blocks').getCategories().filter(item => i
 dispatch('core/blocks').setCategories([ category, ...currentCategories ]);
 
 registerBlockType(`${category.slug}/example-block`, { category: category.slug, ...settings });
+registerBlockType(`${category.slug}/dynamic-block`, { category: category.slug, ...dynamicBlockSettings });

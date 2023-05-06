@@ -25,7 +25,7 @@ class FormTest extends FieldTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'field_test',
     'options',
@@ -66,13 +66,10 @@ class FormTest extends FieldTestBase {
    */
   protected $field;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $web_user = $this->drupalCreateUser([
-      'view test entity',
-      'administer entity_test content',
-    ]);
+    $web_user = $this->drupalCreateUser(['view test entity', 'administer entity_test content']);
     $this->drupalLogin($web_user);
 
     $this->fieldStorageSingle = [
@@ -311,8 +308,7 @@ class FormTest extends FieldTestBase {
     }
     ksort($pattern);
     $pattern = implode('.*', array_values($pattern));
-    // Verify that the widgets are displayed in the correct order.
-    $this->assertPattern("|$pattern|s");
+    $this->assertPattern("|$pattern|s", 'Widgets are displayed in the correct order');
     $this->assertFieldByName("{$field_name}[$delta][value]", '', "New widget is displayed");
     $this->assertFieldByName("{$field_name}[$delta][_weight]", $delta, "New widget has the right weight");
     $this->assertNoField("{$field_name}[" . ($delta + 1) . '][value]', 'No extraneous widget is displayed');

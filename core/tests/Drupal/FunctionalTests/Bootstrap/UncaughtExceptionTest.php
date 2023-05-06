@@ -38,7 +38,7 @@ class UncaughtExceptionTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['error_service_test', 'error_test'];
+  protected static $modules = ['error_service_test', 'error_test'];
 
   /**
    * {@inheritdoc}
@@ -48,7 +48,7 @@ class UncaughtExceptionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $settings_filename = $this->siteDirectory . '/settings.php';
@@ -240,7 +240,8 @@ class UncaughtExceptionTest extends BrowserTestBase {
 
       default:
         // We can not carry out this test.
-        $this->markTestSkipped('Unable to run \Drupal\system\Tests\System\UncaughtExceptionTest::testLostDatabaseConnection for this database type.');
+        $this->pass('Unable to run \Drupal\system\Tests\System\UncaughtExceptionTest::testLostDatabaseConnection for this database type.');
+        return;
     }
 
     // We simulate a broken database connection by rewrite settings.php to no

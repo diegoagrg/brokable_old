@@ -18,7 +18,7 @@ class FieldUIRouteTest extends BrowserTestBase {
    *
    * @var string[]
    */
-  public static $modules = ['block', 'entity_test', 'field_ui'];
+  protected static $modules = ['block', 'entity_test', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -28,7 +28,7 @@ class FieldUIRouteTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalLogin($this->rootUser);
@@ -87,7 +87,7 @@ class FieldUIRouteTest extends BrowserTestBase {
 
     $edit = ['display_modes_custom[test]' => TRUE];
     $this->drupalPostForm('admin/config/people/accounts/display', $edit, t('Save'));
-    $this->assertSession()->linkExists('Test');
+    $this->assertLink('Test');
 
     // Create new form mode and verify it's available on the Manage Form
     // Display screen after enabling it.
@@ -100,17 +100,17 @@ class FieldUIRouteTest extends BrowserTestBase {
 
     $edit = ['display_modes_custom[test]' => TRUE];
     $this->drupalPostForm('admin/config/people/accounts/form-display', $edit, t('Save'));
-    $this->assertSession()->linkExists('Test');
+    $this->assertLink('Test');
   }
 
   /**
    * Asserts that local tasks exists.
    */
   public function assertLocalTasks() {
-    $this->assertSession()->linkExists('Settings');
-    $this->assertSession()->linkExists('Manage fields');
-    $this->assertSession()->linkExists('Manage display');
-    $this->assertSession()->linkExists('Manage form display');
+    $this->assertLink('Settings');
+    $this->assertLink('Manage fields');
+    $this->assertLink('Manage display');
+    $this->assertLink('Manage form display');
   }
 
   /**

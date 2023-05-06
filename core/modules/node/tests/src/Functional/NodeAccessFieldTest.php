@@ -17,7 +17,7 @@ class NodeAccessFieldTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_access_test', 'field_ui'];
+  protected static $modules = ['node_access_test', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -45,21 +45,14 @@ class NodeAccessFieldTest extends NodeTestBase {
    */
   protected $fieldName;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     node_access_rebuild();
 
     // Create some users.
-    $this->adminUser = $this->drupalCreateUser([
-      'access content',
-      'bypass node access',
-    ]);
-    $this->contentAdminUser = $this->drupalCreateUser([
-      'access content',
-      'administer content types',
-      'administer node fields',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['access content', 'bypass node access']);
+    $this->contentAdminUser = $this->drupalCreateUser(['access content', 'administer content types', 'administer node fields']);
 
     // Add a custom field to the page content type.
     $this->fieldName = mb_strtolower($this->randomMachineName() . '_field_name');

@@ -3,7 +3,10 @@
 namespace Drupal\gutenberg\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\file\Entity\File;
+use Drupal\Core\Image\ImageFactory;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\gutenberg\MediaSelectionProcessor\MediaSelectionProcessorManagerInterface;
 use Drupal\gutenberg\Service\FileEntityNotFoundException;
 use Drupal\gutenberg\Service\MediaEntityNotFoundException;
@@ -14,6 +17,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\editor\Entity\Editor;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * Returns responses for our image routes.
@@ -35,16 +41,52 @@ class MediaController extends ControllerBase {
   protected $mediaSelectionProcessorManager;
 
   /**
+   * Drupal\Core\Render\RendererInterface instance.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
+   * Drupal\Core\Image\ImageFactory instance.
+   *
+   * @var \Drupal\Core\Image\ImageFactory
+   */
+  protected $imageFactory;
+
+  /**
+   * Drupal\Core\File\FileSystemInterface instance.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * MediaController constructor.
    *
    * @param \Drupal\gutenberg\Service\MediaService $media_service
    *   The media service.
    * @param \Drupal\gutenberg\MediaSelectionProcessor\MediaSelectionProcessorManagerInterface $media_selection_processor_manager
    *   The media selection processor manager.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer.
+   * @param \Drupal\Core\Image\ImageFactory $image_factory
+   *   The image factory.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The image factory.
    */
-  public function __construct(MediaService $media_service, MediaSelectionProcessorManagerInterface $media_selection_processor_manager) {
+  public function __construct(
+    MediaService $media_service,
+    MediaSelectionProcessorManagerInterface $media_selection_processor_manager,
+    RendererInterface $renderer,
+    ImageFactory $image_factory,
+    FileSystemInterface $file_system
+  ) {
     $this->mediaService = $media_service;
     $this->mediaSelectionProcessorManager = $media_selection_processor_manager;
+    $this->renderer = $renderer;
+    $this->imageFactory = $image_factory;
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -53,7 +95,10 @@ class MediaController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('gutenberg.media_service'),
-      $container->get('gutenberg.media_selection_processor_manager')
+      $container->get('gutenberg.media_selection_processor_manager'),
+      $container->get('renderer'),
+      $container->get('image.factory'),
+      $container->get('file_system')
     );
   }
 
@@ -66,16 +111,19 @@ class MediaController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
    *
-   * @throws \Exception
+   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
    */
   public function dialog(Request $request) {
     try {
       return new JsonResponse([
-        'html' => $this->mediaService->renderDialog(explode(',', $request->get('types', []))),
+        'html' => $this->mediaService->renderDialog(
+          explode(',', $request->query->get('types', '')),
+          !empty($request->query->get('bundles', '')) ? explode(',', $request->query->get('bundles', '')) : NULL
+        ),
       ]);
     }
     catch (MediaTypeNotFoundException $exception) {
-      return new JsonResponse(['error' => $this->t($exception->getMessage())], 404);
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
     }
   }
 
@@ -104,7 +152,7 @@ class MediaController extends ControllerBase {
       return new JsonResponse($this->mediaService->loadMediaData(reset($media_entities)));
     }
     catch (MediaEntityNotFoundException $exception) {
-      return new JsonResponse($this->t($exception->getMessage()), 404);
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
     }
   }
 
@@ -136,7 +184,7 @@ class MediaController extends ControllerBase {
       ]);
     }
     catch (MediaEntityNotFoundException $exception) {
-      return new JsonResponse(['error' => $this->t($exception->getMessage())], 404);
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
     }
   }
 
@@ -153,19 +201,23 @@ class MediaController extends ControllerBase {
    *
    * @throws \Exception
    */
-  public function upload(Request $request, ?Editor $editor) {
+  public function upload(Request $request, Editor $editor = NULL) {
     $files = $request->files->get('files', []);
     $uploaded_file = $files['fid'] ?? NULL;
 
     if (!$uploaded_file instanceof UploadedFile) {
-      return new JsonResponse(['error' => $this->t('Invalid file has been uploaded.')], 422);
+      throw new UnprocessableEntityHttpException('The uploaded file is invalid.');
     }
 
     try {
-      return new JsonResponse($this->mediaService->processMediaEntityUpload($uploaded_file, $editor));
+      return new JsonResponse($this->mediaService->processMediaEntityUpload('fid', $uploaded_file, $editor));
     }
     catch (\Exception $exception) {
-      return new JsonResponse(['error' => $this->t($exception->getMessage())], 500);
+      // DefaultExceptionSubscriber::on4xx only normalizes 4xx client errors.
+      return new JsonResponse(
+        $this->getErrorResponse($exception->getMessage()),
+        JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -182,16 +234,74 @@ class MediaController extends ControllerBase {
    *
    * @throws \Exception
    */
-  public function load(Request $request, ?File $file) {
+  public function load(Request $request, File $file = NULL) {
     if (!$file) {
-      return new JsonResponse(['error' => $this->t('File entity not found.')], 404);
+      throw new NotFoundHttpException('File entity not found.');
     }
 
     try {
       return new JsonResponse($this->mediaService->loadFileData($file));
     }
     catch (FileEntityNotFoundException $exception) {
-      return new JsonResponse($this->t($exception->getMessage()), 404);
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
+    }
+  }
+
+  /**
+   * Create a new media from Gutenberg image editing.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Current request.
+   * @param \Drupal\file\Entity\File|null $file
+   *   Loaded found file entity instance.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The JSON response.
+   *
+   * @throws \Exception
+   */
+  public function edit(Request $request, File $file = NULL) {
+    if (!$file) {
+      throw new NotFoundHttpException('File entity not found.');
+    }
+
+    $x = $request->request->get('x');
+    $y = $request->request->get('y');
+    $width = $request->request->get('width');
+    $height = $request->request->get('height');
+
+    $image = $this->imageFactory->get($file->getFileUri());
+    $original_width = $image->getWidth();
+    $original_height = $image->getHeight();
+
+    $dir = $this->fileSystem->dirname($file->getFileUri());
+    $new_uri = $this->fileSystem->createFilename($file->getFilename(), $dir);
+    $new_filename = preg_replace('/(\.\w+$)/i', '-edited$1', $file->getFilename());
+    $new_x = (int) (($original_width * $x) / 100);
+    $new_y = (int) (($original_height * $y) / 100);
+    $new_width = (int) (($original_width * $width) / 100);
+    $new_height = (int) (($original_height * $height) / 100);
+
+    if (!$image->crop($new_x, $new_y, $new_width, $new_height)) {
+      throw new UnprocessableEntityHttpException($this->t('Image crop failed.'));
+    }
+
+    if (!$image->save($new_uri)) {
+      throw new UnprocessableEntityHttpException($this->t('Unable to save image.'));
+    }
+
+    $new_file = File::create([
+      'uid' => $this->currentUser()->id(),
+      'filename' => $new_filename,
+      'uri' => $new_uri,
+    ]);
+    $new_file->save();
+
+    try {
+      return new JsonResponse($this->mediaService->loadFileData($new_file), 201);
+    }
+    catch (FileEntityNotFoundException $exception) {
+      throw new NotFoundHttpException($exception->getMessage(), $exception);
     }
   }
 
@@ -207,6 +317,9 @@ class MediaController extends ControllerBase {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function search(Request $request, string $type = '', string $search = '') {
     return new JsonResponse(
@@ -225,20 +338,20 @@ class MediaController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
    *
-   * @throws \Exception
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    */
   public function updateData(Request $request, $fid) {
     $data = json_decode($request->getContent(), TRUE);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
-      throw new \Exception("Request data couldn't be parsed.");
+      throw new BadRequestHttpException('Request data could not be parsed.');
     }
 
     try {
       $this->mediaService->updateMediaData($fid, $data);
     }
     catch (\Throwable $exception) {
-      return new JsonResponse(['error' => $this->t("Data couldn't be updated")], 500);
+      return new JsonResponse(['message' => 'Data could not be updated'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     return new JsonResponse(['status' => 'ok']);
@@ -257,6 +370,56 @@ class MediaController extends ControllerBase {
     return new JsonResponse(
       $this->mediaService->getMediaEntityAutoCompleteData($request->get('search', ''))
     );
+  }
+
+  /**
+   * Returns the error response including status messages.
+   *
+   * @param string $error
+   *   The original error.
+   *
+   * @return array
+   *   JSON response to return to the client.
+   */
+  protected function getErrorResponse($error) {
+    $messages = $this->messenger()->deleteAll();
+    if ($messages) {
+      // Display the status messages along with the original error.
+      // @todo (HACKY) Leverage AjaxRenderer + "_wrapper_format=drupal_ajax" to handle this instead.
+      $message_entries = [];
+      foreach (['error', 'warning', 'status'] as $status) {
+        if (isset($messages[$status])) {
+          /* @noinspection SlowArrayOperationsInLoopInspection */
+          $message_entries = array_merge($message_entries, $messages[$status]);
+        }
+      }
+
+      if ($message_entries) {
+        $render = [
+          '#type' => 'inline_template',
+          '#template' => '<div class="gutenberg-error--initial">{{ error }}</div><div class="gutenberg-error--other-messages">{{ messages }}</div>',
+          '#context' => [
+            'error' => $error,
+            'messages' => [
+              '#theme' => 'item_list',
+              '#list_type' => 'ul',
+              '#items' => $message_entries,
+            ],
+          ],
+        ];
+
+        $output = $this->renderer->renderRoot($render);
+        return [
+          'error' => $output,
+          // Render as Raw HTML.
+          'rawHTML' => TRUE,
+        ];
+      }
+    }
+
+    return [
+      'error' => $error,
+    ];
   }
 
 }

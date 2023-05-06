@@ -10,9 +10,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 (function (wp, $, Drupal, drupalSettings) {
   var data = wp.data,
       blocks = wp.blocks,
-      editor = wp.editor;
-  var BlockAlignmentToolbar = editor.BlockAlignmentToolbar,
-      BlockControls = editor.BlockControls;
+      blockEditor = wp.blockEditor;
+  var BlockAlignmentToolbar = blockEditor.BlockAlignmentToolbar,
+      BlockControls = blockEditor.BlockControls;
   var Fragment = wp.element.Fragment;
   var _window$DrupalGutenbe = window.DrupalGutenberg.Components,
       DrupalIcon = _window$DrupalGutenbe.DrupalIcon,
@@ -95,6 +95,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         blockId: {
           type: 'string'
         },
+        settings: {
+          type: 'object'
+        },
         align: {
           type: 'string'
         }
@@ -103,7 +106,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         var attributes = _ref.attributes,
             className = _ref.className,
             setAttributes = _ref.setAttributes;
-        var align = attributes.align;
+        var align = attributes.align,
+            settings = attributes.settings;
 
         setAttributes({ blockId: id });
 
@@ -113,7 +117,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           React.createElement(DrupalBlock, {
             className: className,
             id: id,
-            url: drupalSettings.path.baseUrl + 'editor/blocks/load/' + id
+            name: definition.admin_label,
+            settings: settings
           })
         );
       },
@@ -125,7 +130,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
   function registerDrupalBlocks(contentType) {
     return new Promise(function (resolve) {
-      $.ajax(drupalSettings.path.baseUrl + 'editor/blocks/load_by_type/' + contentType).done(function (definitions) {
+      $.ajax(Drupal.url('editor/blocks/load_by_type/' + contentType)).done(function (definitions) {
         var category = {
           slug: 'drupal',
           title: Drupal.t('Drupal Blocks')

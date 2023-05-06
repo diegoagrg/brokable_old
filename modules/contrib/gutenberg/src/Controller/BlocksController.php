@@ -5,6 +5,7 @@ namespace Drupal\gutenberg\Controller;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Render\Renderer;
 use Drupal\gutenberg\BlocksRendererHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,6 +31,13 @@ class BlocksController extends ControllerBase {
   protected $configFactory;
 
   /**
+   * Drupal\Core\Render\Renderer instance.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
+
+  /**
    * Drupal\gutenberg\BlocksRendererHelper instance.
    *
    * @var \Drupal\gutenberg\BlocksRendererHelper
@@ -43,15 +51,19 @@ class BlocksController extends ControllerBase {
    *   Block manager service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
+   * @param \Drupal\Core\Render\Renderer $renderer
+   *   Render service.
    * @param \Drupal\gutenberg\BlocksRendererHelper $blocks_renderer
    *   Blocks renderer helper service.
    */
   public function __construct(
     BlockManagerInterface $block_manager,
     ConfigFactoryInterface $config_factory,
+    Renderer $renderer,
     BlocksRendererHelper $blocks_renderer) {
     $this->blockManager = $block_manager;
     $this->configFactory = $config_factory;
+    $this->renderer = $renderer;
     $this->blocksRenderer = $blocks_renderer;
   }
 
@@ -62,6 +74,7 @@ class BlocksController extends ControllerBase {
     return new static(
       $container->get('plugin.manager.block'),
       $container->get('config.factory'),
+      $container->get('renderer'),
       $container->get('gutenberg.blocks_renderer')
     );
   }
@@ -86,37 +99,61 @@ class BlocksController extends ControllerBase {
     // Get blocks definition.
     $definitions = $blockManager->getDefinitionsForContexts($contextRepository->getAvailableContexts());
     $definitions = $blockManager->getSortedDefinitions($definitions);
+    $groups = $blockManager->getGroupedDefinitions($definitions);
+    foreach ($groups as $key => $blocks) {
+      $group_reference = preg_replace('@[^a-z0-9-]+@', '_', strtolower($key));
+      $groups['drupalblock/all_' . $group_reference] = $blocks;
+      unset($groups[$key]);
+    }
 
     $return = [];
     foreach ($config_values as $key => $value) {
       if ($value) {
-        $return[$key] = $definitions[$key];
+        if (preg_match('/^drupalblock\/all/', $value)) {
+          // Getting all blocks from group.
+          foreach ($groups[$value] as $key_block => $definition) {
+            $return[$key_block] = $definition;
+          }
+        }
+        else {
+          $return[$key] = $definitions[$key];
+        }
       }
     }
-
     return new JsonResponse($return);
   }
 
   /**
    * Returns JSON representing the loaded blocks.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request.
    * @param string $plugin_id
    *   Plugin ID.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The JSON response.
    */
-  public function loadById($plugin_id) {
-    /* TODO: We can get a specific instance/derivative of block and load it's config */
+  public function loadById(Request $request, $plugin_id) {
+    $request_content = $request->getContent();
+
     $config = [];
+    if (!empty($request_content)) {
+      $config = json_decode($request_content, TRUE);
+    }
+
     $plugin_block = $this->blocksRenderer->getBlockFromPluginId($plugin_id, $config);
 
     $content = '';
 
-    if (!empty($plugin_block)) {
-      if ($this->blocksRenderer->isAccessForbidden($plugin_block)) {
+    if ($plugin_block) {
+      $access_result = $this->blocksRenderer->getBlockAccess($plugin_block);
+      if ($access_result->isForbidden()) {
         // You might need to add some cache tags/contexts.
-        return new JsonResponse(['html' => $this->t('No access.')]);
+        return new JsonResponse([
+          'access' => FALSE,
+          'html' => $this->t('Unable to render block. Check block settings or permissions.'),
+        ]);
       }
 
       $content = $this->blocksRenderer->getRenderFromBlockPlugin($plugin_block);
@@ -126,10 +163,10 @@ class BlocksController extends ControllerBase {
     // not render on the editor because of, for example, the
     // node path. Let's just write some warning if no content.
     if ($content === '') {
-      $content = $this->t('Not able to render the content on editor possibly due to path restrictions.');
+      $content = $this->t('Unable to render the content possibly due to path restrictions.');
     }
 
-    return new JsonResponse(['html' => $content]);
+    return new JsonResponse(['access' => TRUE, 'html' => $content]);
   }
 
 }

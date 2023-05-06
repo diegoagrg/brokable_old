@@ -22,7 +22,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     "num" = 1,
  *     "title_length" = 12,
  *     "kill" = FALSE
- *   }
+ *   },
+ *   dependencies = {
+ *     "taxonomy",
+ *   },
  * )
  */
 class VocabularyDevelGenerate extends DevelGenerateBase implements ContainerFactoryPluginInterface {
@@ -160,7 +163,7 @@ class VocabularyDevelGenerate extends DevelGenerateBase implements ContainerFact
   public function validateDrushParams(array $args, array $options = []) {
     $values = [
       'num' => array_shift($args),
-      'kill' => $this->isDrush8() ? drush_get_option('kill') : $options['kill'],
+      'kill' => $options['kill'],
       'title_length' => 12,
     ];
 

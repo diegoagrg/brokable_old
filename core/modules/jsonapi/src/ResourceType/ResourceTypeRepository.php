@@ -33,7 +33,7 @@ use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
  * @internal JSON:API maintains no PHP API since its API is the HTTP API. This
  *   class may change at any time and this will break any dependencies on it.
  *
- * @see https://www.drupal.org/project/drupal/issues/3032787
+ * @see https://www.drupal.org/project/jsonapi/issues/3032787
  * @see jsonapi.api.php
  *
  * @see \Drupal\jsonapi\ResourceType\ResourceType
@@ -287,43 +287,6 @@ class ResourceTypeRepository implements ResourceTypeRepositoryInterface {
     }
 
     return $fields;
-  }
-
-  /**
-   * Gets the field mapping for the given field names and entity type + bundle.
-   *
-   * @param string[] $field_names
-   *   All field names on a bundle of the given entity type.
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type for which to get the field mapping.
-   * @param string $bundle
-   *   The bundle to assess.
-   *
-   * @return array
-   *   An array with:
-   *   - keys are (real/internal) field names
-   *   - values are either FALSE (indicating the field is not exposed despite
-   *     not being internal), TRUE (indicating the field should be exposed under
-   *     its internal name) or a string (indicating the field should not be
-   *     exposed using its internal name, but the name specified in the string)
-   *
-   * @deprecated in drupal:8.8.0 and is removed from drupal:9.0.0. Use
-   *   self::getFields() instead.
-   *
-   * @see https://www.drupal.org/project/drupal/issues/3014277
-   */
-  protected function getFieldMapping(array $field_names, EntityTypeInterface $entity_type, $bundle) {
-    $class_name = self::class;
-    @trigger_error("{$class_name}::getFieldMapping() is deprecated in Drupal 8.8.0 and will not be allowed in Drupal 9.0.0. Use {$class_name}::getFields() instead. See https://www.drupal.org/project/drupal/issues/3014277.", E_USER_DEPRECATED);
-    $fields = $this->getFields($field_names, $entity_type, $bundle);
-    return array_map(function (ResourceTypeField $field) {
-      if ($field->isFieldEnabled()) {
-        return $field->getInternalName() !== $field->getPublicName()
-          ? $field->getPublicName()
-          : TRUE;
-      }
-      return FALSE;
-    }, $fields);
   }
 
   /**

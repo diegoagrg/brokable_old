@@ -23,14 +23,14 @@ class UserCancelTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'comment'];
+  protected static $modules = ['node', 'comment'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
@@ -420,11 +420,7 @@ class UserCancelTest extends BrowserTestBase {
     $user_storage = $this->container->get('entity_type.manager')->getStorage('user');
 
     // Create a user.
-    $account = $this->drupalCreateUser([
-      'cancel account',
-      'post comments',
-      'skip comment approval',
-    ]);
+    $account = $this->drupalCreateUser(['cancel account', 'post comments', 'skip comment approval']);
     $this->drupalLogin($account);
     // Load a real user object.
     $user_storage->resetCache([$account->id()]);

@@ -37,43 +37,67 @@ class ScanDir {
 
   /**
    * Scans directories.
+   *
+   * @param string|array $root_dirs
+   *   The root directory.
+   * @param string|array $extension_filters
+   *   The extension filter(s).
+   * @param bool $recursive
+   *   Whether to scan recursively.
+   *
+   * @return array
+   *   The scan results.
    */
-  public static function scan() {
+  public static function scan($root_dirs, $extension_filters = NULL, $recursive = FALSE) {
     // Initialize defaults.
     self::$recursive = FALSE;
     self::$directories = [];
     self::$files = [];
     self::$extFilter = FALSE;
 
-    // Check we have minimum parameters.
-    if (!$args = func_get_args()) {
-      die("Must provide a path string or array of path strings");
-    }
-    if (gettype($args[0]) != "string" && gettype($args[0]) != "array") {
-      die("Must provide a path string or array of path strings");
+    if (!is_string($root_dirs) && !is_array($root_dirs)) {
+      throw new \LogicException('Must provide a path string or array of path strings');
     }
 
     // Check if recursive scan | default action: no sub-directories.
-    if (isset($args[2]) && $args[2] == TRUE) {
-      self::$recursive = TRUE;
-    }
+    self::$recursive = $recursive;
 
     // Was a filter on file extensions included? | default action: return all
     // file types.
-    if (isset($args[1])) {
-      if (gettype($args[1]) == "array") {
-        self::$extFilter = array_map('strtolower', $args[1]);
+    if (isset($extension_filters)) {
+      if (is_array($extension_filters)) {
+        self::$extFilter = array_map('strtolower', $extension_filters);
       }
-      elseif (gettype($args[1]) == "string") {
-        self::$extFilter[] = strtolower($args[1]);
+      elseif (is_string($extension_filters)) {
+        self::$extFilter[] = strtolower($extension_filters);
       }
     }
 
     // Grab path(s)
-    self::verifyPaths($args[0]);
+    if (is_string($root_dirs)) {
+      $root_dirs = [$root_dirs];
+    }
+    self::verifyPaths($root_dirs);
+
     return array_map(
-      function ($entry) {
-        return substr($entry, 3, strlen($entry) - 1);
+      function ($entry) use ($root_dirs) {
+        $asset = $entry;
+        foreach ($root_dirs as $root_dir) {
+          // Strip out the root directory prefix.
+          $root_dir .= DIRECTORY_SEPARATOR;
+          $root_dir_length = strlen($root_dir);
+          if (substr($entry, 0, $root_dir_length) === $root_dir) {
+            $asset = substr($entry, $root_dir_length);
+            break;
+          }
+        }
+
+        if ('\\' === \DIRECTORY_SEPARATOR) {
+          // Replace the directory separator with a forward slash when on Windows.
+          $asset = str_replace(DIRECTORY_SEPARATOR, '/', $asset);
+        }
+
+        return $asset;
       },
       self::$files
     );
@@ -81,17 +105,17 @@ class ScanDir {
 
   /**
    * Verifies paths.
+   *
+   * @param array $paths
+   *   Paths to scan.
    */
-  private static function verifyPaths($paths) {
+  private static function verifyPaths(array $paths) {
     $path_errors = [];
-    if (gettype($paths) == "string") {
-      $paths = [$paths];
-    }
 
     foreach ($paths as $path) {
       if (is_dir($path)) {
         self::$directories[] = $path;
-        $dirContents = self::findContents($path);
+        self::findContents($path);
       }
       else {
         $path_errors[] = $path;
@@ -99,7 +123,7 @@ class ScanDir {
     }
 
     if ($path_errors) {
-      echo "The following directories do not exists<br />";die(var_dump($path_errors));
+      throw new \RuntimeException("The following directories do not exists\n" . var_export($path_errors, TRUE));
     }
   }
 
@@ -120,11 +144,12 @@ class ScanDir {
         continue;
       }
       if (self::$recursive) {
-        foreach (self::findContents($dir . DIRECTORY_SEPARATOR . $value) as $value) {
-          self::$files[] = $result[] = $value;
+        foreach (self::findContents($dir . DIRECTORY_SEPARATOR . $value) as $entry) {
+          self::$files[] = $result[] = $entry;
         }
       }
     }
+
     // Return required for recursive search.
     return $result;
   }

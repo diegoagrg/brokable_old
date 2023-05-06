@@ -20,7 +20,7 @@ class SelectComplexTest extends DatabaseTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'user', 'node_access_test', 'field'];
+  protected static $modules = ['system', 'user', 'node_access_test', 'field'];
 
   /**
    * Tests simple JOIN statements.
@@ -161,8 +161,8 @@ class SelectComplexTest extends DatabaseTestBase {
    */
   public function testRangeUndo() {
     $query = $this->connection->select('test');
-    $query->addField('test', 'name');
-    $query->addField('test', 'age', 'age');
+    $name_field = $query->addField('test', 'name');
+    $age_field = $query->addField('test', 'age', 'age');
     $query->range(0, 2);
     $query->range(NULL, NULL);
     $query_result = $query->countQuery()->execute()->fetchField();

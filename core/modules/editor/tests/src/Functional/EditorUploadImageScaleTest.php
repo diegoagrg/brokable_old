@@ -22,7 +22,7 @@ class EditorUploadImageScaleTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['editor', 'editor_test'];
+  protected static $modules = ['editor', 'editor_test'];
 
   /**
    * {@inheritdoc}
@@ -39,7 +39,7 @@ class EditorUploadImageScaleTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Add text format.
@@ -66,10 +66,7 @@ class EditorUploadImageScaleTest extends BrowserTestBase {
     ])->save();
 
     // Create admin user.
-    $this->adminUser = $this->drupalCreateUser([
-      'administer filters',
-      'use text format basic_html',
-    ]);
+    $this->adminUser = $this->drupalCreateUser(['administer filters', 'use text format basic_html']);
     $this->drupalLogin($this->adminUser);
   }
 

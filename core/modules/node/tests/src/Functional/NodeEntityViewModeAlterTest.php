@@ -17,7 +17,7 @@ class NodeEntityViewModeAlterTest extends NodeTestBase {
   /**
    * Enable dummy module that implements hook_ENTITY_TYPE_view() for nodes.
    */
-  public static $modules = ['node_test'];
+  protected static $modules = ['node_test'];
 
   /**
    * {@inheritdoc}
@@ -28,10 +28,7 @@ class NodeEntityViewModeAlterTest extends NodeTestBase {
    * Create a "Basic page" node and verify its consistency in the database.
    */
   public function testNodeViewModeChange() {
-    $web_user = $this->drupalCreateUser([
-      'create page content',
-      'edit own page content',
-    ]);
+    $web_user = $this->drupalCreateUser(['create page content', 'edit own page content']);
     $this->drupalLogin($web_user);
 
     // Create a node.

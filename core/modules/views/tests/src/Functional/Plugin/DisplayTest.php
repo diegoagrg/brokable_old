@@ -26,14 +26,14 @@ class DisplayTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['views_ui', 'node', 'block'];
+  protected static $modules = ['views_ui', 'node', 'block'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp();
 
     $this->enableViewsTestModule();
@@ -136,7 +136,7 @@ class DisplayTest extends ViewTestBase {
 
     // Check the new value has been saved by checking the UI summary text.
     $this->drupalGet('admin/structure/views/view/test_view/edit/display_test_1');
-    $this->assertSession()->linkExists($test_option);
+    $this->assertLink($test_option);
 
     // Test the enable/disable status of a display.
     $view->display_handler->setOption('enabled', FALSE);

@@ -35,17 +35,13 @@ class SearchEmbedFormTest extends BrowserTestBase {
    */
   protected $submitCount = 0;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
     // Create a user and a node, and update the search index.
-    $test_user = $this->drupalCreateUser([
-      'access content',
-      'search content',
-      'administer nodes',
-    ]);
+    $test_user = $this->drupalCreateUser(['access content', 'search content', 'administer nodes']);
     $this->drupalLogin($test_user);
 
     $this->node = $this->drupalCreateNode();

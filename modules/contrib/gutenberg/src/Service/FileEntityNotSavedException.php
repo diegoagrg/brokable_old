@@ -12,6 +12,6 @@ class FileEntityNotSavedException extends \Exception {
   /**
    * {@inheritDoc}
    */
-  protected $message = 'File entity could not be saved.';
+  protected $message = 'The file entity could not be saved. Please ensure the file type is supported.';
 
 }

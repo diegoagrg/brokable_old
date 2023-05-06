@@ -29,7 +29,7 @@ class FilterDateTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'views_ui', 'datetime'];
+  protected static $modules = ['node', 'views_ui', 'datetime'];
 
   /**
    * {@inheritdoc}
@@ -43,7 +43,7 @@ class FilterDateTest extends ViewTestBase {
    */
   public $dateFormatter;
 
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
     $this->dateFormatter = $this->container->get('date.formatter');
 
@@ -184,10 +184,7 @@ class FilterDateTest extends ViewTestBase {
    */
   protected function _testUiValidation() {
 
-    $this->drupalLogin($this->drupalCreateUser([
-      'administer views',
-      'administer site configuration',
-    ]));
+    $this->drupalLogin($this->drupalCreateUser(['administer views', 'administer site configuration']));
 
     $this->drupalGet('admin/structure/views/view/test_filter_date_between/edit');
     $this->drupalGet('admin/structure/views/nojs/handler/test_filter_date_between/default/filter/created');

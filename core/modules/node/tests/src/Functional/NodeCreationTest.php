@@ -21,20 +21,21 @@ class NodeCreationTest extends NodeTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_test_exception', 'dblog', 'test_page_test'];
+  protected static $modules = [
+    'node_test_exception',
+    'dblog',
+    'test_page_test',
+  ];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $web_user = $this->drupalCreateUser([
-      'create page content',
-      'edit own page content',
-    ]);
+    $web_user = $this->drupalCreateUser(['create page content', 'edit own page content']);
     $this->drupalLogin($web_user);
   }
 
@@ -82,10 +83,7 @@ class NodeCreationTest extends NodeTestBase {
     $this->assertText($this->container->get('date.formatter')->format($node->getCreatedTime()));
 
     // Check if the node revision checkbox is not rendered on node creation form.
-    $admin_user = $this->drupalCreateUser([
-      'administer nodes',
-      'create page content',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer nodes', 'create page content']);
     $this->drupalLogin($admin_user);
     $this->drupalGet('node/add/page');
     $this->assertNoFieldById('edit-revision', NULL, 'The revision checkbox is not present.');
@@ -111,7 +109,7 @@ class NodeCreationTest extends NodeTestBase {
       $this->fail('Expected exception has not been thrown.');
     }
     catch (\Exception $e) {
-      // Expected exception; just continue testing.
+      $this->pass('Expected exception has been thrown.');
     }
 
     if (Database::getConnection()->supportsTransactions()) {
@@ -233,10 +231,7 @@ class NodeCreationTest extends NodeTestBase {
    * Tests the author autocompletion textfield.
    */
   public function testAuthorAutocomplete() {
-    $admin_user = $this->drupalCreateUser([
-      'administer nodes',
-      'create page content',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer nodes', 'create page content']);
     $this->drupalLogin($admin_user);
 
     $this->drupalGet('node/add/page');
@@ -244,11 +239,7 @@ class NodeCreationTest extends NodeTestBase {
     $result = $this->xpath('//input[@id="edit-uid-0-value" and contains(@data-autocomplete-path, "user/autocomplete")]');
     $this->assertCount(0, $result, 'No autocompletion without access user profiles.');
 
-    $admin_user = $this->drupalCreateUser([
-      'administer nodes',
-      'create page content',
-      'access user profiles',
-    ]);
+    $admin_user = $this->drupalCreateUser(['administer nodes', 'create page content', 'access user profiles']);
     $this->drupalLogin($admin_user);
 
     $this->drupalGet('node/add/page');
@@ -273,9 +264,7 @@ class NodeCreationTest extends NodeTestBase {
     $this->drupalGet('node/add');
     $this->assertSession()->statusCodeEquals(403);
 
-    $admin_content_types = $this->drupalCreateUser([
-      'administer content types',
-    ]);
+    $admin_content_types = $this->drupalCreateUser(['administer content types']);
     $this->drupalLogin($admin_content_types);
 
     $this->drupalGet('node/add');
@@ -294,9 +283,7 @@ class NodeCreationTest extends NodeTestBase {
     // PostgreSQL doesn't support bytea LIKE queries, so we need to unserialize
     // first to check for the rollback exception message.
     $matches = [];
-    $query = Database::getConnection()->select('watchdog', 'w')
-      ->fields('w', ['wid', 'variables'])
-      ->execute();
+    $query = Database::getConnection()->query("SELECT wid, variables FROM {watchdog}");
     foreach ($query as $row) {
       $variables = (array) unserialize($row->variables);
       if (isset($variables['@message']) && $variables['@message'] === 'Test exception for rollback.') {

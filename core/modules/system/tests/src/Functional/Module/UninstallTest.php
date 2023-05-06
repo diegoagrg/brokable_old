@@ -21,7 +21,7 @@ class UninstallTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['module_test', 'user', 'views', 'node'];
+  protected static $modules = ['module_test', 'user', 'views', 'node'];
 
   /**
    * {@inheritdoc}
@@ -157,7 +157,7 @@ class UninstallTest extends BrowserTestBase {
       $this->fail($message);
     }
     catch (EntityMalformedException $e) {
-      // Expected exception; just continue testing.
+      $this->pass($message);
     }
 
     // Even though the module failed to install properly, its configuration

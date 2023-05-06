@@ -53,6 +53,8 @@ CONFIGURATION
 
  * Then go to any content type edit page and enable *Gutenberg Experience*.
 
+ * Assign the `use gutenberg` permission and access to the "Gutenberg" text format to all desired user roles.
+
 DEVELOPMENT
 -----------
 
@@ -69,10 +71,11 @@ Updating WordPress Gutenberg Packages
 This module uses the compiled JS packages from WordPress Gutenberg. Basically we just need to copy the files to `vendor/gutenberg`.
 
 Steps to update WordPress Gutenberg packages:
- * Git clone WordPress Gutenberg repository `https://github.com/WordPress/gutenberg`
- * Run `npm install` and `npm run build` - this will create a new subfolder `build` with all compiled WordPress Gutenberg packages
- * Copy all folders from `build` folder to the module's folder `vendor\gutenberg` (remove the old package folders before copy)
- * At module's folder, go to `scripts` and run `php gutenberg-dependencies.php` - this will regenerate the `gutenberg.libraries.yml` config file
+ * Update `gutenberg-version` to the relevant version in the module's `package.json` (the `v` prefix is important).
+ * Review the external vendor dependencies definitions in `scripts/generate-vendor.php` in case they need updating.
+ * Run `npm run build:gutenbergjs` to build the Gutenberg JS scripts - it will also update the `gutenberg.libraries.yml` and `gutenberg.module` file.
+ * Clear the Drupal cache and test that all core features are still functional.
+ * Perform a full production release by running `npm run release`.
 
 Vendor packages
 -----
@@ -95,3 +98,5 @@ Current maintainers:
  * Marco Fernandes (marcofernandes) - https://www.drupal.org/u/marcofernandes
  * Thor Andre Gretland (thorandre) - https://www.drupal.org/u/thorandre
  * Roberto Ornelas (roborn) - https://www.drupal.org/u/roborn
+ * Paweł Pregiel (ppregiel) - https://www.drupal.org/u/ppregiel
+ * codebymikey - https://www.drupal.org/u/codebymikey

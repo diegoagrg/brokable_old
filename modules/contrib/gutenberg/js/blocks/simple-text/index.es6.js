@@ -21,12 +21,6 @@
       text: {
         type: 'string',
       },
-      mappingField: {
-        type: 'string',
-      },
-      mappingAttribute: {
-        type: 'string',
-      },
       placeholder: {
         type: 'string',
         default: 'Insert text',
@@ -53,9 +47,22 @@
 
     save({ attributes }) {
       const { text } = attributes;
-      return text;
+      return (
+        <span>{text}</span>
+      );
     },
   };
+
+  settings.deprecated = [
+    {
+      attributes: settings.attributes,
+      supports: settings.supports,
+      save: ({ attributes }) => {
+        const { text } = attributes;
+        return text;  
+      }
+    }
+  ];
 
   registerBlockType(`drupal/simple-text`, { category: 'common', ...settings });
 })(Drupal, wp);

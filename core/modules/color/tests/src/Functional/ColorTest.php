@@ -17,7 +17,7 @@ class ColorTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['color', 'color_test', 'block', 'file'];
+  protected static $modules = ['color', 'color_test', 'block', 'file'];
 
   /**
    * {@inheritdoc}
@@ -51,7 +51,7 @@ class ColorTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create user.
@@ -120,9 +120,8 @@ class ColorTest extends BrowserTestBase {
 
     $this->drupalGet('<front>');
     $stylesheets = $this->config('color.theme.' . $theme)->get('stylesheets');
-    // Make sure the color stylesheet is included in the content.
     foreach ($stylesheets as $stylesheet) {
-      $this->assertPattern('|' . file_url_transform_relative(file_create_url($stylesheet)) . '|');
+      $this->assertPattern('|' . file_url_transform_relative(file_create_url($stylesheet)) . '|', 'Make sure the color stylesheet is included in the content. (' . $theme . ')');
       $stylesheet_content = implode("\n", file($stylesheet));
       $this->assertStringContainsString('color: #123456', $stylesheet_content, 'Make sure the color we changed is in the color stylesheet. (' . $theme . ')');
     }
