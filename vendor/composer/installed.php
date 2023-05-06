@@ -3,7 +3,7 @@
         'name' => 'drupal/recommended-project',
         'pretty_version' => '8.8.3.x-dev',
         'version' => '8.8.3.9999999-dev',
-        'reference' => 'a13d8540dc0e63c9e09b2fd4b1c7b5c738fade42',
+        'reference' => 'ddb3c807e6bc3982f0e953a0dfdbbd4532736bc7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -134,10 +134,13 @@
             'dev_requirement' => false,
         ),
         'container-interop/container-interop' => array(
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
+            'reference' => '79cbf1341c22ec75643d841642dd5d6acd83bdb8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../container-interop/container-interop',
+            'aliases' => array(),
             'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^1.2.0',
-            ),
         ),
         'container-interop/container-interop-implementation' => array(
             'dev_requirement' => false,
@@ -1005,7 +1008,7 @@
         'drupal/recommended-project' => array(
             'pretty_version' => '8.8.3.x-dev',
             'version' => '8.8.3.9999999-dev',
-            'reference' => 'a13d8540dc0e63c9e09b2fd4b1c7b5c738fade42',
+            'reference' => 'ddb3c807e6bc3982f0e953a0dfdbbd4532736bc7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1396,9 +1399,9 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-servicemanager' => array(
-            'pretty_version' => '3.17.0',
-            'version' => '3.17.0.0',
-            'reference' => '360be5f16955dd1edbcce1cfaa98ed82a17f02ec',
+            'pretty_version' => '3.10.0',
+            'version' => '3.10.0.0',
+            'reference' => 'e52b985909e0940bf22d34f322eb3f48bbef6bd1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-servicemanager',
             'aliases' => array(),

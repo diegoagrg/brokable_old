@@ -142,7 +142,7 @@ class CyclicAliasException extends InvalidArgumentException
 
             sort($cycleAliases);
 
-            $hash = serialize($cycleAliases);
+            $hash = serialize(array_values($cycleAliases));
 
             $detectedCyclesByHash[$hash] ??= $detectedCycle;
         }

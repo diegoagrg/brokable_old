@@ -1,6 +1,5 @@
 name: Metales
 description: Módulo para gestionar los precios de metales traidos con Quandl
-package: Brokable
 type: module
 core_version_requirement: ^8.8.0 || ^9
-
+version: '1.0.0'

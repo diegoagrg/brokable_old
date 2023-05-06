@@ -19,7 +19,7 @@ function metales_cron() {
   $next_execution = \Drupal::state()
     ->get('metales.next_execution');
   $next_execution = !empty($next_execution) ? $next_execution : 0;
-  if (REQUEST_TIME >= $next_execution) {
+  if (\Drupal::time()->getRequestTime() >= $next_execution) {
 
     $preciosDeMetales = new PrecioMetal();
     $preciosDeMetales -> ActualizarBD();
@@ -39,6 +39,6 @@ function metales_cron() {
         ->set('metales_show_status_message', FALSE);
     }
     \Drupal::state()
-      ->set('metales.next_execution', REQUEST_TIME + $interval);
+      ->set('metales.next_execution', \Drupal::time()->getRequestTime() + $interval);
   }
 }
