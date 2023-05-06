@@ -1,0 +1,22 @@
+uuid: 2d48e18f-96ef-4fb7-8771-94fec0bd64e0
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.conector
+id: node.conector.promote
+field_name: promote
+entity_type: node
+bundle: conector
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

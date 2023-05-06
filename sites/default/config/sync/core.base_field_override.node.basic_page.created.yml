@@ -1,0 +1,18 @@
+uuid: b21b4336-d59e-465d-b7b8-679a628ced2e
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.basic_page
+id: node.basic_page.created
+field_name: created
+entity_type: node
+bundle: basic_page
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

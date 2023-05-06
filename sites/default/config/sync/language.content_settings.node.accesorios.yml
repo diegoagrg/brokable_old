@@ -1,0 +1,18 @@
+uuid: 237298c8-fc94-4d91-96ff-c1b75e9f0e86
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.accesorios
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: node.accesorios
+target_entity_type_id: node
+target_bundle: accesorios
+default_langcode: site_default
+language_alterable: true

@@ -1,0 +1,7 @@
+simplemeta:
+  version: 1.x
+  css:
+    component:
+      css/simplemeta.css: {}
+  js:
+    js/simplemeta.js: {}

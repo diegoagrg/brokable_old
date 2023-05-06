@@ -1,0 +1,20 @@
+uuid: 0ce1db06-6768-417b-9c1d-f0675293ccf8
+langcode: es
+status: true
+dependencies:
+  module:
+    - block_content
+    - color_field
+id: block_content.field_color_1
+field_name: field_color_1
+entity_type: block_content
+type: color_field_type
+settings:
+  format: '#HEXHEX'
+module: color_field
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

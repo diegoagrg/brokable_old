@@ -1,0 +1,18 @@
+uuid: 525c0a81-5cdb-4045-bdd1-ccf17929a4fc
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.normativas
+id: node.normativas.created
+field_name: created
+entity_type: node
+bundle: normativas
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

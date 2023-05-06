@@ -1,0 +1,42 @@
+uuid: 71d52ac1-bb93-49ed-a91b-083157e04c1e
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.casos_de_exito.field_casos_de_exito
+    - field.field.node.casos_de_exito.field_slider
+    - field.field.node.casos_de_exito.field_texto
+    - node.type.casos_de_exito
+  module:
+    - entity_reference_revisions
+    - text
+    - user
+id: node.casos_de_exito.default
+targetEntityType: node
+bundle: casos_de_exito
+mode: default
+content:
+  field_casos_de_exito:
+    type: entity_reference_revisions_entity_view
+    weight: 2
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_texto:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_slider: true
+  langcode: true

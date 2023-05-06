@@ -1,0 +1,22 @@
+uuid: 1b178487-b325-4d8b-8e83-9d42ff3ce6d7
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.normativas_homologaciones
+id: paragraph.normativas_homologaciones.status
+field_name: status
+entity_type: paragraph
+bundle: normativas_homologaciones
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

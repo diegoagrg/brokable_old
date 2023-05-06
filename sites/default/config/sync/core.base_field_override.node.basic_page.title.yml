@@ -1,0 +1,18 @@
+uuid: 26593c11-e9b6-4fe7-ac89-48fb850f1ea9
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.basic_page
+id: node.basic_page.title
+field_name: title
+entity_type: node
+bundle: basic_page
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

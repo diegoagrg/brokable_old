@@ -1,0 +1,14 @@
+uuid: 3ba75a41-9c4e-4c85-986e-7361d9b0a454
+name: Brokable
+mail: contacto@brokable.com
+slogan: 'Tu solución en el suministro de cable y accesorios.'
+page:
+  403: /node/1
+  404: /node/1
+  front: /node/1
+admin_compact_mode: false
+weight_select_max: 100
+langcode: es
+default_langcode: es
+_core:
+  default_config_hash: yXadRE77Va-G6dxhd2kPYapAvbnSvTF6hO4oXiOEynI

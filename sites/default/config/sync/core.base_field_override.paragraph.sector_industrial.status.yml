@@ -1,0 +1,22 @@
+uuid: 3b5a4d4c-b243-42cd-a544-73c6bc1bac69
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.sector_industrial
+id: paragraph.sector_industrial.status
+field_name: status
+entity_type: paragraph
+bundle: sector_industrial
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

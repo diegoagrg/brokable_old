@@ -1,0 +1,18 @@
+uuid: 85de4d2c-dfce-45ad-8e65-ebcd5ebb164b
+langcode: es
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: Testimonios
+type: testimonios
+description: ''
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: true

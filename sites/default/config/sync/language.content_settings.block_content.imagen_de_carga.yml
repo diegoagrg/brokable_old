@@ -1,0 +1,18 @@
+uuid: b2297e6b-c157-4a84-8122-34217125a58c
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.imagen_de_carga
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: block_content.imagen_de_carga
+target_entity_type_id: block_content
+target_bundle: imagen_de_carga
+default_langcode: site_default
+language_alterable: false

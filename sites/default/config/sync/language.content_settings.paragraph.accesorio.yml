@@ -1,0 +1,18 @@
+uuid: 8bea4d79-e8d9-4c03-934a-a4556c5e004b
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.accesorio
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.accesorio
+target_entity_type_id: paragraph
+target_bundle: accesorio
+default_langcode: site_default
+language_alterable: true

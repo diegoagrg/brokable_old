@@ -1,0 +1,19 @@
+uuid: 89c9c6d8-30ef-4ab8-a37c-6f3e5209f53b
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+    - text
+id: node.field_clasificaciones
+field_name: field_clasificaciones
+entity_type: node
+type: text_with_summary
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,21 @@
+uuid: a7f711f4-555f-452e-af8f-43f19a3fc83c
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_texto
+    - node.type.acerca_de_
+  module:
+    - text
+id: node.acerca_de_.field_texto
+field_name: field_texto
+entity_type: node
+bundle: acerca_de_
+label: Texto
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

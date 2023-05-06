@@ -1,0 +1,29 @@
+uuid: fcd378fa-de00-4686-9564-12c1c9e3f968
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_categoria_tax
+    - node.type.conector
+    - taxonomy.vocabulary.categorias
+id: node.conector.field_categoria_tax
+field_name: field_categoria_tax
+entity_type: node
+bundle: conector
+label: Categoría
+description: 'Mantener presionado CTRL para seleccionar más de una categoría.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      categorias: categorias
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: casos_de_exito
+field_type: entity_reference

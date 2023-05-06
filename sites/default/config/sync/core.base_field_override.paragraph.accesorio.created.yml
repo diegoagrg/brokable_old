@@ -1,0 +1,18 @@
+uuid: 493ab25e-4d18-4580-b499-4f4ef141ba59
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.accesorio
+id: paragraph.accesorio.created
+field_name: created
+entity_type: paragraph
+bundle: accesorio
+label: Fecha
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

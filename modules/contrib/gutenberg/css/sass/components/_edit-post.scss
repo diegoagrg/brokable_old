@@ -1,0 +1,50 @@
+.edit-post-header__settings {
+  .components-button.editor-post-save-draft {
+    display: none;
+  }
+
+  .components-button.editor-post-publish-panel__toggle {
+    display: none;
+  }
+
+  .editor-post-saved-state {
+    display: none;
+  }
+}
+
+.edit-post-sidebar {
+  select {
+    background-repeat: no-repeat;
+    background-position: center right;
+  }
+}
+
+.edit-post-header {
+  .edit-post-fullscreen-mode-close {
+    background-color: #0678be;
+    display: none;
+
+    &.drupal {
+      .is-fullscreen-mode & {
+        display: flex;
+      }
+    }
+
+    // svg {
+    //   width: 48px;
+    //   height: 48px
+    // }
+  }
+}
+
+.edit-post-layout {
+  transition: ease-in-out 0.2s all;
+}
+
+body.is-fullscreen-mode {
+  .edit-post-layout {
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 999 !important;
+  }
+}

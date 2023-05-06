@@ -1,0 +1,18 @@
+uuid: 708768c4-aa29-4d8b-a0c2-37d3ce4b6f6b
+langcode: es
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: 'Tipo de cable'
+type: tipo_de_cable
+description: ''
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

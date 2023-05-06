@@ -1,0 +1,23 @@
+uuid: cc539ffb-2398-4f24-89da-fd7cc8b80ad5
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_plata_bool
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.field_plata_bool
+field_name: field_plata_bool
+entity_type: paragraph
+bundle: precios_de_metales
+label: 'Mostrar plata'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

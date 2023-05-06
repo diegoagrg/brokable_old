@@ -1,0 +1,22 @@
+uuid: 304d060b-63b5-400b-b159-d9db8b7d552d
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.accesorios
+id: node.accesorios.sticky
+field_name: sticky
+entity_type: node
+bundle: accesorios
+label: 'Sticky at top of lists'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,15 @@
+uuid: 341a8b49-7c9c-4a8c-b5ad-1d58a896d349
+langcode: es
+status: true
+dependencies: {  }
+name: imagen_mediana
+label: 'Imagen mediana'
+effects:
+  a8a3a525-e39f-4688-abd6-de0d115c96d9:
+    uuid: a8a3a525-e39f-4688-abd6-de0d115c96d9
+    id: image_scale
+    weight: 1
+    data:
+      width: 450
+      height: 450
+      upscale: false

@@ -1,0 +1,20 @@
+uuid: 5ff59c70-359c-4c0a-b2b0-9e3ed88d12e5
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.sectores
+  module:
+    - path
+id: node.sectores.path
+field_name: path
+entity_type: node
+bundle: sectores
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

@@ -1,0 +1,10 @@
+uuid: 1078d814-9b23-4cbf-8a47-ad99a5663661
+langcode: es
+status: true
+dependencies:
+  module:
+    - taxonomy
+id: taxonomy_term.fichas_tecnicas
+label: 'Fichas técnicas'
+targetEntityType: taxonomy_term
+cache: true

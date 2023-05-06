@@ -1,0 +1,22 @@
+uuid: 6d10440e-15e8-425c-ba5e-c288b0240124
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.sectores
+id: node.sectores.sticky
+field_name: sticky
+entity_type: node
+bundle: sectores
+label: 'Sticky at top of lists'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

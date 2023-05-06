@@ -2,4 +2,4 @@ name: Vistas de brokable
 description: Incorpora las vistas con funciones en twig
 package: Brokable
 type: module
-core: 8.x
+core_version_requirement: ^8.8.0 || ^9

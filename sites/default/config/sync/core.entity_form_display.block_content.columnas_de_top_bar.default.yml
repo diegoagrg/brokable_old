@@ -1,0 +1,47 @@
+uuid: 63200a94-134a-4ce7-996d-bb232248cdd6
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+    - field.field.block_content.columnas_de_top_bar.field_columnas2
+  module:
+    - paragraphs
+id: block_content.columnas_de_top_bar.default
+targetEntityType: block_content
+bundle: columnas_de_top_bar
+mode: default
+content:
+  field_columnas2:
+    type: entity_reference_paragraphs
+    weight: 26
+    settings:
+      title: Párrafo
+      title_plural: Parráfos
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: _none
+    third_party_settings: {  }
+    region: content
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

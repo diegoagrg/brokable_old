@@ -1,0 +1,18 @@
+uuid: b6bd7de4-0435-4c28-99b1-9c872c684b4e
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.precios_de_metales
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.precios_de_metales
+target_entity_type_id: paragraph
+target_bundle: precios_de_metales
+default_langcode: site_default
+language_alterable: false

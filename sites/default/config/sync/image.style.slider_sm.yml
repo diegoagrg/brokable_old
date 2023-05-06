@@ -1,0 +1,25 @@
+uuid: f5c48c7a-8116-405e-93c5-c82df1c37f81
+langcode: es
+status: true
+dependencies:
+  config:
+    - crop.type.5_4
+  module:
+    - crop
+name: slider_sm
+label: 'Slider - SM'
+effects:
+  4b13b4e1-c3c7-4805-8a6c-d842adff5416:
+    uuid: 4b13b4e1-c3c7-4805-8a6c-d842adff5416
+    id: crop_crop
+    weight: 1
+    data:
+      crop_type: '5_4'
+  ee0e916c-5095-4ae7-ae8b-14fdf2380436:
+    uuid: ee0e916c-5095-4ae7-ae8b-14fdf2380436
+    id: image_scale
+    weight: 2
+    data:
+      width: 340
+      height: null
+      upscale: true

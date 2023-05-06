@@ -1,0 +1,20 @@
+uuid: 0f60b56b-c87d-4eba-b443-bf318e27a56b
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.normativas
+  module:
+    - text
+id: taxonomy_term.normativas.description
+field_name: description
+entity_type: taxonomy_term
+bundle: normativas
+label: Descripción
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -1,0 +1,25 @@
+uuid: a7604bcf-0b12-4840-a45a-036411a80bf6
+langcode: es
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:7d1dade3-a56c-402d-b9b5-0673e501ff56'
+  module:
+    - block_content
+  theme:
+    - bootstrap
+id: parcheparacarga
+theme: bootstrap
+region: top_bar
+weight: -13
+provider: null
+plugin: 'block_content:7d1dade3-a56c-402d-b9b5-0673e501ff56'
+settings:
+  id: 'block_content:7d1dade3-a56c-402d-b9b5-0673e501ff56'
+  label: 'Parche para carga'
+  provider: block_content
+  label_display: '0'
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

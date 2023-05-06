@@ -1,0 +1,18 @@
+uuid: c12025f1-3112-4a0b-b894-d90735ecc631
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.webform
+id: node.webform.title
+field_name: title
+entity_type: node
+bundle: webform
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

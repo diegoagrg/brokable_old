@@ -1,0 +1,14 @@
+uuid: d5f1eaf7-786a-4b59-9e2f-72d4ee90f3a5
+langcode: es
+status: true
+dependencies:
+  config:
+    - user.role.columnista
+  module:
+    - user
+id: user_remove_role_action.columnista
+label: 'Remove the Columnista role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: columnista

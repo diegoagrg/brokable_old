@@ -1,0 +1,21 @@
+uuid: b4fe67da-5032-4198-8ca3-b18c6cc7025b
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_etiqueta_plata
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.field_etiqueta_plata
+field_name: field_etiqueta_plata
+entity_type: paragraph
+bundle: precios_de_metales
+label: Etiqueta
+description: 'Texto que se mostrara a un lado del precio'
+required: true
+translatable: false
+default_value:
+  -
+    value: AG
+default_value_callback: ''
+settings: {  }
+field_type: string

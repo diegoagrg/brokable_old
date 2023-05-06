@@ -1,0 +1,22 @@
+uuid: bf3f1455-1d1f-43b8-8d04-78584fe34a02
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.normativas
+id: node.normativas.status
+field_name: status
+entity_type: node
+bundle: normativas
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,66 @@
+uuid: f8688b19-d7f5-4612-bed3-edf36ca8d45d
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.noticias_y_opinion.field_medios
+    - field.field.node.noticias_y_opinion.field_noticias
+    - field.field.node.noticias_y_opinion.field_opinion
+    - field.field.node.noticias_y_opinion.field_slider
+    - field.field.node.noticias_y_opinion.field_videos
+    - node.type.noticias_y_opinion
+  module:
+    - user
+id: node.noticias_y_opinion.default
+targetEntityType: node
+bundle: noticias_y_opinion
+mode: default
+content:
+  field_medios:
+    weight: 3
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_noticias:
+    weight: 1
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_opinion:
+    weight: 2
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_videos:
+    weight: 4
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_slider: true
+  langcode: true

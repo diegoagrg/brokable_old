@@ -1,0 +1,21 @@
+uuid: 38e7a84f-0aff-45ff-91a7-d6976592bc10
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_categoria
+    - node.type.articulo
+  module:
+    - options
+id: node.articulo.field_categoria
+field_name: field_categoria
+entity_type: node
+bundle: articulo
+label: Categoría
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -1,0 +1,50 @@
+uuid: c0bb8ab6-9e39-4642-88ae-2477145f76ab
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.contacto.field_formulario
+    - field.field.node.contacto.field_tarjetas
+    - field.field.node.contacto.field_texto
+    - node.type.contacto
+  module:
+    - entity_reference_revisions
+    - text
+    - user
+    - webform
+id: node.contacto.default
+targetEntityType: node
+bundle: contacto
+mode: default
+content:
+  field_formulario:
+    weight: 103
+    label: hidden
+    settings:
+      source_entity: true
+    third_party_settings: {  }
+    type: webform_entity_reference_entity_view
+    region: content
+  field_tarjetas:
+    type: entity_reference_revisions_entity_view
+    weight: 101
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_texto:
+    weight: 102
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

@@ -1,0 +1,18 @@
+uuid: a2a4928e-fc5b-457c-947e-4c1cf437e2c1
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.categorias
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: taxonomy_term.categorias
+target_entity_type_id: taxonomy_term
+target_bundle: categorias
+default_langcode: site_default
+language_alterable: false

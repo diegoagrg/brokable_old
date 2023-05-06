@@ -1,0 +1,33 @@
+uuid: 7c4a75bf-1027-4bcc-b986-b4c4bdfaca9b
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_categoria
+field_name: field_categoria
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: noticias
+      label: Noticias
+    -
+      value: opinion
+      label: Opinión
+    -
+      value: medios
+      label: 'PR & Medios'
+    -
+      value: video
+      label: Video
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

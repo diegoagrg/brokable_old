@@ -1,0 +1,22 @@
+uuid: f294d98e-18ca-4ec5-8d66-fd9572e291b1
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+id: block_content.columnas_de_top_bar.status
+field_name: status
+entity_type: block_content
+bundle: columnas_de_top_bar
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

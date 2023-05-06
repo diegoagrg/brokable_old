@@ -1,0 +1,18 @@
+uuid: 01e87fc8-23c3-4d6e-84ad-f6ff90217d81
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.normativas
+id: taxonomy_term.normativas.name
+field_name: name
+entity_type: taxonomy_term
+bundle: normativas
+label: Nombre
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

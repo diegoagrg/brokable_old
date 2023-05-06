@@ -1,0 +1,23 @@
+uuid: 36088e41-c2c6-4e2b-b0b5-310f12fa964e
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_valor_aluminio
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.field_valor_aluminio
+field_name: field_valor_aluminio
+entity_type: paragraph
+bundle: precios_de_metales
+label: 'Valor propio'
+description: 'Si se deja vacío se mostrara el último valor de https://www.quandl.com/api/v3/datasets/ODA/PALUM_USD'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

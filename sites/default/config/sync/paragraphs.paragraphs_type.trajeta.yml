@@ -1,0 +1,9 @@
+uuid: 1c4cc2b1-f339-4335-95f2-9530ad57848b
+langcode: es
+status: true
+dependencies: {  }
+id: trajeta
+label: Tarjeta
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

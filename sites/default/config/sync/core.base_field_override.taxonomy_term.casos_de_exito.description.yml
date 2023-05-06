@@ -1,0 +1,20 @@
+uuid: 1e93e400-f5fc-45d9-9d90-e79e874fa87f
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.casos_de_exito
+  module:
+    - text
+id: taxonomy_term.casos_de_exito.description
+field_name: description
+entity_type: taxonomy_term
+bundle: casos_de_exito
+label: Descripción
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

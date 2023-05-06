@@ -1,0 +1,176 @@
+uuid: da8b21be-68ae-4a2a-96cd-6d0bb0686b63
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.precios_de_metales.field_aluminio_bool
+    - field.field.paragraph.precios_de_metales.field_cobre_bool
+    - field.field.paragraph.precios_de_metales.field_etiqueta_aluminio
+    - field.field.paragraph.precios_de_metales.field_etiqueta_cobre
+    - field.field.paragraph.precios_de_metales.field_etiqueta_oro
+    - field.field.paragraph.precios_de_metales.field_etiqueta_plata
+    - field.field.paragraph.precios_de_metales.field_oro_bool
+    - field.field.paragraph.precios_de_metales.field_plata_bool
+    - field.field.paragraph.precios_de_metales.field_prefijo_aluminio
+    - field.field.paragraph.precios_de_metales.field_prefijo_cobre
+    - field.field.paragraph.precios_de_metales.field_prefijo_oro
+    - field.field.paragraph.precios_de_metales.field_prefijo_plata
+    - field.field.paragraph.precios_de_metales.field_valor_aluminio
+    - field.field.paragraph.precios_de_metales.field_valor_cobre
+    - field.field.paragraph.precios_de_metales.field_valor_oro
+    - field.field.paragraph.precios_de_metales.field_valor_plata
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.default
+targetEntityType: paragraph
+bundle: precios_de_metales
+mode: default
+content:
+  field_aluminio_bool:
+    weight: 4
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_cobre_bool:
+    weight: 0
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_etiqueta_aluminio:
+    weight: 9
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_etiqueta_cobre:
+    weight: 1
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_etiqueta_oro:
+    weight: 11
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_etiqueta_plata:
+    weight: 14
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_oro_bool:
+    weight: 5
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_plata_bool:
+    weight: 6
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_prefijo_aluminio:
+    weight: 8
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_prefijo_cobre:
+    weight: 2
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_prefijo_oro:
+    weight: 12
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_prefijo_plata:
+    weight: 15
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_valor_aluminio:
+    weight: 10
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+  field_valor_cobre:
+    weight: 7
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+  field_valor_oro:
+    weight: 13
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+  field_valor_plata:
+    weight: 16
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+hidden: {  }

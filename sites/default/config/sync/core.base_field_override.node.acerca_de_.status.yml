@@ -1,0 +1,22 @@
+uuid: e2ca86a9-7e5d-4fa3-97b3-23a567396229
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.acerca_de_
+id: node.acerca_de_.status
+field_name: status
+entity_type: node
+bundle: acerca_de_
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

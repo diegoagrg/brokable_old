@@ -1,0 +1,18 @@
+uuid: 527e0c2f-715e-46f1-9b1e-d8b8ab681dd3
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.testimonios
+id: node.testimonios.changed
+field_name: changed
+entity_type: node
+bundle: testimonios
+label: Modificado
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

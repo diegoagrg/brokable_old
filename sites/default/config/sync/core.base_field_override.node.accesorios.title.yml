@@ -1,0 +1,18 @@
+uuid: cd8eb867-ed3b-414e-87dc-668255ae0a17
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.accesorios
+id: node.accesorios.title
+field_name: title
+entity_type: node
+bundle: accesorios
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

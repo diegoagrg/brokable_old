@@ -1,0 +1,64 @@
+uuid: f11bc1f9-af78-409f-b255-35b214e865bd
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_gama
+    - node.type.accesorios
+    - paragraphs.paragraphs_type.accesorio
+  module:
+    - entity_reference_revisions
+id: node.accesorios.field_gama
+field_name: field_gama
+entity_type: node
+bundle: accesorios
+label: Gama
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      accesorio: accesorio
+    target_bundles_drag_drop:
+      caso_de_exito:
+        weight: 12
+        enabled: false
+      accesorio:
+        enabled: true
+        weight: 13
+      columnas:
+        weight: 13
+        enabled: false
+      formulario:
+        weight: 14
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 15
+        enabled: false
+      imagen_pdf:
+        weight: 16
+        enabled: false
+      normativas_homologaciones:
+        weight: 17
+        enabled: false
+      sector_industrial:
+        weight: 18
+        enabled: false
+      tab_de_icono:
+        weight: 19
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 20
+        enabled: false
+      testimonio:
+        weight: 21
+        enabled: false
+      trajeta:
+        weight: 22
+        enabled: false
+field_type: entity_reference_revisions

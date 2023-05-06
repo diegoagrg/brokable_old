@@ -1,0 +1,21 @@
+uuid: 2479974e-cfad-4cae-9bf1-3a685ab25c6a
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_descripcion
+    - paragraphs.paragraphs_type.testimonio
+  module:
+    - text
+id: paragraph.testimonio.field_descripcion
+field_name: field_descripcion
+entity_type: paragraph
+bundle: testimonio
+label: Descripción
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

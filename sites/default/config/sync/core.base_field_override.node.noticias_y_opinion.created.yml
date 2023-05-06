@@ -1,0 +1,18 @@
+uuid: b5bd1c7d-5709-4199-816e-c83d4eb53b87
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.noticias_y_opinion
+id: node.noticias_y_opinion.created
+field_name: created
+entity_type: node
+bundle: noticias_y_opinion
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

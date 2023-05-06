@@ -1,0 +1,44 @@
+uuid: edea1618-2a50-4610-9511-5a49a1932733
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.accesorio.field_archivo_pdf
+    - field.field.paragraph.accesorio.field_imagen
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.accesorio
+  module:
+    - file
+    - imce
+    - svg_image
+id: paragraph.accesorio.default
+targetEntityType: paragraph
+bundle: accesorio
+mode: default
+content:
+  field_archivo_pdf:
+    weight: 0
+    settings:
+      progress_indicator: throbber
+    third_party_settings:
+      imce:
+        enabled: true
+    type: file_generic
+    region: content
+  field_imagen:
+    weight: 1
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+    type: image_image
+    region: content
+  translation:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  created: true
+  status: true
+  uid: true

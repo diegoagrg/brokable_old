@@ -1,0 +1,23 @@
+uuid: f2b08a3d-1dd6-4c45-912f-de448c4dd3e6
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_valor_cobre
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.field_valor_cobre
+field_name: field_valor_cobre
+entity_type: paragraph
+bundle: precios_de_metales
+label: 'Valor propio'
+description: 'Si se deja vacío se mostrara el último valor de https://www.quandl.com/api/v3/datasets/CHRIS/CME_HG1'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

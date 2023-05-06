@@ -1,0 +1,18 @@
+uuid: 19c2fa4c-c211-4291-892a-035f7842cb80
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: block_content.columnas_de_top_bar
+target_entity_type_id: block_content
+target_bundle: columnas_de_top_bar
+default_langcode: site_default
+language_alterable: true

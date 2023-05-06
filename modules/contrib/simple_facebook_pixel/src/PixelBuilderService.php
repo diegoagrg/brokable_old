@@ -9,7 +9,7 @@ use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 
 /**
- * Class PixelBuilderService.
+ * Defines the Pixel Builder Service class.
  *
  * @package Drupal\simple_facebook_pixel
  */
@@ -199,6 +199,14 @@ class PixelBuilderService implements PixelBuilderServiceInterface {
     $exclude_admin_pages = $this->configFactory->get('simple_facebook_pixel.settings')->get('exclude_admin_pages');
     if ($is_admin_route && $exclude_admin_pages) {
       return FALSE;
+    }
+
+    if ($this->moduleHandler->moduleExists('amp')) {
+      $is_amp_route = \Drupal::service('router.amp_context')->isAmpRoute();
+      $exclude_amp_pages = $this->configFactory->get('simple_facebook_pixel.settings')->get('exclude_amp_pages');
+      if ($is_amp_route && $exclude_amp_pages) {
+        return FALSE;
+      }
     }
 
     $excluded_roles = $this->configFactory->get('simple_facebook_pixel.settings')->get('excluded_roles');

@@ -1,0 +1,29 @@
+uuid: 7a3db8be-aa27-4bda-aa96-1823f2584c92
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.pruebas.body
+    - node.type.pruebas
+  module:
+    - text
+    - user
+id: node.pruebas.default
+targetEntityType: node
+bundle: pruebas
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

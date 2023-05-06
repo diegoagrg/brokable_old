@@ -1,0 +1,29 @@
+uuid: af5e5d97-b4a6-4a11-b5b4-d1a0c5e26be8
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_categoria_tax
+    - node.type.ensamble
+    - taxonomy.vocabulary.categorias_ensambles
+id: node.ensamble.field_categoria_tax
+field_name: field_categoria_tax
+entity_type: node
+bundle: ensamble
+label: Categoría
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      categorias_ensambles: categorias_ensambles
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

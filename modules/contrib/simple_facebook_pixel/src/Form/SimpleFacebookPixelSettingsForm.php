@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class SimpleFacebookPixelSettingsForm.
+ * Defines the Simple Facebook Pixel Settings Form class.
  *
  * @package Drupal\simple_facebook_pixel\Form
  */
@@ -111,6 +111,13 @@ class SimpleFacebookPixelSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Exclude admin pages'),
       '#default_value' => $config->get('exclude_admin_pages'),
+    ];
+
+    $form['basic_settings']['exclude_amp_pages'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Exclude AMP pages'),
+      '#description' => $this->t('If you have the AMP module installed then tick this checkbox to prevent breaking the AMP validation.'),
+      '#default_value' => $config->get('exclude_amp_pages'),
     ];
 
     $form['basic_settings']['excluded_roles'] = [
@@ -315,6 +322,7 @@ class SimpleFacebookPixelSettingsForm extends ConfigFormBase {
       ->set('pixel_enabled', $values['pixel_enabled'])
       ->set('pixel_id', $values['pixel_id'])
       ->set('exclude_admin_pages', $values['exclude_admin_pages'])
+      ->set('exclude_amp_pages', $values['exclude_amp_pages'])
       ->set('excluded_roles', $values['excluded_roles'])
       ->set('view_content_entities', $values['view_content_entities'])
       ->set('complete_registration_enabled', $values['complete_registration_enabled']);

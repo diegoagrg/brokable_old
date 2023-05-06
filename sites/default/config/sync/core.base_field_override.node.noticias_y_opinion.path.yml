@@ -1,0 +1,20 @@
+uuid: 3194d0a7-8c58-4d7d-8711-3de6c6859ff7
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.noticias_y_opinion
+  module:
+    - path
+id: node.noticias_y_opinion.path
+field_name: path
+entity_type: node
+bundle: noticias_y_opinion
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

@@ -1,0 +1,22 @@
+uuid: 779302bb-d060-48ff-8af5-10193a55d7a1
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.sectores
+id: node.sectores.promote
+field_name: promote
+entity_type: node
+bundle: sectores
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

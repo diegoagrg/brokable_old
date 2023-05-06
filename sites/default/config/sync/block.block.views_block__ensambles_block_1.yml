@@ -1,0 +1,32 @@
+uuid: cd2f149a-3612-4ffd-b132-9f68d82e0076
+langcode: es
+status: true
+dependencies:
+  config:
+    - views.view.ensambles
+  module:
+    - ctools
+    - views
+  theme:
+    - bootstrap
+id: views_block__ensambles_block_1
+theme: bootstrap
+region: sidebar_first
+weight: -14
+provider: null
+plugin: 'views_block:ensambles-block_1'
+settings:
+  id: 'views_block:ensambles-block_1'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      ensamble: ensamble
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

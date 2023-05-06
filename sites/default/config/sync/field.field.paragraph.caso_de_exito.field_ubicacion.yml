@@ -1,0 +1,19 @@
+uuid: 76a08829-bf0d-4ee0-a79a-f7475734da5f
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_ubicacion
+    - paragraphs.paragraphs_type.caso_de_exito
+id: paragraph.caso_de_exito.field_ubicacion
+field_name: field_ubicacion
+entity_type: paragraph
+bundle: caso_de_exito
+label: Ubicación
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

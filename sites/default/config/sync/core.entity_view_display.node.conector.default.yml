@@ -1,0 +1,148 @@
+uuid: 45396750-f079-4608-8a18-5baf9dbdf0d1
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.conector.field_caracteristicas_tecnicas
+    - field.field.node.conector.field_categoria_tax
+    - field.field.node.conector.field_descripcion
+    - field.field.node.conector.field_especificaciones
+    - field.field.node.conector.field_ficha_multiple
+    - field.field.node.conector.field_hoja_tipo
+    - field.field.node.conector.field_identificacion
+    - field.field.node.conector.field_imagen_req
+    - field.field.node.conector.field_informacion_comercial
+    - field.field.node.conector.field_instructivos
+    - field.field.node.conector.field_numero_parte
+    - field.field.node.conector.field_planos
+    - field.field.node.conector.field_propiedades_material
+    - field.field.node.conector.field_version
+    - image.style.medium
+    - node.type.conector
+  module:
+    - file
+    - svg_image
+    - text
+    - user
+id: node.conector.default
+targetEntityType: node
+bundle: conector
+mode: default
+content:
+  field_caracteristicas_tecnicas:
+    weight: 108
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_categoria_tax:
+    weight: 103
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_descripcion:
+    weight: 104
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_especificaciones:
+    weight: 110
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_ficha_multiple:
+    weight: 112
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_hoja_tipo:
+    weight: 115
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_identificacion:
+    weight: 106
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_imagen_req:
+    weight: 102
+    label: hidden
+    settings:
+      image_style: medium
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_informacion_comercial:
+    weight: 111
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_instructivos:
+    weight: 113
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_numero_parte:
+    weight: 105
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_planos:
+    weight: 114
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_propiedades_material:
+    weight: 109
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_version:
+    weight: 107
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

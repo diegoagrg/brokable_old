@@ -1,0 +1,9 @@
+uuid: 5696d563-c838-40d7-8c3a-a4d680723686
+langcode: es
+status: true
+dependencies: {  }
+id: precios_de_metales
+label: 'Precios de metales'
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

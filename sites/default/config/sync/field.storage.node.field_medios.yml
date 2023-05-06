@@ -1,0 +1,18 @@
+uuid: c7a36cdc-2310-4d68-a860-ad858a3ba509
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_medios
+field_name: field_medios
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,21 @@
+uuid: cf738184-0f8e-42d1-9cd3-17a9805ba3e8
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_especificaciones
+    - node.type.conector
+  module:
+    - text
+id: node.conector.field_especificaciones
+field_name: field_especificaciones
+entity_type: node
+bundle: conector
+label: 'Especificaciones y aprobaciones'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

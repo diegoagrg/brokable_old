@@ -1,0 +1,35 @@
+uuid: c9198c7f-a302-479d-a190-1497b9041a6a
+langcode: es
+status: true
+dependencies:
+  config:
+    - system.menu.brokable
+  module:
+    - node
+    - system
+  theme:
+    - bootstrap
+id: brokable
+theme: bootstrap
+region: sidebar_first
+weight: -15
+provider: null
+plugin: 'system_menu_block:brokable'
+settings:
+  id: 'system_menu_block:brokable'
+  label: Brokable
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 1
+  expand_all_items: false
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      acerca_de_: acerca_de_
+      casos_de_exito: casos_de_exito
+      testimonios: testimonios
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

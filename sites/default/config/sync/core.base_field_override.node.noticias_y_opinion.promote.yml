@@ -1,0 +1,22 @@
+uuid: 0de9d9e6-62d5-4fb7-979c-799ace73c2ec
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.noticias_y_opinion
+id: node.noticias_y_opinion.promote
+field_name: promote
+entity_type: node
+bundle: noticias_y_opinion
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

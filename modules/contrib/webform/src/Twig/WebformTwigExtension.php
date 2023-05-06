@@ -17,6 +17,11 @@ use Drupal\webform\WebformSubmissionInterface;
  */
 class WebformTwigExtension extends \Twig_Extension {
 
+  /**
+   * Twig options.
+   *
+   * @var string[]
+   */
   protected static $options = [
     'html' => 'webform_token_options_html',
     'email' => 'webform_token_options_email',
@@ -138,12 +143,12 @@ class WebformTwigExtension extends \Twig_Extension {
     return (WebformHtmlHelper::containsHtml($value)) ? ['#markup' => $value, '#allowed_tags' => WebformXss::getAdminTagList()] : $value;
   }
 
-  /****************************************************************************/
+  /* ************************************************************************ */
   // Token methods used by the 'WebformComputedTwig' and 'EmailWebformHandler'.
   //
   // @see \Drupal\webform\Plugin\WebformElement\WebformComputedTwig
   // @see \Drupal\webform\Plugin\WebformHandler\EmailWebformHandler
-  /****************************************************************************/
+  /* ************************************************************************ */
 
   /**
    * Build reusable Twig help.
@@ -184,7 +189,7 @@ class WebformTwigExtension extends \Twig_Extension {
     ]);
 
     $t_args = [
-      ':twig_href' => 'https://twig.sensiolabs.org/',
+      ':twig_href' => 'https://twig.symfony.com/',
       ':drupal_href' => 'https://www.drupal.org/docs/8/theming/twig',
     ];
     $output = [];
