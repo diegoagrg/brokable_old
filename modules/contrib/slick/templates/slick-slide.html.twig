@@ -19,7 +19,7 @@
 #}
 {%
   set classes = [
-    'slick__slide', 'slide', 'slide--' ~ delta,
+    'slide--' ~ delta,
     item.slide is empty ? 'slide--text',
     settings.layout ? 'slide--caption--' ~ settings.layout|clean_class,
     settings.class ? settings.class
@@ -29,6 +29,11 @@
   set content_classes = [
     settings.detroy ? 'slide',
     not settings.detroy ? 'slide__content'
+  ]
+%}
+{%
+  set caption_classes = [
+    'slide__caption',
   ]
 %}
 {% set slide %}
@@ -43,7 +48,7 @@
 
 {% if settings.wrapper %}
   <div{{ attributes.addClass(classes) }}>
-  {% if settings.grid is empty %}<div{{ content_attributes.addClass(content_classes) }}>{% endif %}
+  {% if settings.use_ca %}<div{{ content_attributes.addClass(content_classes) }}>{% endif %}
 {% endif %}
 
   {% if item.slide %}
@@ -54,7 +59,7 @@
     {% block slick_caption %}
       {% if settings.fullwidth %}<div class="slide__constrained">{% endif %}
 
-        <div class="slide__caption">
+        <div{{ caption_attributes.addClass(caption_classes) }}>
           {% if item.caption.overlay %}
             <div class="slide__overlay">{{ item.caption.overlay }}</div>
             {% if settings.data %}<div class="slide__data">{% endif %}
@@ -84,6 +89,6 @@
   {% endif %}
 
 {% if settings.wrapper %}
-  {% if settings.grid is empty %}</div>{% endif %}
+  {% if settings.use_ca %}</div>{% endif %}
   </div>
 {% endif %}

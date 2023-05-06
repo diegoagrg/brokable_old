@@ -17,13 +17,11 @@ class SlickAdminUnitTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->blazyAdminExtended = $this->getMockBuilder('\Drupal\blazy\Dejavu\BlazyAdminExtended')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->slickManager = $this->getMock('\Drupal\slick\SlickManagerInterface');
+    $this->blazyAdminExtended = $this->createMock('\Drupal\blazy\Dejavu\BlazyAdminExtended');
+    $this->slickManager = $this->createMock('\Drupal\slick\SlickManagerInterface');
   }
 
   /**
@@ -33,7 +31,7 @@ class SlickAdminUnitTest extends UnitTestCase {
    * @covers ::manager
    */
   public function testBlazyAdminCreate() {
-    $container = $this->getMock(ContainerInterface::class);
+    $container = $this->createMock(ContainerInterface::class);
     $exception = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE;
 
     $map = [

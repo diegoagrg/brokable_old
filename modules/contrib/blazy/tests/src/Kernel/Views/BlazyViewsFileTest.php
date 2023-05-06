@@ -4,7 +4,7 @@ namespace Drupal\Tests\blazy\Kernel\Views;
 
 use Drupal\Core\Form\FormState;
 use Drupal\views\Views;
-use Drupal\blazy\BlazyViews;
+use Drupal\blazy\Theme\BlazyViews;
 
 /**
  * Test Blazy Views integration.
@@ -23,7 +23,7 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE) {
+  protected function setUp($import_test_views = TRUE): void {
     parent::setUp($import_test_views);
 
     $this->entityFieldName = 'field_entity_test';
@@ -57,8 +57,6 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
     $this->setUpContentTypeTest($bundle, $data);
 
     $data['settings'] = $this->getFormatterSettings();
-    $data['settings']['breakpoints'] = $this->getDataBreakpoints(TRUE);
-
     $display = $this->setUpFormatterDisplay($bundle, $data);
 
     $display->setComponent('field_image', [
@@ -90,9 +88,9 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
     $this->assertInstanceOf('\Drupal\blazy_test\Form\BlazyAdminTestInterface', $style_plugin->admin(), 'BlazyAdmin implements interface.');
 
     $style_plugin->options                            = array_merge($style_plugin->options, $this->getDefaultFields(TRUE));
-    $style_plugin->options['grid']                    = 0;
-    $style_plugin->options['grid_medium']             = 3;
-    $style_plugin->options['grid_small']              = 1;
+    $style_plugin->options['grid']                    = '';
+    $style_plugin->options['grid_medium']             = '3';
+    $style_plugin->options['grid_small']              = '1';
     $style_plugin->options['image']                   = 'field_image';
     $style_plugin->options['media_switch']            = 'blazy_test';
     $style_plugin->options['overlay']                 = $this->testFieldName;
@@ -123,7 +121,7 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
 
     $style_plugin->submitOptionsForm($form, $form_state);
 
-    // @todo: Fields.
+    // @todo Fields.
     $image = [];
     $index = 0;
     $row = $view->result[$index];
@@ -134,7 +132,7 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
 
     $output = $view->preview();
     $output = $this->blazyManager->getRenderer()->renderRoot($output);
-    $this->assertTrue(strpos($output, 'data-blazy') !== FALSE, 'Blazy attribute is added to DIV.');
+    $this->assertStringContainsString('data-blazy', $output);
 
     $element = ['settings' => $settings];
     $view->getStyle()->buildElement($element, $row, $index);
@@ -212,13 +210,6 @@ class BlazyViewsFileTest extends BlazyViewsTestBase {
 
     $style_plugin->submitOptionsForm($form, $form_state);
 
-    // Render.
-    $render = $view->getStyle()->render();
-    $this->assertArrayHasKey('data-blazy', $render['#attributes']);
-
-    $output = $view->preview();
-    $output = $this->blazyManager->getRenderer()->renderRoot($output);
-    $this->assertTrue(strpos($output, 'data-blazy') !== FALSE, 'Blazy attribute is added to DIV.');
     $view->destroy();
   }
 

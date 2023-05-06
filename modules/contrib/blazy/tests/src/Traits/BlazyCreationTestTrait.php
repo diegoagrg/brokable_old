@@ -2,19 +2,22 @@
 
 namespace Drupal\Tests\blazy\Traits;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\node\Entity\NodeType;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\file\Entity\File;
+use Drupal\file\FileInterface;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\image\Plugin\Field\FieldType\ImageItem;
+use Drupal\blazy\Media\BlazyFile;
 
 /**
  * A Trait common for Blazy tests.
  *
- * @todo: Consider using ContentTypeCreationTrait, TestFileCreationTrait.
+ * @todo Consider using ContentTypeCreationTrait, TestFileCreationTrait.
  */
 trait BlazyCreationTestTrait {
 
@@ -42,7 +45,7 @@ trait BlazyCreationTestTrait {
     $field_name = empty($data['field_name']) ? $this->testFieldName : $data['field_name'];
     $settings   = empty($data['settings']) ? [] : $data['settings'];
     $display_id = $this->entityType . '.' . $bundle . '.' . $view_mode;
-    $storage    = $this->blazyManager->getEntityTypeManager()->getStorage('entity_view_display');
+    $storage    = $this->blazyManager->getStorage('entity_view_display');
     $display    = $storage->load($display_id);
 
     if (!$display) {
@@ -56,7 +59,7 @@ trait BlazyCreationTestTrait {
       $display = $storage->create($values);
     }
 
-    $settings['current_view_mode'] = $settings['view_mode'] = $view_mode;
+    $settings['view_mode'] = $view_mode;
     $display->setComponent($field_name, [
       'type'     => $plugin_id,
       'settings' => $settings,
@@ -97,7 +100,7 @@ trait BlazyCreationTestTrait {
   protected function getBlazyFieldStorageDefinition($field_name = '') {
     $field_name = empty($field_name) ? $this->testFieldName : $field_name;
     $field_storage_definitions = $this->entityFieldManager->getFieldStorageDefinitions($this->entityType);
-    return isset($field_storage_definitions[$field_name]) ? $field_storage_definitions[$field_name] : FALSE;
+    return $field_storage_definitions[$field_name] ?? FALSE;
   }
 
   /**
@@ -255,7 +258,7 @@ trait BlazyCreationTestTrait {
         $max = $multiple ? $this->maxItems : 2;
         if (isset($node->{$field_name})) {
           // @see \Drupal\Core\Field\FieldItemListInterface::generateSampleItems
-          $node->{$field_name}->generateSampleItems($max);
+          $node->get($field_name)->generateSampleItems($max);
         }
       }
     }
@@ -302,7 +305,7 @@ trait BlazyCreationTestTrait {
 
     $storage_settings = [];
     if ($field_type == 'entity_reference') {
-      $storage_settings['target_type'] = isset($this->targetType) ? $this->targetType : $this->entityType;
+      $storage_settings['target_type'] = $this->targetType ?? $this->entityType;
       $bundle = $this->bundle;
       $multiple = FALSE;
     }
@@ -480,32 +483,32 @@ trait BlazyCreationTestTrait {
 
       if ($item instanceof ImageItem) {
         $this->uri = ($entity = $item->entity) && empty($item->uri) ? $entity->getFileUri() : $item->uri;
-        $this->url = file_url_transform_relative(file_create_url($this->uri));
+        $this->url = BlazyFile::transformRelative($this->uri);
       }
     }
 
     if (empty($this->url)) {
-      file_unmanaged_copy(DRUPAL_ROOT . '/core/modules/simpletest/files/image-1.png', 'public://test.png');
-      $this->url = file_create_url('public://test.png');
+      $source = $this->root . '/core/misc/druplicon.png';
+      $uri = 'public://test.png';
+      $this->fileSystem->copy($source, $uri, FileSystemInterface::EXISTS_REPLACE);
+      $this->url = BlazyFile::createUrl($uri);
     }
 
-    $this->testItem = $item;
+    $this->testItem = $this->image = $item;
 
     $this->data = [
       'settings' => $this->getFormatterSettings(),
       'item'     => $item,
     ];
-
-    $this->imageFactory = $this->container->get('image.factory');
   }
 
   /**
    * Returns path to the stored image location.
    */
   protected function getImagePath($is_dir = FALSE) {
-    $path            = \Drupal::root() . '/sites/default/files/simpletest/' . $this->testPluginId;
+    $path            = $this->root . '/sites/default/files/simpletest/' . $this->testPluginId;
     $item            = $this->createDummyImage();
-    $this->dummyUrl  = file_url_transform_relative(file_create_url($this->dummyUri));
+    $this->dummyUrl  = BlazyFile::transformRelative($this->dummyUri);
     $this->dummyItem = $item;
     $this->dummyData = [
       'settings' => $this->getFormatterSettings(),
@@ -519,14 +522,14 @@ trait BlazyCreationTestTrait {
    * Returns the created image file.
    */
   protected function createDummyImage($name = '', $source = '') {
-    $path   = \Drupal::root() . '/sites/default/files/simpletest/' . $this->testPluginId;
+    $path   = $this->root . '/sites/default/files/simpletest/' . $this->testPluginId;
     $name   = empty($name) ? $this->testPluginId . '.png' : $name;
-    $source = empty($source) ? \Drupal::root() . '/core/misc/druplicon.png' : $source;
+    $source = empty($source) ? $this->root . '/core/misc/druplicon.png' : $source;
     $uri    = $path . '/' . $name;
 
     if (!is_file($uri)) {
-      file_prepare_directory($path, FILE_CREATE_DIRECTORY);
-      file_unmanaged_copy($source, $uri, FILE_EXISTS_REPLACE);
+      $this->prepareTestDirectory();
+      $this->fileSystem->saveData($source, $uri, FileSystemInterface::EXISTS_REPLACE);
     }
 
     $uri = 'public://simpletest/' . $this->testPluginId . '/' . $name;
@@ -534,13 +537,21 @@ trait BlazyCreationTestTrait {
     $item = File::create([
       'uri' => $uri,
       'uid' => 1,
-      'status' => FILE_STATUS_PERMANENT,
+      'status' => FileInterface::STATUS_PERMANENT,
       'filename' => $name,
     ]);
 
     $item->save();
 
     return $item;
+  }
+
+  /**
+   * Prepares test directory to store screenshots, or images.
+   */
+  protected function prepareTestDirectory() {
+    $this->testDirPath = $this->root . '/sites/default/files/simpletest/' . $this->testPluginId;
+    $this->fileSystem->prepareDirectory($this->testDirPath, FileSystemInterface::CREATE_DIRECTORY);
   }
 
 }

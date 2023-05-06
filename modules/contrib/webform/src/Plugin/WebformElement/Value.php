@@ -2,6 +2,7 @@
 
 namespace Drupal\webform\Plugin\WebformElement;
 
+use Drupal\webform\Plugin\WebformElementBase;
 use Drupal\webform\WebformInterface;
 
 /**
@@ -15,12 +16,12 @@ use Drupal\webform\WebformInterface;
  *   category = @Translation("Advanced elements"),
  * )
  */
-class Value extends TextBase {
+class Value extends WebformElementBase {
 
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       // Element settings.
       'title' => '',
@@ -28,18 +29,17 @@ class Value extends TextBase {
     ];
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function preview() {
-    return [];
-  }
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
    */
-  public function getElementSelectorOptions(array $element) {
-    return [];
+  public function preview() {
+    return [
+      '#type' => 'value',
+      '#title' => $this->t('Value'),
+      '#value' => 'preview',
+    ];
   }
 
   /**

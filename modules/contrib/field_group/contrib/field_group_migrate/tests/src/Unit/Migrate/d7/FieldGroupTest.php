@@ -2,17 +2,20 @@
 
 namespace Drupal\Tests\field_group_migrate\Unit\Migrate\d7;
 
-use Drupal\Tests\migrate\Unit\MigrateSqlSourceTestCase;
+use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
 
 /**
  * Tests D7 field group source plugin.
  *
  * @group field_group
  */
-class FieldGroupTest extends MigrateSqlSourceTestCase {
+class FieldGroupTest extends MigrateSqlSourceTestBase {
 
   const PLUGIN_CLASS = 'Drupal\field_group_migrate\Plugin\migrate\source\d7\FieldGroup';
 
+  /**
+   * {@inheritdoc}
+   */
   protected $migrationConfiguration = [
     'id' => 'test',
     'source' => [
@@ -20,6 +23,9 @@ class FieldGroupTest extends MigrateSqlSourceTestCase {
     ],
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   protected $expectedResults = [
     [
       'id' => '1',
@@ -95,7 +101,7 @@ class FieldGroupTest extends MigrateSqlSourceTestCase {
    * {@inheritdoc}
    */
   public function providerSource() {
-    // @TODO FIX.
+    // @todo Fix source.
     return [];
   }
 

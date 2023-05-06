@@ -16,23 +16,27 @@ class BlazyViewsFieldFile extends BlazyViewsFieldPluginBase {
    */
   public function render(ResultRow $values) {
     /** @var \Drupal\file\Entity\File $entity */
-    $entity   = $values->_entity;
-    $settings = $this->mergedViewsSettings();
+    $entity = $values->_entity;
 
+    $settings = $this->mergedViewsSettings();
     $settings['delta'] = $values->index;
 
-    $data = $this->getImageItem($entity);
-    $data['settings'] = isset($data['settings']) ? array_merge($settings, $data['settings']) : $settings;
+    $data['settings'] = $this->mergedSettings = $settings;
+    $data['entity'] = $entity;
+    $data['fallback'] = $entity->getFilename();
 
     // Pass results to \Drupal\blazy\BlazyEntity.
-    return $this->blazyEntity->build($data, $entity, $entity->getFilename());
+    return $this->blazyEntity->build($data);
   }
 
   /**
-   * Defines the scope for the form elements.
+   * {@inheritdoc}
    */
-  public function getScopedFormElements() {
-    return ['multimedia' => TRUE, 'view_mode' => 'default'] + parent::getScopedFormElements();
+  protected function getPluginScopes(): array {
+    return [
+      'multimedia' => TRUE,
+      'view_mode' => 'default',
+    ] + parent::getPluginScopes();
   }
 
 }

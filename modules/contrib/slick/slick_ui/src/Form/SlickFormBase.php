@@ -4,9 +4,6 @@ namespace Drupal\slick_ui\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\Messenger;
-use Drupal\slick\SlickManagerInterface;
-use Drupal\slick\Form\SlickAdminInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -43,13 +40,6 @@ abstract class SlickFormBase extends EntityForm {
   protected $manager;
 
   /**
-   * The messenger service.
-   *
-   * @var \Drupal\Core\Messenger\Messenger
-   */
-  protected $messenger;
-
-  /**
    * The form elements.
    *
    * @var array
@@ -64,23 +54,13 @@ abstract class SlickFormBase extends EntityForm {
   protected $jsEasingOptions;
 
   /**
-   * Constructs a SlickForm object.
-   */
-  public function __construct(Messenger $messenger, SlickAdminInterface $admin, SlickManagerInterface $manager) {
-    $this->messenger = $messenger;
-    $this->admin = $admin;
-    $this->manager = $manager;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('messenger'),
-      $container->get('slick.admin'),
-      $container->get('slick.manager')
-    );
+    $instance = parent::create($container);
+    $instance->admin = $container->get('slick.admin');
+    $instance->manager = $container->get('slick.manager');
+    return $instance;
   }
 
   /**
@@ -107,13 +87,19 @@ abstract class SlickFormBase extends EntityForm {
 
     // Change page title for the duplicate operation.
     if ($this->operation == 'duplicate') {
-      $form['#title'] = $this->t('<em>Duplicate %name optionset</em>: @label', ['%name' => static::$niceName, '@label' => $this->entity->label()]);
+      $form['#title'] = $this->t('<em>Duplicate %name optionset</em>: @label', [
+        '%name' => static::$niceName,
+        '@label' => $this->entity->label(),
+      ]);
       $this->entity = $this->entity->createDuplicate();
     }
 
     // Change page title for the edit operation.
     if ($this->operation == 'edit') {
-      $form['#title'] = $this->t('<em>Edit %name optionset</em>: @label', ['%name' => static::$niceName, '@label' => $this->entity->label()]);
+      $form['#title'] = $this->t('<em>Edit %name optionset</em>: @label', [
+        '%name' => static::$niceName,
+        '@label' => $this->entity->label(),
+      ]);
     }
 
     // Attach Slick admin library.
@@ -151,12 +137,12 @@ abstract class SlickFormBase extends EntityForm {
     if ($status == SAVED_UPDATED) {
       // If we edited an existing entity.
       // @todo #2278383.
-      $this->messenger->addMessage($this->t('@config_prefix %label has been updated.', $message));
+      $this->messenger()->addMessage($this->t('@config_prefix %label has been updated.', $message));
       $this->logger(static::$machineName)->notice('@config_prefix %label has been updated.', $notice);
     }
     else {
       // If we created a new entity.
-      $this->messenger->addMessage($this->t('@config_prefix %label has been added.', $message));
+      $this->messenger()->addMessage($this->t('@config_prefix %label has been added.', $message));
       $this->logger(static::$machineName)->notice('@config_prefix %label has been added.', $notice);
     }
 
@@ -169,6 +155,8 @@ abstract class SlickFormBase extends EntityForm {
    * @return array
    *   An array of available jQuery Easing options as fallback for browsers that
    *   don't support pure CSS easing.
+   *
+   * @todo remove for Drupal\blazy\Dejavu\BlazyEasingTrait before 3.0.0.
    */
   public function getJsEasingOptions() {
     if (!isset($this->jsEasingOptions)) {
@@ -222,6 +210,7 @@ abstract class SlickFormBase extends EntityForm {
    * @see https://github.com/kenwheeler/slick/issues/118
    * @see http://matthewlein.com/ceaser/
    * @see http://www.w3.org/TR/css3-transitions/
+   * @todo remove for Drupal\blazy\Dejavu\BlazyEasingTrait before 3.0.0.
    */
   public function getCssEasingOptions($map = FALSE) {
     $css_easings = [];
@@ -262,7 +251,7 @@ abstract class SlickFormBase extends EntityForm {
     ];
 
     foreach ($available_easings as $key => $easing) {
-      list($readable_easing, $css_easing) = array_pad(array_map('trim', explode("|", $easing, 2)), 2, NULL);
+      [$readable_easing, $css_easing] = array_pad(array_map('trim', explode("|", $easing, 2)), 2, NULL);
       $css_easings[$key] = $map ? $easing : $readable_easing;
       unset($css_easing);
     }
@@ -277,12 +266,14 @@ abstract class SlickFormBase extends EntityForm {
    *
    * @return string
    *   A string of unfriendly bezier equivalent, or NULL.
+   *
+   * @todo remove for Drupal\blazy\Dejavu\BlazyEasingTrait before 3.0.0.
    */
   public function getBezier($easing = NULL) {
     $css_easing = '';
     if ($easing) {
       $easings = $this->getCssEasingOptions(TRUE);
-      list($readable_easing, $bezier) = array_pad(array_map('trim', explode("|", $easings[$easing], 2)), 2, NULL);
+      [$readable_easing, $bezier] = array_pad(array_map('trim', explode("|", $easings[$easing], 2)), 2, NULL);
       $css_easing = $bezier;
       unset($readable_easing);
     }

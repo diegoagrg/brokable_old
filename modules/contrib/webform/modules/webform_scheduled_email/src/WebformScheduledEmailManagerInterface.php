@@ -144,6 +144,38 @@ interface WebformScheduledEmailManagerInterface {
   /****************************************************************************/
 
   /**
+   * Get scheduled email date type (date or datetime).
+   *
+   * @return string
+   *   Scheduled email date type (date or datetime).
+   */
+  public function getDateType();
+
+  /**
+   * Get scheduled email date label (date or date/time).
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup|string
+   *   Scheduled email date label (date or date/time).
+   */
+  public function getDateTypeLabel();
+
+  /**
+   * Get scheduled email date format (Y-m-d or Y-m-d H:i:s).
+   *
+   * @return string
+   *   Scheduled email date format (Y-m-d or Y-m-d H:i:s).
+   */
+  public function getDateFormat();
+
+  /**
+   * Get scheduled email date format label (YYYY-DD-MM or YYYY-DD-MM HH:MM:SS).
+   *
+   * @return string
+   *   Scheduled email date format label (YYYY-DD-MM or YYYY-DD-MM HH:MM:SS).
+   */
+  public function getDateFormatLabel();
+
+  /**
    * Determine if submission has scheduled email for specified handler.
    *
    * @param \Drupal\webform\WebformSubmissionInterface $webform_submission
@@ -178,8 +210,8 @@ interface WebformScheduledEmailManagerInterface {
    *   A webform handler id.
    *
    * @return string|bool
-   *   A send date using ISO date format (YYYY-MM-DD) or FALSE if the send date
-   *   is invalid.
+   *   A send date using ISO date (YYYY-MM-DD) or datetime
+   *   format (YYYY-MM-DD HH:MM:SS) or FALSE if the send date is invalid.
    */
   public function getSendDate(WebformSubmissionInterface $webform_submission, $handler_id);
 
@@ -226,8 +258,10 @@ interface WebformScheduledEmailManagerInterface {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   A webform, webform submission, or source entity.
+   * @param string|null $handler_id
+   *   The webform handler ID.
    */
-  public function delete(EntityInterface $entity);
+  public function delete(EntityInterface $entity, $handler_id = NULL);
 
   /****************************************************************************/
   // Queuing/sending functions (aka the tumbleweed).
@@ -251,11 +285,11 @@ interface WebformScheduledEmailManagerInterface {
    * @return array
    *   An associative array containing cron task stats.
    *   Includes:
-   *   - self::EMAIL_SCHEDULED
-   *   - self::EMAIL_RESCHEDULED
-   *   - self::EMAIL_ALREADY_SCHEDULED
-   *   - self::EMAIL_UNSCHEDULED
-   *   - self::EMAIL_SENT
+   *   - WebformScheduledEmailManagerInterface::EMAIL_SCHEDULED
+   *   - WebformScheduledEmailManagerInterface::EMAIL_RESCHEDULED
+   *   - WebformScheduledEmailManagerInterface::EMAIL_ALREADY_SCHEDULED
+   *   - WebformScheduledEmailManagerInterface::EMAIL_UNSCHEDULED
+   *   - WebformScheduledEmailManagerInterface::EMAIL_SENT
    */
   public function cron(EntityInterface $entity = NULL, $handler_id = NULL, $schedule_limit = 1000, $send_limit = NULL);
 

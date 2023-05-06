@@ -107,7 +107,7 @@ class CssOptimizerUnitTest extends UnitTestCase {
         str_replace('url(../images/icon.png)', 'url(' . file_url_transform_relative(file_create_url($path . 'images/icon.png')) . ')', file_get_contents($absolute_path . 'css_subfolder/css_input_with_import.css.optimized.css')),
       ],
       // File. Tests:
-      // - Any @charaset declaration at the beginning of a file should be
+      // - Any @charset declaration at the beginning of a file should be
       //   removed without breaking subsequent CSS.
       [
         [
@@ -227,7 +227,8 @@ class CssOptimizerUnitTest extends UnitTestCase {
    * Tests a file CSS asset with preprocessing disabled.
    */
   public function testTypeFilePreprocessingDisabled() {
-    $this->setExpectedException('Exception', 'Only file CSS assets with preprocessing enabled can be optimized.');
+    $this->expectException('Exception');
+    $this->expectExceptionMessage('Only file CSS assets with preprocessing enabled can be optimized.');
 
     $css_asset = [
       'group' => -100,
@@ -247,7 +248,8 @@ class CssOptimizerUnitTest extends UnitTestCase {
    * Tests a CSS asset with 'type' => 'external'.
    */
   public function testTypeExternal() {
-    $this->setExpectedException('Exception', 'Only file CSS assets can be optimized.');
+    $this->expectException('Exception');
+    $this->expectExceptionMessage('Only file CSS assets can be optimized.');
 
     $css_asset = [
       'group' => -100,

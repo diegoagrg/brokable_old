@@ -22,66 +22,33 @@ use Drupal\Core\Field\FieldItemListInterface;
 class BlazyMediaFormatter extends BlazyMediaFormatterBase {
 
   /**
-   * Returns the overridable blazy field formatter service.
-   */
-  public function formatter() {
-    return $this->formatter;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $media = $this->getEntitiesToView($items, $langcode);
+    $entities = $this->getEntitiesToView($items, $langcode);
 
     // Early opt-out if the field is empty.
-    if (empty($media)) {
+    if (empty($entities)) {
       return [];
     }
 
-    // Collects specific settings to this formatter.
-    $settings              = $this->buildSettings();
-    $settings['blazy']     = TRUE;
-    $settings['namespace'] = $settings['item_id'] = $settings['lazy'] = 'blazy';
-
-    // Sets dimensions once to reduce method ::transformDimensions() calls.
-    $media = array_values($media);
-    if ($media[0]->getEntityTypeId() == 'media' && $fields = $media[0]->getFields()) {
-      if (isset($fields['thumbnail'])) {
-        $item = $fields['thumbnail']->get(0);
-        $settings['first_item'] = $item;
-        $settings['first_uri'] = $item->entity->getFileUri();
-      }
-    }
-
-    // Build the settings.
-    $build = ['settings' => $settings];
-
-    // Modifies settings.
-    $this->formatter->buildSettings($build, $items);
-
-    // Build the elements.
-    $this->buildElements($build, $media, $langcode);
-
-    // Pass to manager for easy updates to all Blazy formatters.
-    return $this->formatter->build($build);
+    return $this->commonViewElements($items, $langcode, $entities);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getScopedFormElements() {
-    $multiple = $this->fieldDefinition->getFieldStorageDefinition()->isMultiple();
+  protected function getPluginScopes(): array {
+    $multiple = $this->isMultiple();
 
     return [
       'fieldable_form'  => FALSE,
       'grid_form'       => $multiple,
       'layouts'         => [],
-      'settings'        => $this->getSettings(),
       'style'           => $multiple,
       'thumbnail_style' => TRUE,
       'vanilla'         => FALSE,
-    ] + parent::getScopedFormElements();
+    ] + parent::getPluginScopes();
   }
 
 }

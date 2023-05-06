@@ -9,7 +9,9 @@ use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
  * Drupal 6 field_group source.
  *
  * @MigrateSource(
- *   id = "d6_field_group"
+ *   id = "d6_field_group",
+ *   source_module = "fieldgroup",
+ *   destination_module = "field_group"
  * )
  */
 class FieldGroup extends DrupalSqlBase {
@@ -19,14 +21,14 @@ class FieldGroup extends DrupalSqlBase {
    */
   public function query() {
     $query = $this->select('content_group', 'g')
-    ->fields('g', [
-      'group_type',
-      'type_name',
-      'group_name',
-      'label',
-      'settings',
-      'weight',
-    ]);
+      ->fields('g', [
+        'group_type',
+        'type_name',
+        'group_name',
+        'label',
+        'settings',
+        'weight',
+      ]);
     return $query;
   }
 
@@ -55,6 +57,9 @@ class FieldGroup extends DrupalSqlBase {
     return parent::prepareRow($row);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function transformEntityFormDisplaySettings(Row $row) {
     $row->setSourceProperty('extracted_settings', $row->getSourceProperty('settings/form'));
     $source_settings = $row->getSourceProperty('extracted_settings');
@@ -96,9 +101,16 @@ class FieldGroup extends DrupalSqlBase {
     $row->setSourceProperty('converted_settings', $settings);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function transformEntityViewDisplaySettings(Row $row) {
     $row->setSourceProperty('extracted_settings', $row->getSourceProperty('settings/display'));
-    $view_modes = array_diff(array_keys($row->getSourceProperty('extracted_settings')), ['label', 'description', 'weight']);
+    $view_modes = array_diff(array_keys($row->getSourceProperty('extracted_settings')), [
+      'label',
+      'description',
+      'weight',
+    ]);
     $view_modes = array_filter($view_modes, function ($value) {
       return !is_numeric($value);
     });
@@ -143,14 +155,11 @@ class FieldGroup extends DrupalSqlBase {
           break;
       }
 
-      /**
-       * @todo: ?
-       */
       if ($view_mode == 'full') {
         $view_mode = 'default';
       }
 
-      // $row->setSourceProperty('view_modes/' . $view_mode, $settings);
+      // $row->setSourceProperty('view_modes/' . $view_mode, $settings);.
       $view_modes[$view_mode] = $settings;
     }
 
@@ -180,7 +189,7 @@ class FieldGroup extends DrupalSqlBase {
       'group_name',
       'label',
       'settings',
-      'weight'
+      'weight',
     ];
     return array_combine($fields, $fields);
   }

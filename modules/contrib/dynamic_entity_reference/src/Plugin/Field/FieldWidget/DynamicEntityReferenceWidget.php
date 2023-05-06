@@ -33,7 +33,8 @@ class DynamicEntityReferenceWidget extends EntityReferenceAutocompleteWidget {
   public static function defaultSettings() {
     return [
       'match_operator' => 'CONTAINS',
-      'size' => '40',
+      'match_limit' => 10,
+      'size' => 40,
       'placeholder' => '',
     ] + parent::defaultSettings();
   }
@@ -51,11 +52,17 @@ class DynamicEntityReferenceWidget extends EntityReferenceAutocompleteWidget {
     $cardinality = $items->getFieldDefinition()->getFieldStorageDefinition()->getCardinality();
     $target_type = $items->get($delta)->target_type ?: reset($available);
 
+    // Append the match operation to the selection settings.
+    $selection_settings = $settings[$target_type]['handler_settings'] + [
+      'match_operator' => $this->getSetting('match_operator'),
+      'match_limit' => $this->getSetting('match_limit'),
+    ];
+
     $element += [
       '#type' => 'entity_autocomplete',
       '#target_type' => $target_type,
       '#selection_handler' => $settings[$target_type]['handler'],
-      '#selection_settings' => $settings[$target_type]['handler_settings'],
+      '#selection_settings' => $selection_settings,
       // Dynamic entity reference field items are handling validation themselves
       // via the 'ValidDynamicReference' constraint.
       '#validate_reference' => FALSE,
@@ -144,7 +151,7 @@ class DynamicEntityReferenceWidget extends EntityReferenceAutocompleteWidget {
   public static function processFormElement(array &$element, FormStateInterface $form_state, array &$complete_form) {
     $name = implode('-', $element['#parents']);
     $js_class = Html::cleanCssIdentifier("js-dynamic-entity-reference-{$name}-target_type");
-    $element['target_type']['#attributes']['class'][] = $js_class;
+    $element['target_type']['#attributes']['data-dynamic-entity-reference'] = $element['target_type']['#attributes']['class'][] = $js_class;
     $auto_complete_paths = $element['#attached']['drupalSettings']['dynamic_entity_reference']['auto_complete_paths'];
     unset($element['#attached']['drupalSettings']['dynamic_entity_reference']['auto_complete_paths']);
     $element['#attached']['drupalSettings']['dynamic_entity_reference'][$js_class] = $auto_complete_paths;
@@ -226,7 +233,7 @@ class DynamicEntityReferenceWidget extends EntityReferenceAutocompleteWidget {
       else {
         // @todo Expose a proper UI for choosing the bundle for autocreated
         // entities in https://www.drupal.org/node/2412569.
-        $bundles = entity_get_bundles($target_type);
+        $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($target_type);
         $bundle = key($bundles);
       }
     }
@@ -250,6 +257,10 @@ class DynamicEntityReferenceWidget extends EntityReferenceAutocompleteWidget {
       // Store the selection settings in the key/value store and pass a hashed
       // key in the route parameters.
       $selection_settings = $settings[$target_type]['handler_settings'] ?: [];
+      $selection_settings += [
+        'match_operator' => $this->getSetting('match_operator'),
+        'match_limit' => $this->getSetting('match_limit'),
+      ];
       $data = serialize($selection_settings) . $target_type . $settings[$target_type]['handler'];
       $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
       $key_value_storage = \Drupal::keyValue('entity_autocomplete');

@@ -29,15 +29,15 @@ class BlazyAdminExtendedUnitTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->setUpUnitServices();
     $this->setUpUnitContainer();
 
-    $this->stringTranslation = $this->getMock('Drupal\Core\StringTranslation\TranslationInterface');
-    $this->entityDisplayRepository = $this->getMock('Drupal\Core\Entity\EntityDisplayRepositoryInterface');
-    $this->typedConfig = $this->getMock('Drupal\Core\Config\TypedConfigManagerInterface');
+    $this->stringTranslation = $this->createMock('Drupal\Core\StringTranslation\TranslationInterface');
+    $this->entityDisplayRepository = $this->createMock('Drupal\Core\Entity\EntityDisplayRepositoryInterface');
+    $this->typedConfig = $this->createMock('Drupal\Core\Config\TypedConfigManagerInterface');
     $this->dateFormatter = $this->getMockBuilder('Drupal\Core\Datetime\DateFormatter')
       ->disableOriginalConstructor()
       ->getMock();
@@ -47,6 +47,7 @@ class BlazyAdminExtendedUnitTest extends UnitTestCase {
     $container->set('config.typed', $this->typedConfig);
     $container->set('string_translation', $this->getStringTranslationStub());
     $container->set('date.formatter', $this->dateFormatter);
+    $container->set('blazy.manager', $this->blazyManager);
 
     \Drupal::setContainer($container);
 
@@ -78,14 +79,14 @@ class BlazyAdminExtendedUnitTest extends UnitTestCase {
    * @covers ::fieldableForm
    * @covers ::mediaSwitchForm
    * @covers ::gridForm
-   * @covers ::breakpointsForm
    * @covers ::closingForm
    * @covers ::finalizeForm
    * @dataProvider providerTestBuildSettingsForm
    */
   public function testBuildSettingsForm($id, $vanilla) {
     $form = [];
-    $definition = $this->getDefaulEntityFormatterDefinition() + $this->getDefaultFormatterDefinition();
+    $definition = $this->getDefaulEntityFormatterDefinition()
+      + $this->getScopedFormElements();
 
     $definition['settings'] += $this->getDefaultFields(TRUE);
     $definition['id'] = $id;

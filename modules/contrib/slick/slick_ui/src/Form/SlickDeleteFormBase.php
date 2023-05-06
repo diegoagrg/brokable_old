@@ -4,8 +4,6 @@ namespace Drupal\slick_ui\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\Messenger;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Builds the form to delete a Slick optionset.
@@ -27,33 +25,13 @@ abstract class SlickDeleteFormBase extends EntityConfirmFormBase {
   protected static $machineName = 'slick';
 
   /**
-   * The messenger service.
-   *
-   * @var \Drupal\Core\Messenger\Messenger
-   */
-  protected $messenger;
-
-  /**
-   * Class constructor.
-   */
-  public function __construct(Messenger $messenger) {
-    $this->messenger = $messenger;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('messenger')
-    );
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the %name optionset %label?', ['%name' => static::$niceName, '%label' => $this->entity->label()]);
+    return $this->t('Are you sure you want to delete the %name optionset %label?', [
+      '%name' => static::$niceName,
+      '%label' => $this->entity->label(),
+    ]);
   }
 
   /**
@@ -69,8 +47,14 @@ abstract class SlickDeleteFormBase extends EntityConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
 
-    $this->messenger->addMessage($this->t('The %name optionset %label has been deleted.', ['%name' => static::$niceName, '%label' => $this->entity->label()]));
-    $this->logger(static::$machineName)->notice('Deleted optionset %oid (%label)', ['%oid' => $this->entity->id(), '%label' => $this->entity->label()]);
+    $this->messenger()->addMessage($this->t('The %name optionset %label has been deleted.', [
+      '%name' => static::$niceName,
+      '%label' => $this->entity->label(),
+    ]));
+    $this->logger(static::$machineName)->notice('Deleted optionset %oid (%label)', [
+      '%oid' => $this->entity->id(),
+      '%label' => $this->entity->label(),
+    ]);
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

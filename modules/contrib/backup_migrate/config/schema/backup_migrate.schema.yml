@@ -2,14 +2,14 @@
 
 backup_migrate.profile.*:
   type: config_entity
-  label: 'Backup and Migrate settings profile'
+  label: 'Backup and Migrate profile'
   mapping:
     name:
       type: string
     label:
       type: label
       label: 'Label'
-    label:
+    filename:
       type: string
       label: 'Filename'
     append_timestamp:
@@ -55,7 +55,7 @@ backup_migrate.backup_migrate_schedule.*:
 
 backup_migrate.backup_migrate_settings.*:
   type: config_entity
-  label: 'Backup and Migrate Settings Profile'
+  label: 'Backup and Migrate Settings'
   mapping:
     id:
       type: string
@@ -68,6 +68,63 @@ backup_migrate.backup_migrate_settings.*:
     config:
       type: mapping
       label: 'Configuration'
+      mapping:
+        namer:
+          type: mapping
+          mapping:
+            filename:
+              type: string
+            timestamp:
+              type: integer
+            timestamp_format:
+              type: string
+        compressor:
+          type: mapping
+          mapping:
+            compression:
+              type: string
+        encrypt:
+          type: mapping
+          mapping:
+            encrypt:
+              type: integer
+            encrypt_password:
+              type: string
+        utils:
+          type: mapping
+          mapping:
+            site_offline:
+              type: integer
+        metadata:
+          type: mapping
+          mapping:
+            description:
+              type: string
+        db_exclude:
+          type: mapping
+          mapping:
+            exclude_tables:
+              type: sequence
+              sequence:
+                type: string
+            nodata_tables:
+              type: sequence
+              sequence:
+                type: string
+        private_files_exclude:
+          type: mapping
+          mapping:
+            exclude_filepaths:
+              type: sequence
+              sequence:
+                type: string
+        public_files_exclude:
+          type: mapping
+          mapping:
+            exclude_filepaths:
+              type: sequence
+              sequence:
+                type: string
 
 backup_migrate.backup_migrate_destination.*:
   type: config_entity
@@ -85,8 +142,10 @@ backup_migrate.backup_migrate_destination.*:
       type: string
       label: 'Destination Type'
     config:
-      type: mapping
+      type: sequence
       label: 'Configuration'
+      sequence:
+        type: string
 
 backup_migrate.backup_migrate_source.*:
   type: config_entity
@@ -104,5 +163,7 @@ backup_migrate.backup_migrate_source.*:
       type: string
       label: 'Source Type'
     config:
-      type: mapping
+      type: sequence
       label: 'Configuration'
+      sequence:
+        type: string

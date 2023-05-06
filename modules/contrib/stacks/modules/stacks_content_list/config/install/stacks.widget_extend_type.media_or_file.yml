@@ -1,5 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: media_or_file
-label: 'Media or File'

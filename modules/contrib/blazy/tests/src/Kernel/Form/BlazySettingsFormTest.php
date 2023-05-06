@@ -5,6 +5,7 @@ namespace Drupal\Tests\blazy\Kernel\Form;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\blazy\BlazyDefault;
 use Drupal\blazy_ui\Form\BlazySettingsForm;
 
 /**
@@ -15,6 +16,11 @@ use Drupal\blazy_ui\Form\BlazySettingsForm;
  * @group blazy
  */
 class BlazySettingsFormTest extends KernelTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * The Blazy form object under test.
@@ -28,7 +34,7 @@ class BlazySettingsFormTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'system',
     'file',
     'image',
@@ -42,17 +48,14 @@ class BlazySettingsFormTest extends KernelTestBase {
    *
    * @covers ::__construct
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installConfig(static::$modules);
 
     $this->blazyManager = $this->container->get('blazy.manager');
 
-    $this->blazySettingsForm = new BlazySettingsForm(
-      $this->blazyManager->getConfigFactory(),
-      $this->container->get('library.discovery')
-    );
+    $this->blazySettingsForm = BlazySettingsForm::create($this->container);
   }
 
   /**
@@ -64,17 +67,19 @@ class BlazySettingsFormTest extends KernelTestBase {
    * @covers ::submitForm
    */
   public function testBlazySettingsForm() {
+    $nojs = BlazyDefault::nojs();
     // Emulate a form state of a submitted form.
     $form_state = (new FormState())->setValues([
-      'admin_css'        => TRUE,
+      'admin_css' => TRUE,
       'responsive_image' => FALSE,
+      'nojs' => array_combine($nojs, $nojs),
     ]);
 
     $this->assertInstanceOf(FormInterface::class, $this->blazySettingsForm);
     $this->assertTrue($this->blazyManager->getConfigFactory()->get('blazy.settings')->get('admin_css'));
 
     $id = $this->blazySettingsForm->getFormId();
-    $this->assertEquals('blazy_settings', $id);
+    $this->assertEquals('blazy_settings_form', $id);
 
     $method = new \ReflectionMethod(BlazySettingsForm::class, 'getEditableConfigNames');
     $method->setAccessible(TRUE);

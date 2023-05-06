@@ -3,6 +3,8 @@
 /**
  * @file
  * Hooks and API provided by the Blazy module.
+ *
+ * @todo needs updating by the new decoupled lazy script options.
  */
 
 /**
@@ -12,21 +14,24 @@
  *
  * Modules may implement any of the available hooks to interact with Blazy.
  * Blazy may be configured using the web interface using formatters, or Views.
- * However below is a few sample coded ones as per Blazy RC2+.
+ * However below is a few sample coded ones.
  *
  * A single image sample.
  * @code
  * function my_module_render_blazy() {
  *   $settings = [
+ *     // URI is required to use BlazyManager::getBlazy().
  *     // URI is stored in #settings property so to allow traveling around video
  *     // and lightboxes before being passed into theme_blazy().
  *     'uri' => 'public://logo.jpg',
  *
  *     // Explicitly request for Blazy.
  *     // This allows Slick lazyLoad to not load Blazy.
+ *     // May be ignored by your defined options at Blazy UI since 2.6+, unless
+ *     // flagged by a bool `unlazy` in tandem with `loading` option.
  *     'lazy' => 'blazy',
  *
- *     // Optionally provide an image style:
+ *     // Optionally provide an image style. Valid URI is a must:
  *     'image_style' => 'thumbnail',
  *   ];
  *
@@ -55,7 +60,7 @@
  *   return $build;
  * }
  * @endcode
- * @see \Drupal\blazy\Blazy::buildAttributes()
+ * @see \Drupal\blazy\Theme\BlazyTheme::blazy()
  * @see \Drupal\blazy\BlazyDefault::imageSettings()
  *
  * A multiple image sample.
@@ -63,7 +68,7 @@
  * For advanced usages with multiple images, and a few Blazy features such as
  * lightboxes, lazyloaded images, or iframes, including CSS background and
  * aspect ratio, etc.:
- *   o Invoke blazy.manager, and or blazy.formatter.manager, services.
+ *   o Invoke blazy.manager, and or blazy.formatter, services.
  *   o Use \Drupal\blazy\BlazyManager::getBlazy() method to work with images and
  *     pass relevant settings which request for particular Blazy features
  *     accordingly.
@@ -96,26 +101,10 @@
  * }
  * @endcode
  * @see \Drupal\blazy\Plugin\Field\FieldFormatter\BlazyFormatterBlazy::buildElements()
- * @see \Drupal\blazy\Plugin\Field\FieldFormatter\BlazyVideoFormatter::buildElements()
  * @see \Drupal\gridstack\Plugin\Field\FieldFormatter\GridStackFileFormatterBase::buildElements()
  * @see \Drupal\slick\Plugin\Field\FieldFormatter\SlickFileFormatterBase::buildElements()
  * @see \Drupal\blazy\BlazyManager::getBlazy()
  * @see \Drupal\blazy\BlazyDefault::imageSettings()
- *
- *
- * Pre-render callback sample to modify/ extend Blazy output.
- * @code
- * function my_module_pre_render(array $image) {
- *   $settings = isset($image['#settings']) ? $image['#settings'] : [];
- *
- *   // Video's HREF points to external site, adds URL to local image.
- *   if (!empty($settings['box_url']) && !empty($settings['embed_url'])) {
- *     $image['#url_attributes']['data-box-url'] = $settings['box_url'];
- *   }
- *
- *   return $image;
- * }
- * @endcode
  * @see hook_blazy_alter()
  * @}
  */
@@ -136,14 +125,18 @@
  * @ingroup blazy_api
  */
 function hook_blazy_attach_alter(array &$load, array $settings = []) {
-  if (!empty($settings['photoswipe'])) {
+  // Since 2.6, non-configurable settings are mostly grouped under `blazies`.
+  // For pre 2.6, please use $settings['NAME'] directly.
+  $blazies = $settings['blazies'];
+
+  // Attach additional libraries or drupalSettings if meeting a condition:
+  if ($blazies->get('photoswipe')) {
     $load['library'][] = 'my_module/load';
 
-    $manager = \Drupal::service('blazy.manager');
     $template = ['#theme' => 'photoswipe_container'];
     $load['drupalSettings']['photoswipe'] = [
-      'options' => $manager->configLoad('options', 'photoswipe.settings'),
-      'container' => $manager->getRenderer()->renderPlain($template),
+      'options' => blazy()->configLoad('options', 'photoswipe.settings'),
+      'container' => blazy()->getRenderer()->renderPlain($template),
     ];
   }
 }
@@ -165,16 +158,43 @@ function hook_blazy_lightboxes_alter(array &$lightboxes) {
 /**
  * Alters Blazy individual item output to support a custom lightbox.
  *
- * @param array $image
- *   The renderable array of image being modified.
+ * @param array $build
+ *   The renderable array of image/ video iframe being modified.
  * @param array $settings
  *   The available array of settings.
  *
  * @ingroup blazy_api
  */
-function hook_blazy_alter(array &$image, array $settings = []) {
+function hook_blazy_alter(array &$build, array $settings = []) {
   if (!empty($settings['media_switch']) && $settings['media_switch'] == 'photoswipe') {
-    $image['#pre_render'][] = 'my_module_pre_render';
+    $build['#pre_render'][] = 'my_module_pre_render';
+  }
+}
+
+/**
+ * Alters Blazy outputs entirely to support a custom (quasy-)lightbox.
+ *
+ * In a case of ElevateZoom Plus, it adds a prefix large image preview before
+ * the Blazy Grid elements by adding an extra #theme_wrappers via #pre_render
+ * element.
+ *
+ * @param array $build
+ *   The renderable array of the entire Blazy output being modified.
+ * @param array $settings
+ *   The available array of settings.
+ *
+ * @ingroup blazy_api
+ */
+function hook_blazy_build_alter(array &$build, array $settings = []) {
+  // Since 2.6, non-configurable settings are mostly grouped under `blazies`.
+  // For pre 2.6, please use $settings['NAME'] directly.
+  $blazies = $settings['blazies'];
+
+  // All (quasi-)lightboxes are put directly under $blazies for being unique.
+  // This also allows a quasi-lightbox like ElevateZoomPlus inject its optionset
+  // as its value: elevatezoomplus: responsive, etc.
+  if ($blazies->get('colorbox') || $blazies->get('zooming')) {
+    $build['#pre_render'][] = 'my_module_pre_render_build';
   }
 }
 
@@ -197,7 +217,7 @@ function hook_blazy_alter(array &$image, array $settings = []) {
  * @code
  * function hook_config_schema_info_alter(array &$definitions) {
  *   $settings = ['color' => '', 'arrowpos' => '', 'dotpos' => ''];
- *   Blazy::configSchemaInfoAlter($definitions,
+ *   BlazyAlter::configSchemaInfoAlter($definitions,
  *     'slick_base', SlickDefault::extendedSettings() + $settings);
  * }
  * @endcode
@@ -223,18 +243,104 @@ function hook_blazy_base_settings_alter(array &$settings, array $context = []) {
 }
 
 /**
+ * Alters blazy settings inherited by all child elements.
+ *
+ * @param array $build
+ *   The array containing: settings, or potential optionset for extensions.
+ * @param object $items
+ *   The Drupal\Core\Field\FieldItemListInterface items.
+ *
+ * @ingroup blazy_api
+ */
+function hook_blazy_settings_alter(array &$build, $items) {
+  // Most configurable settings are put as direct key-value pairs.
+  $settings = &$build['settings'];
+  // Since 2.6, non-configurable settings are mostly grouped under `blazies`.
+  // For pre 2.6, please use $settings['NAME'] directly.
+  $blazies = $settings['blazies'];
+
+  // Overrides one pixel placeholder on particular pages relevant if using Views
+  // rewrite results which may strip out Data URI.
+  // See https://drupal.org/node/2908861.
+  $id = $blazies->get('entity.id');
+  if ($id && in_array($id, [45, 67])) {
+    $blazies->set('ui.placeholder', '/blank.gif');
+  }
+
+  // Alternatively override views blocks identified by `view.view_mode` with
+  // a blank SVG since 1px gif has issues with non-square sizes, see #2908861:
+  // <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'/>
+  // Adjust plugin ID since Blazy has a few formatters, View style/ fields.
+  // Since 2.6, plugin_id is put under: `field`, 'view', `filter` under blazies.
+  // For pre 2.6 all plugin IDs are ignorantly put under settings.plugin_id
+  // replacing each other -- while hardly an issue, likely due to no real/useful
+  // usages, it was plain wrong. A valid reason for `blazies` as grouping.
+  // Field formatters are grouped under $blazies->get('field.plugin_id'):
+  // - `blazy` for plain old Image.
+  // - `blazy_media` for Media.
+  // - `blazy_oembed` for oEmbed, etc.
+  // View fields and styles are grouped under $blazies->get('view.plugin_id'):
+  // - `blazy` for BlazyGrid Views style.
+  // - `blazy_file` for Views field File like plain image galleries.
+  // - `blazy_media` for Views field Media like mixed Media libraries.
+  // [Blazy|Splide|Slick]Filter are under $blazies->get('filter.plugin_id'):
+  // - `blazy_filter` for BlazyFilter, supports both plain media and galleries.
+  // - `slick_filter` for SlickFilter galleries.
+  // - `splide_filter` for SplideFilter galleries.
+  $plugin_id = $blazies->get('view.plugin_id') == 'blazy';
+
+  // Only concern with blocks having `Rewrite view resuts` to fix 404 due to
+  // `data:image` placeholder is stripped out by Views sanitization procedure.
+  // By default machine names are like block_1, or page_1, etc. till changed.
+  $rewriten_blocks = ['block_categories', 'block_popular', 'block_related'];
+  if ($plugin_id && $view_mode = $blazies->get('view.view_mode')) {
+    if (in_array($view_mode, $rewriten_blocks)) {
+      $blazies->set('ui.placeholder', '/blank.svg');
+    }
+  }
+}
+
+/**
  * Alters blazy-related formatter form elements.
+ *
+ * This takes advantage of Blazy taking care of a few elements finalizations,
+ * such as adding #empty_option, extras CSS classes, checkboxes, states, etc.
+ * This is run before hook_blazy_complete_form_element_alter().
  *
  * @param array $form
  *   The $form being modified.
  * @param array $definition
  *   The array defining the scope of form elements.
  *
+ * @see \Drupal\blazy\Form\BlazyAdminBase::finalizeForm()
+ *
+ * @ingroup blazy_api
+ */
+function hook_blazy_form_element_alter(array &$form, array $definition = []) {
+  // Scope to splide formatters, blazy, gridstack, slick, etc. Or swap em all.
+  if (($definition['namespace'] ?? FALSE) == 'splide') {
+    // Extend the formatter form elements as needed.
+  }
+}
+
+/**
+ * Alters blazy-related formatter form elements.
+ *
+ * Modify anything Blazy forms output as you wish.
+ * This is run after hook_blazy_form_element_alter().
+ *
+ * @param array $form
+ *   The $form being modified.
+ * @param array $definition
+ *   The array defining the scope of form elements.
+ *
+ * @see \Drupal\blazy\Form\BlazyAdminBase::finalizeForm()
+ *
  * @ingroup blazy_api
  */
 function hook_blazy_complete_form_element_alter(array &$form, array $definition = []) {
-  // Limit the scope to Slick formatters, blazy, gridstack, etc. Or swap em all.
-  if (isset($definition['namespace']) && $definition['namespace'] == 'slick') {
+  // Scope to splide formatters, blazy, gridstack, slick, etc. Or swap em all.
+  if (($definition['namespace'] ?? FALSE) == 'splide') {
     // Extend the formatter form elements as needed.
   }
 }

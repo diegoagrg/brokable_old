@@ -4,112 +4,111 @@ namespace Drupal\blazy\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\blazy\Dejavu\BlazyVideoBase;
-use Drupal\blazy\Dejavu\BlazyVideoTrait;
-use Drupal\blazy\BlazyOEmbed;
-use Drupal\blazy\BlazyFormatterManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
+@trigger_error('The ' . __NAMESPACE__ . '\BlazyVideoFormatter is deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use \Drupal\blazy\Plugin\Field\FieldFormatter\BlazyMediaFormatter instead. See https://www.drupal.org/node/3103018', E_USER_DEPRECATED);
 
 /**
  * Plugin implementation of the 'Blazy Video' to get VEF videos.
  *
- * @deprecated for \Drupal\blazy\Plugin\Field\FieldFormatter\BlazyMediaFormatter
+ * This file is no longer used nor needed, and will be removed at 3.x.
+ * VEF will continue working via BlazyOEmbed instead.
+ *
+ * BVEF can take over this file to be compat with Blazy 3.x rather than keeping
+ * 1.x debris. Also to adopt core OEmbed security features at ease.
+ *
  * @todo remove prior to full release. This means Slick Video which depends
  * on VEF is deprecated for main Slick at Blazy 8.2.x with core Media only.
+ * @todo make is useful for local video instead?
  */
-class BlazyVideoFormatter extends BlazyVideoBase implements ContainerFactoryPluginInterface {
+class BlazyVideoFormatter extends BlazyVideoBase {
 
-  use BlazyFormatterTrait;
-  use BlazyVideoTrait;
-
-  /**
-   * Constructs a BlazyFormatter object.
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, BlazyFormatterManager $formatter, BlazyOEmbed $blazy_oembed) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
-    $this->formatter = $this->blazyManager = $formatter;
-    $this->blazyOembed = $blazy_oembed;
-  }
+  use BlazyFormatterViewTrait;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['label'],
-      $configuration['view_mode'],
-      $configuration['third_party_settings'],
-      $container->get('blazy.formatter.manager'),
-      $container->get('blazy.oembed')
-    );
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    return self::injectServices($instance, $container, 'entity');
   }
 
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $build = [];
-
     // Early opt-out if the field is empty.
     if ($items->isEmpty()) {
-      return $build;
+      return [];
     }
 
-    // Collects specific settings to this formatter.
-    $settings              = $this->buildSettings();
-    $settings['blazy']     = TRUE;
-    $settings['namespace'] = $settings['item_id'] = $settings['lazy'] = 'blazy';
-
-    // Build the settings.
-    $build = ['settings' => $settings];
-
-    // Modifies settings.
-    $this->formatter->buildSettings($build, $items);
-
-    // Build the elements.
-    $this->buildElements($build, $items);
-
-    // Pass to manager for easy updates to all Blazy formatters.
-    return $this->formatter->build($build);
+    return $this->commonViewElements($items, $langcode);
   }
 
   /**
    * Build the blazy elements.
    */
   public function buildElements(array &$build, $items) {
-    $settings = $build['settings'];
+    $settings = &$build['settings'];
+    $blazies  = $settings['blazies'];
+    $entity   = $items->getEntity();
+
+    if (!($vef = $this->vefProviderManager())) {
+      return;
+    }
+
+    // @todo remove $settings after being migrated into $blazies.
+    $settings['bundle'] = 'remote_video';
+    $settings['media_source'] = 'video_embed_field';
+
+    // Update the settings, hard-coded, terracota.
+    $blazies->set('media.bundle', 'remote_video')
+      ->set('media.source', 'video_embed_field');
 
     foreach ($items as $delta => $item) {
-      $settings['input_url'] = strip_tags($item->value);
-      $settings['delta'] = $delta;
-      if (empty($settings['input_url'])) {
+      $input = strip_tags($item->value);
+
+      if (empty($input) || !($provider = $vef->loadProviderFromInput($input))) {
         continue;
       }
 
-      $this->blazyOembed->build($settings);
+      // Ensures thumbnail is available.
+      $provider->downloadThumbnail();
+      $settings['uri'] = $uri = $provider->getLocalThumbnailUri();
 
-      $box = ['item' => $item, 'settings' => $settings];
+      $blazy = $blazies->reset($settings);
+      $blazy->set('delta', $delta)
+        ->set('image.uri', $uri)
+        ->set('media.input_url', $input);
+
+      /*
+      // Too risky, but if you got lucky.
+      // if ($medias = $this->blazyManager->loadByProperties([
+      // 'field_media_oembed_video.value' => $input,
+      // ], 'media', TRUE)) {
+      // if ($media = reset($medias)) {
+      // $entity = $media;
+      // }
+      // }
+       */
+      $data = ['item' => NULL, 'settings' => $settings];
+      $this->blazyOembed->build($data, $entity);
 
       // Image with responsive image, lazyLoad, and lightbox supports.
-      $build[$delta] = $this->formatter->getBlazy($box);
-      unset($box);
+      $build[$delta] = $this->formatter->getBlazy($data, $delta);
+      unset($data);
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getScopedFormElements() {
+  protected function getPluginScopes(): array {
     return [
       'fieldable_form' => TRUE,
       'multimedia'     => TRUE,
-      'view_mode'      => $this->viewMode,
-    ] + parent::getScopedFormElements();
+    ] + parent::getPluginScopes();
   }
 
   /**

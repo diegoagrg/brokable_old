@@ -89,17 +89,27 @@
           .on('keydown', function (event) {
             if (event.which === 32) {
               // Space.
-              $(this).click();
+              $(this).trigger('click');
               event.preventDefault();
             }
             else if (event.which === 37 || event.which === 38) {
               // Left or Up.
-              $(this).parent().prev().find('.thumbnail').focus();
+              var $prev = $(this).parent();
+              do {
+                $prev = $prev.prev();
+              }
+              while ($prev.length && $prev.is(':hidden'));
+              $prev.find('.thumbnail').trigger('focus');
               event.preventDefault();
             }
             else if (event.which === 39 || event.which === 40) {
               // Right or Down.
-              $(this).parent().next().find('.thumbnail').focus();
+              var $next = $(this).parent();
+              do {
+                $next = $next.next();
+              }
+              while ($next.length && $next.is(':hidden'));
+              $next.find('.thumbnail').trigger('focus');
               event.preventDefault();
             }
           })

@@ -3,14 +3,13 @@ description: 'Testing a few Blazy hooks, etc.'
 type: module
 hidden: true
 package: Testing
-# core: 8.x
+core_version_requirement: ^8.8 || ^9 || ^10
 dependencies:
   - blazy:blazy
   - drupal:responsive_image
   - drupal:views
 
-# Information added by Drupal.org packaging script on 2019-03-08
-version: '8.x-2.0-beta1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2022-12-15
+version: '8.x-2.14'
 project: 'blazy'
-datestamp: 1552053511
+datestamp: 1671083288

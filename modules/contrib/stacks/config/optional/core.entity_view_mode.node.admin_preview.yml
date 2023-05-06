@@ -1,8 +1,0 @@
-status: true
-dependencies:
-  module:
-    - stacks
-id: node.admin_preview
-label: 'Admin Preview'
-targetEntityType: node
-cache: true

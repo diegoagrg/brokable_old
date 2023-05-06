@@ -29,7 +29,7 @@ class WebformLikert extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
-  public function getDefaultProperties() {
+  protected function defineDefaultProperties() {
     return [
       'title' => '',
       'default_value' => [],
@@ -42,6 +42,7 @@ class WebformLikert extends WebformElementBase {
       // Form display.
       'title_display' => '',
       'description_display' => '',
+      'help_display' => '',
       'disabled' => FALSE,
       // Form validation.
       'required' => FALSE,
@@ -50,6 +51,7 @@ class WebformLikert extends WebformElementBase {
       'format' => $this->getItemDefaultFormat(),
       'format_html' => '',
       'format_text' => '',
+      'format_attributes' => [],
       // Likert settings.
       'sticky' => TRUE,
       'questions' => [],
@@ -63,17 +65,17 @@ class WebformLikert extends WebformElementBase {
       // Attributes.
       'wrapper_attributes' => [],
       'label_attributes' => [],
-      // iCheck settings.
-      'icheck' => '',
-    ] + $this->getDefaultBaseProperties();
+    ] + $this->defineDefaultBaseProperties();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getTranslatableProperties() {
-    return array_merge(parent::getTranslatableProperties(), ['questions', 'answers', 'na_answer_text']);
+  protected function defineTranslatableProperties() {
+    return array_merge(parent::defineTranslatableProperties(), ['questions', 'answers', 'na_answer_text']);
   }
+
+  /****************************************************************************/
 
   /**
    * {@inheritdoc}
@@ -119,7 +121,7 @@ class WebformLikert extends WebformElementBase {
           'width' => '40%',
         ];
         foreach ($element['#answers'] as $answer_value => $answer_text) {
-          list($answer_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $answer_text);
+          list($answer_title) = WebformOptionsHelper::splitOption($answer_text);
           $header[$answer_value] = [
             'data' => $answer_title,
             'align' => 'center',
@@ -131,7 +133,7 @@ class WebformLikert extends WebformElementBase {
 
         $rows = [];
         foreach ($element['#questions'] as $question_key => $question_text) {
-          list($question_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $question_text);
+          list($question_title) = WebformOptionsHelper::splitOption($question_text);
 
           $question_value = (isset($value[$question_key])) ? $value[$question_key] : NULL;
           $row = [];
@@ -142,7 +144,7 @@ class WebformLikert extends WebformElementBase {
           ];
           foreach ($element['#answers'] as $answer_value => $answer_text) {
             $row[$answer_value] = [
-              'data' => ($question_value == $answer_value) ? ['#markup' => '&#10007;'] : '',
+              'data' => ($question_value === $answer_value) ? ['#markup' => '&#10007;'] : '',
               'align' => 'center',
               'width' => $width,
             ];
@@ -165,7 +167,7 @@ class WebformLikert extends WebformElementBase {
       case 'list':
         $items = [];
         foreach ($element['#questions'] as $question_key => $question_text) {
-          list($question_title) = explode(WebformOptionsHelper::DESCRIPTION_DELIMITER, $question_text);
+          list($question_title) = WebformOptionsHelper::splitOption($question_text);
           $answer_value = (isset($value[$question_key])) ? $value[$question_key] : NULL;
           $answer_text = ($answer_value !== NULL) ? WebformOptionsHelper::getOptionText($answer_value, $element['#answers'], TRUE) : $this->t('[blank]');
           $items[$question_key] = [
@@ -259,7 +261,7 @@ class WebformLikert extends WebformElementBase {
   public function buildExportHeader(array $element, array $options) {
     $header = [];
     foreach ($element['#questions'] as $key => $label) {
-      $header[] = ($options['header_format'] == 'key') ? $key : $label;
+      $header[] = ($options['header_format'] === 'key') ? $key : $label;
     }
     return $this->prefixExportHeader($header, $element, $options);
   }
@@ -273,7 +275,7 @@ class WebformLikert extends WebformElementBase {
     $record = [];
     foreach ($element['#questions'] as $question_key => $question_label) {
       $answer_value = (isset($value[$question_key])) ? $value[$question_key] : NULL;
-      if ($export_options['likert_answers_format'] == 'key') {
+      if ($export_options['likert_answers_format'] === 'key') {
         $record[] = $answer_value;
       }
       else {
@@ -388,8 +390,25 @@ class WebformLikert extends WebformElementBase {
   /**
    * {@inheritdoc}
    */
+  public function getElementSelectorSourceValues(array $element) {
+    $selector_options = $this->getElementSelectorOptions($element);
+    $selectors = reset($selector_options);
+
+    $source_values = [];
+    foreach (array_keys($selectors) as $selector) {
+      $source_values[$selector] = $element['#answers'];
+    }
+    return $source_values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+
+    $form['validation']['required_container']['required_error']['#description'] = $this->t('If set, this message will be used when a required likert question is empty, instead of the default "X field is required." message. To include the question title in the required message, please include the @name placeholder in the required message.');
+
     $form['likert'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Likert settings'),
@@ -451,7 +470,7 @@ class WebformLikert extends WebformElementBase {
     $form['likert']['na_answer_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('N/A answer text'),
-      '#description' => $this->t('Text display display on webform.'),
+      '#description' => $this->t('Text displayed on the webform.'),
       '#attributes' => ['data-webform-states-no-clear' => TRUE],
       '#states' => [
         'visible' => [

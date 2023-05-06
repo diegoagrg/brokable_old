@@ -3,7 +3,9 @@
 namespace Drupal\Tests\blazy\Kernel;
 
 use Drupal\Core\Form\FormState;
-use Drupal\blazy\BlazyMedia;
+use Drupal\blazy\Media\BlazyMedia;
+use Drupal\blazy\BlazyDefault;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Tests the Blazy image formatter.
@@ -24,7 +26,7 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $data['fields'] = [
@@ -47,11 +49,14 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
   }
 
   /**
-   * Tests the Blazy formatter methods.
+   * Tests the Blazy formatter buid methods.
    */
-  public function testBlazyFormatterMethods() {
+  public function testBlazyFormatterCache() {
     // Tests type definition.
-    $this->typeDefinition = $this->blazyAdminFormatter->getTypedConfig()->getDefinition('blazy.settings');
+    $this->typeDefinition = $this->blazyAdminFormatter
+      ->getTypedConfig()
+      ->getDefinition('blazy.settings');
+
     $this->assertEquals('Blazy settings', $this->typeDefinition['label']);
 
     // Tests cache.
@@ -62,28 +67,68 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
     $this->assertInstanceOf('\Drupal\blazy\BlazyManagerInterface', $this->formatterInstance->blazyManager(), 'BlazyManager implements interface.');
 
     // Tests cache tags matching entity ::getCacheTags().
-    $item = $entity->{$this->testFieldName};
-    $this->assertEquals($item[0]->entity->getCacheTags(), $build[$this->testFieldName][0]['#build']['settings']['file_tags'], 'First image cache tags is as expected');
-    $this->assertEquals($item[1]->entity->getCacheTags(), $build[$this->testFieldName][1]['#build']['settings']['file_tags'], 'Second image cache tags is as expected');
+    $item = $entity->get($this->testFieldName);
+    $field = $build[$this->testFieldName];
+
+    // Verify it is a theme_field().
+    $this->assertArrayHasKey('#blazy', $field);
+    $this->assertArrayHasKey('#build', $field[0]);
+
+    // Verify it is not a theme_item_list() grid.
+    $this->assertArrayNotHasKey('#build', $field);
+
+    $settings0 = $field[0]['#build']['settings'];
+    $settings1 = $field[1]['#build']['settings'];
+
+    $blazies0 = $settings0['blazies'];
+    $blazies1 = $settings1['blazies'];
+    $file0 = $item[0]->entity;
+    $file1 = $item[1]->entity;
+
+    $tag0 = [$blazies0->get('cache.file.tags')[0]];
+    $tag1 = [$blazies1->get('cache.file.tags')[0]];
+
+    $this->assertEquals($file0->getCacheTags(), $tag0, 'First image cache tags is as expected');
+    $this->assertEquals($file1->getCacheTags(), $tag1, 'Second image cache tags is as expected');
 
     $render = $this->blazyManager->getRenderer()->renderRoot($build);
     $this->assertNotEmpty($render);
+    $this->assertStringContainsString('data-blazy', $render);
+  }
 
+  /**
+   * Tests the Blazy formatter settings form.
+   */
+  public function testBlazySettingsForm() {
     // Tests ::settingsForm.
     $form = [];
 
     // Check for setttings form.
     $form_state = new FormState();
     $elements = $this->formatterInstance->settingsForm($form, $form_state);
+    $this->assertArrayHasKey('opening', $elements);
     $this->assertArrayHasKey('closing', $elements);
+  }
 
+  /**
+   * Tests the Blazy formatter view display.
+   */
+  public function testFormatterViewDisplay() {
     $formatter_settings = $this->formatterInstance->buildSettings();
-    $this->assertArrayHasKey('plugin_id', $formatter_settings);
+    $this->assertArrayHasKey('blazies', $formatter_settings);
 
-    // Tests formatter settings.
+    $blazies = $formatter_settings['blazies'];
+    $this->assertArrayHasKey('field', $blazies->storage());
+
+    $this->assertEquals($this->testPluginId, $blazies->get('field.plugin_id'));
+
+    // 1. Tests formatter settings.
     $build = $this->display->build($this->entity);
 
-    $result = $this->entity->{$this->testFieldName}->view(['type' => 'blazy']);
+    $result = $this->entity
+      ->get($this->testFieldName)
+      ->view(['type' => 'blazy']);
+
     $this->assertEquals('blazy', $result[0]['#theme']);
 
     $component = $this->display->getComponent($this->testFieldName);
@@ -91,53 +136,48 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
     $this->assertEquals($this->testPluginId, $component['type']);
     $this->assertEquals($this->testPluginId, $build[$this->testFieldName]['#formatter']);
 
-    $format['settings'] = $this->getFormatterSettings();
+    $format['settings'] = array_merge($this->getFormatterSettings(), $formatter_settings);
 
     $settings = &$format['settings'];
+    $blazies = $settings['blazies'];
+    // @todo remove.
+    $blazies->set('is.blazy', TRUE)
+      ->set('lazy.id', 'blazy');
 
-    $settings['breakpoints']     = $this->getDataBreakpoints(TRUE);
+    // 2. Test theme_field(), no grid.
     $settings['bundle']          = $this->bundle;
-    $settings['blazy']           = TRUE;
     $settings['grid']            = 0;
-    $settings['lazy']            = 'blazy';
     $settings['background']      = TRUE;
     $settings['thumbnail_style'] = 'thumbnail';
-    $settings['ratio']           = 'enforced';
+    $settings['ratio']           = 'fluid';
     $settings['image_style']     = 'blazy_crop';
 
     try {
       $settings['vanilla'] = TRUE;
-      $this->blazyFormatterManager->buildSettings($format, $this->testItems);
+      $this->blazyFormatter->buildSettings($format, $this->testItems);
     }
     catch (\PHPUnit_Framework_Exception $e) {
     }
 
-    $this->assertEquals($this->testFieldName, $settings['field_name']);
+    $this->assertEquals($this->testFieldName, $blazies->get('field.name'));
 
     $settings['vanilla'] = FALSE;
-    $this->blazyFormatterManager->buildSettings($format, $this->testItems);
+    // $this->blazyFormatter->buildSettings($format, $this->testItems);
+    $this->blazyFormatter->preBuildElements($format, $this->testItems);
 
-    $this->assertEquals($this->testFieldName, $settings['field_name']);
+    // Blazy uses theme_field() output.
+    $this->assertEquals($this->testFieldName, $blazies->get('field.name'));
     $this->assertArrayHasKey('#blazy', $build[$this->testFieldName]);
 
-    // Tests options.
-    // Verify no optionsets without a defined function paramater.
-    try {
-      $options_1a = $this->blazyAdminFormatter->getOptionsetOptions();
-    }
-    catch (\PHPUnit_Framework_Exception $e) {
-    }
-    $this->assertEmpty($options_1a);
+    $options = $this->blazyAdminFormatter->getOptionsetOptions('image_style');
+    $this->assertArrayHasKey('large', $options);
 
-    $options_1b = $this->blazyAdminFormatter->getOptionsetOptions('image_style');
-    $this->assertArrayHasKey('large', $options_1b);
-
-    // Tests grid.
+    // 3. Tests grid.
     $new_settings = $this->getFormatterSettings();
 
-    $new_settings['grid']         = 4;
-    $new_settings['grid_medium']  = 3;
-    $new_settings['grid_small']   = 2;
+    $new_settings['grid']         = '4';
+    $new_settings['grid_medium']  = '3';
+    $new_settings['grid_small']   = '2';
     $new_settings['media_switch'] = 'blazy_test';
     $new_settings['style']        = 'column';
     $new_settings['image_style']  = 'blazy_crop';
@@ -150,7 +190,7 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
 
     $build = $this->display->build($this->entity);
 
-    // Verify theme_field() is taken over by BlazyGrid::build().
+    // Verify theme_field() is taken over by Grid::build().
     $this->assertArrayNotHasKey('#blazy', $build[$this->testFieldName]);
   }
 
@@ -165,33 +205,58 @@ class BlazyFormatterTest extends BlazyKernelTestBase {
    * @dataProvider providerTestBlazyMedia
    */
   public function testBlazyMedia($input_url, $expected) {
-    $entity = $this->entity;
+    // Attempts to fix undefined DRUPAL_TEST_IN_CHILD_SITE for PHP 8 at 9.1.x.
+    // The middleware test.http_client.middleware calls drupal_generate_test_ua
+    // which checks the DRUPAL_TEST_IN_CHILD_SITE constant, that is not defined
+    // in Kernel tests.
+    try {
+      if (!defined('DRUPAL_TEST_IN_CHILD_SITE')) {
+        define('DRUPAL_TEST_IN_CHILD_SITE', FALSE);
+      }
 
-    $settings = [
-      'input_url'       => $input_url,
-      'source_field'    => $this->testFieldName,
-      'view_mode'       => 'default',
-      'bundle'          => $this->bundle,
-      'thumbnail_style' => 'thumbnail',
-      'uri'             => $this->uri,
-    ];
+      $entity = $this->entity;
 
-    $build = $this->display->build($entity);
+      $settings = [
+        'input_url'       => $input_url,
+        // 'source_field'    => $this->testFieldName,
+        // 'media_source'    => 'remote_video',
+        // 'view_mode'       => 'default',
+        'bundle'          => $this->bundle,
+        'thumbnail_style' => 'thumbnail',
+        'uri'             => $this->uri,
+      ] + BlazyDefault::htmlSettings();
 
-    $render = BlazyMedia::build($entity, $settings);
+      $blazies = &$settings['blazies'];
+      $info = [
+        'input_url'    => $input_url,
+        'source_field' => $this->testFieldName,
+        'source'       => 'remote_video',
+        'view_mode'    => 'default',
+      ];
 
-    if ($expected && $render) {
-      $this->assertNotEmpty($render);
+      $blazies->set('media', $info);
 
-      $field[0] = $render;
-      $wrap = BlazyMedia::wrap($field, $settings);
-      $this->assertNotEmpty($wrap);
+      $build = $this->display->build($entity);
 
-      $render = $this->blazyManager->getRenderer()->renderRoot($build[$this->testFieldName]);
-      $this->assertTrue(strpos($render, 'data-blazy') !== FALSE);
+      $render = BlazyMedia::build($entity, $settings);
+
+      if ($expected && $render) {
+        $this->assertNotEmpty($render);
+
+        $field[0] = $render;
+        $field['#settings'] = $settings;
+        $wrap = BlazyMedia::unfield($field, $settings);
+        $this->assertNotEmpty($wrap);
+
+        $render = $this->blazyManager->getRenderer()->renderRoot($build[$this->testFieldName]);
+        $this->assertStringContainsString('data-blazy', $render);
+      }
+      else {
+        $this->assertEmpty($render);
+      }
     }
-    else {
-      $this->assertFalse($render);
+    catch (GuzzleException $e) {
+      // Ignore any HTTP errors.
     }
   }
 

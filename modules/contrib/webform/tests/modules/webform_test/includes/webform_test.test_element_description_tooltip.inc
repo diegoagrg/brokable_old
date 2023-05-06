@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Generate test elements with with description tooltips.
+ * Generate test elements with description tooltips.
  */
 
 /**
@@ -23,9 +23,7 @@ function webform_test_test_element_description_tooltip() {
     'basic_elements' => [],
     'advanced_elements' => [],
   ];
-  foreach ($definitions as $definition) {
-    $element_type = $definition['id'];
-
+  foreach ($definitions as $element_type => $definition) {
     $webform_element = $elements[$element_type];
     $element = _webform_test_get_element_preview($element_type);
     if (!$element || !$webform_element->hasProperty('description_display')) {
@@ -44,7 +42,8 @@ function webform_test_test_element_description_tooltip() {
     $element['#description'] = (string) t("This is a description for the '@type' element.", ['@type' => $element_type]);
     $element['#description_display'] = 'tooltip';
 
-    $data[$category_id][$element_type] = $element;
+    $element_key = str_replace(':', '_', $element_type);
+    $data[$category_id][$element_key] = $element;
   }
 
   // Move other elements last.

@@ -53,22 +53,22 @@ class LocalTaskDefaultTest extends UnitTestCase {
   /**
    * The mocked translator.
    *
-   * @var \Drupal\Core\StringTranslation\TranslationInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\StringTranslation\TranslationInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $stringTranslation;
 
   /**
    * The mocked route provider.
    *
-   * @var \Drupal\Core\Routing\RouteProviderInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Routing\RouteProviderInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $routeProvider;
 
   protected function setUp() {
     parent::setUp();
 
-    $this->stringTranslation = $this->getMock('Drupal\Core\StringTranslation\TranslationInterface');
-    $this->routeProvider = $this->getMock('Drupal\Core\Routing\RouteProviderInterface');
+    $this->stringTranslation = $this->createMock('Drupal\Core\StringTranslation\TranslationInterface');
+    $this->routeProvider = $this->createMock('Drupal\Core\Routing\RouteProviderInterface');
   }
 
   /**
@@ -160,6 +160,28 @@ class LocalTaskDefaultTest extends UnitTestCase {
 
     $route_match = new RouteMatch('', $route, ['parameter' => (object) 'example2'], ['parameter' => 'example']);
     $this->assertEquals(['parameter' => 'example'], $this->localTaskBase->getRouteParameters($route_match));
+  }
+
+  /**
+   * Tests the getRouteParameters method for a route with upcasted parameters.
+   *
+   * @covers ::getRouteParameters
+   */
+  public function testGetRouteParametersForDynamicRouteWithUpcastedParametersEmptyRawParameters() {
+    $this->pluginDefinition = [
+      'route_name' => 'test_route',
+    ];
+
+    $route = new Route('/test-route/{parameter}');
+    $this->routeProvider->expects($this->once())
+      ->method('getRouteByName')
+      ->with('test_route')
+      ->will($this->returnValue($route));
+
+    $this->setupLocalTaskDefault();
+
+    $route_match = new RouteMatch('', $route, ['parameter' => (object) 'example2']);
+    $this->assertEquals(['parameter' => (object) 'example2'], $this->localTaskBase->getRouteParameters($route_match));
   }
 
   /**

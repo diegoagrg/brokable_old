@@ -35,7 +35,7 @@
       $element[showEffect]();
       // If not initializing, then focus the other element.
       if (effect !== false) {
-        $input.focus();
+        $input.trigger('focus');
       }
       // Require the input.
       $input.prop('required', true).attr('aria-required', 'true');
@@ -76,14 +76,19 @@
         var $element = $(this);
 
         var $select = $element.find('select');
-        var $otherOption = $element.find('option[value="_other_"]');
         var $input = $element.find('.js-webform-select-other-input');
 
         $select.on('change', function () {
-          toggleOther($otherOption.is(':selected'), $input);
+          var isOtherSelected = $select
+            .find('option[value="_other_"]')
+            .is(':selected');
+          toggleOther(isOtherSelected, $input);
         });
 
-        toggleOther($otherOption.is(':selected'), $input, false);
+        var isOtherSelected = $select
+          .find('option[value="_other_"]')
+          .is(':selected');
+        toggleOther(isOtherSelected, $input, false);
       });
     }
   };
@@ -146,7 +151,7 @@
         var $container = $(this).find('.js-webform-webform-buttons');
 
         // Create set onchange handler.
-        $container.change(function () {
+        $container.on('change', function () {
           toggleOther(($(this).find(':radio:checked').val() === '_other_'), $input);
         });
 

@@ -2,6 +2,9 @@
 
 namespace Drupal\we_megamenu;
 
+use Drupal\block\Entity\Block;
+use Drupal\views\Views;
+use Drupal;
 use Drupal\Core\Menu\MenuTreeParameters;
 
 class WeMegaMenuBuilder {
@@ -10,7 +13,7 @@ class WeMegaMenuBuilder {
    *
    * @param string $menu_name
    *   Public static function getMenuTree menu_name.
-   * @param array $items
+   * @param \Drupal\Core\Menu\MenuLinkTreeElement $items
    *   Public static function getMenuTree items.
    * @param int $level
    *   Public static function getMenuTree level.
@@ -18,13 +21,22 @@ class WeMegaMenuBuilder {
    * @return array
    *   Public static function getMenuTree array.
   */
-  public static function getMenuTree($menu_name, $items = [], $level = 0) {
+  public static function getMenuTree($menu_name, $backend = TRUE, $items = [], $level = 0) {
     $result = [];
     if ($level == 0) {
-      $menu_active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($menu_name);
+      $menu_active_trail = Drupal::service('menu.active_trail')->getActiveTrailIds($menu_name);
       $menu_tree_parameters = (new MenuTreeParameters)->setActiveTrail($menu_active_trail)->onlyEnabledLinks();
-      $tree = \Drupal::menuTree()->load($menu_name, $menu_tree_parameters);
+      $menu_tree = \Drupal::menuTree();
+      $tree = $menu_tree->load($menu_name, $menu_tree_parameters);
+      $manipulators = [
+        ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+      ];
+      $tree = $menu_tree->transform($tree, $manipulators);
+
       foreach ($tree as $item) {
+        if ($backend === FALSE && !$item->access->isAllowed()) {
+          continue;
+        }
         $route_name = $item->link->getPluginDefinition()['route_name'];
         $result[] = [
           'derivativeId' => $item->link->getDerivativeId(),
@@ -33,7 +45,7 @@ class WeMegaMenuBuilder {
           'description' => $item->link->getDescription(),
           'weight' => $item->link->getWeight(),
           'url' => $item->link->getUrlObject()->toString(),
-          'subtree' => self::getMenuTree($menu_name, $item, $level + 1),
+          'subtree' => self::getMenuTree($menu_name, $backend, $item, $level + 1),
           'route_name' => $route_name,
           'in_active_trail' => $item->inActiveTrail,
           'plugin_id' => $item->link->getPluginId(),
@@ -43,6 +55,9 @@ class WeMegaMenuBuilder {
     else {
       if ($items->hasChildren) {
         foreach ($items->subtree as $key_item => $item) {
+          if ($backend === FALSE && !$item->access->isAllowed()) {
+            continue;
+          }
           $route_name = $item->link->getPluginDefinition()['route_name'];
           $result[] = [
             'derivativeId' => $item->link->getDerivativeId(),
@@ -51,7 +66,7 @@ class WeMegaMenuBuilder {
             'description' => $item->link->getDescription(),
             'weight' => $item->link->getWeight(),
             'url' => $item->link->getUrlObject()->toString(),
-            'subtree' => self::getMenuTree($menu_name, $item, $level + 1),
+            'subtree' => self::getMenuTree($menu_name, $backend, $item, $level + 1),
             'route_name' => $route_name,
             'in_active_trail' => $item->inActiveTrail,
             'plugin_id' => $item->link->getPluginId(),
@@ -78,8 +93,8 @@ class WeMegaMenuBuilder {
    * @return array
    *   Public static function getMenuTreeOrder array.
   */
-  public static function getMenuTreeOrder($menu_name, $items = [], $level = 0) {
-    $menu = self::getMenuTree($menu_name, $items = [], $level = 0);
+  public static function getMenuTreeOrder($menu_name, $backend, $items = [], $level = 0) {
+    $menu = self::getMenuTree($menu_name, $backend, $items = [], $level = 0);
     return self::sortMenuDeep($menu);
   }
 
@@ -135,9 +150,9 @@ class WeMegaMenuBuilder {
    */
   public static function getMenuItems($menu_name, $items = [], $level = 0, &$result = []) {
     if ($level == 0) {
-      $menu_active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($menu_name);
+      $menu_active_trail = Drupal::service('menu.active_trail')->getActiveTrailIds($menu_name);
       $menu_tree_parameters = (new MenuTreeParameters)->setActiveTrail($menu_active_trail)->onlyEnabledLinks();
-      $tree = \Drupal::menuTree()->load($menu_name, $menu_tree_parameters);
+      $tree = Drupal::menuTree()->load($menu_name, $menu_tree_parameters);
       foreach ($tree as $item) {
         $route_name = $item->link->getPluginDefinition()['id'];
         $uuid = ($route_name == 'standard.front_page') ? $item->link->getPluginDefinition()['id'] : $item->link->getDerivativeId();
@@ -181,8 +196,8 @@ class WeMegaMenuBuilder {
   public static function getAllBlocks() {
     static $_list_blocks_array = [];
     if (empty($_list_blocks_array)) {
-      $theme_default = \Drupal::config('system.theme')->get('default');
-      $block_storage = \Drupal::entityManager()->getStorage('block');
+      $theme_default = Drupal::config('system.theme')->get('default');
+      $block_storage = Drupal::entityTypeManager()->getStorage('block');
       $entity_ids = $block_storage->getQuery()->condition('theme', $theme_default)->execute();
       $entities = $block_storage->loadMultiple($entity_ids);
       $_list_blocks_array = [];
@@ -205,7 +220,7 @@ class WeMegaMenuBuilder {
    *   Public static function routeExists int.
    */
   public static function routeExists($name) {
-    $route_provider = \Drupal::service('router.route_provider');
+    $route_provider = Drupal::service('router.route_provider');
     $route_provider = $route_provider->getRoutesByNames([$name]);
     return count($route_provider);
   }
@@ -226,10 +241,10 @@ class WeMegaMenuBuilder {
   public static function renderBlock($bid, $title_enable = TRUE, $section = '') {
     $html = '';
     if ($bid && !empty($bid)) {
-      $block = \Drupal\block\Entity\Block::load($bid);
+      $block = Block::load($bid);
       if (isset($block) && !empty($block)) {
         $title = $block->label();
-        $block_content = \Drupal::entityManager()
+        $block_content = Drupal::entityTypeManager()
           ->getViewBuilder('block')
           ->view($block);
 
@@ -284,11 +299,10 @@ class WeMegaMenuBuilder {
    *   Public static function loadConfig string.
    */
   public static function loadConfig($menu_name = '', $theme = '') {
-    if (!empty($menu_name) && !empty($theme)) {
-      $query = \Drupal::database()->select('we_megamenu', 'km');
+    if (!empty($menu_name)) {
+      $query = Drupal::database()->select('we_megamenu', 'km');
       $query->addField('km', 'data_config');
       $query->condition('km.menu_name', $menu_name);
-      $query->condition('km.theme', $theme);
       $query->range(0, 1);
       $result = $query->execute()->fetchField();
       return json_decode($result);
@@ -310,7 +324,7 @@ class WeMegaMenuBuilder {
    *   Public static function saveConfig string.
    */
   public static function saveConfig($menu_name, $theme, $data_config) {
-    $result = \Drupal::service('database')
+    $result = Drupal::service('database')
       ->merge('we_megamenu')
       ->key([
         'menu_name' => $menu_name,
@@ -319,7 +333,7 @@ class WeMegaMenuBuilder {
       ->fields([
         'data_config' => $data_config,
       ])->execute();
-    $menu_config = WeMegaMenuBuilder::loadConfig($menu_name, $theme);
+    return $data_config;
   }
 
   /**
@@ -458,7 +472,7 @@ class WeMegaMenuBuilder {
                       $col_count = $key_row_col;
                       $positions[] = $row_count . '-' . $col_count . '-' . count($cols);
                       foreach ($cols as $key_col => $col) {
-                        $menu_item = \Drupal::entityManager()
+                        $menu_item = Drupal::entityTypeManager()
                           ->getStorage('menu_link_content')
                           ->loadByProperties(['uuid' => $col->mlid]);
                         if (is_array($menu_item)) {
@@ -668,6 +682,27 @@ class WeMegaMenuBuilder {
   }
 
   /**
+   * Reposition menu items based on what changed
+   *
+   * @param string $menu_name
+   *   Public static function menuItemInsert menu_name.
+   * @param string $theme_name
+   *   Public static function menuItemInsert theme_name.
+   * @param object $menu_config
+   *   Public static function menuItemInsert menu_config.
+   * @param object $child_item
+   *   Public static function menuItemInsert child_item.
+   */
+  public static function repositionMenuItems($menu_name, $theme_name = '', $menu_config, $child_item) {
+    $list_menu_items = WeMegaMenuBuilder::getMenuItems($menu_name);
+
+    
+    \Drupal::logger('megamenu')->warning( print_r(json_encode($list_menu_items), true) );
+    foreach ($list_menu_items as $uuid => $childs) {
+    }
+  }
+
+  /**
    * Get trail array.
    *
    * @return array
@@ -677,7 +712,7 @@ class WeMegaMenuBuilder {
     $trail = [];
     foreach ($menu_items as $key_item => $item) {
       $plugin_id = $item['plugin_id'];
-      $check_is_front_page = \Drupal::service('path.matcher')->isFrontPage();
+      $check_is_front_page = Drupal::service('path.matcher')->isFrontPage();
       $route_name = $item['route_name'];
 
       if ($route_name == '<front>' && $check_is_front_page) {
@@ -698,15 +733,252 @@ class WeMegaMenuBuilder {
    * Render all drupal view.
    */
   public static function renderView() {
-    $entity_manager = \Drupal::entityManager();
+    $entity_manager = Drupal::entityTypeManager();
     $views = $entity_manager->getStorage('view')->loadMultiple();
     foreach ($views as $key => $view) {
-      $view = \Drupal\views\Views::getView($key);
+      $view = Views::getView($key);
       $a = $view->render();
       if ($a) {
-        echo drupal_render($view);
+        echo \Drupal::service('renderer')->render($view);
         exit;
       }
     }
+  }
+
+  public static function countMegamenuSubItem($menu_config, $derivativeId) {
+    if(!isset($menu_config[$derivativeId])) {
+      return 0;
+    }
+    $megamenu_item = $menu_config[$derivativeId];
+    $count = 0;
+    foreach($megamenu_item['rows_content'] as $i => $cols) {
+      foreach($cols as $j => $col) {
+        $count += isset($col['col_content']) ? count($col['col_content']) : 0;
+      }
+    }
+    return $count;
+  }
+
+  public static function getMenuSubIds($item) {
+    $subtree = $item['subtree'];
+    $ids = [];
+    foreach($subtree as $sub_item) {
+      $ids[] = $sub_item['derivativeId'];
+    }
+    return $ids;
+  }
+
+  public static function getMegamenuSubIds($item) {
+    $ids = [];
+    foreach($item['rows_content'] as $i => $cols) {
+      foreach($cols as $j => $col) {
+        $col_content = isset($col['col_content']) ? $col['col_content'] : [];
+        foreach($col_content as $k => $sub_item) {
+          if($sub_item['type'] == 'we-mega-menu-li') {
+            $ids[] = $sub_item['mlid'];
+          }
+        }
+      }
+    }
+    return $ids;
+  }
+
+  public static function equalArrays($array_1, $array_2) {
+    if(count($array_1) != count($array_2)) {
+      return FALSE;
+    }
+    for($i = 0; $i < count($array_1); $i ++) {
+      if($array_1[$i] != $array_2[$i]) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
+  public static function createNewMegamenuItem($level, $derivativeId, $item) {
+    $rows_content = [];
+    $submenu_config = new \stdClass();
+    $submenu_config->width = '';
+    $submenu_config->class = '';
+    $submenu_config->type = '';
+    $item_config = new \stdClass();
+    $item_config->level = $level;
+    $item_config->type = 'we-mega-menu-li';
+    $item_config->id = $derivativeId;
+    $item_config->title = $item['title'];
+    $item_config->submenu = 0;
+    $item_config->hide_sub_when_collapse = '';
+    $item_config->group = 0;
+    $item_config->class = '';
+    $item_config->{'data-icon'} = '';
+    $item_config->{'data-caption'} = '';
+    $item_config->{'data-alignsub'} = '';
+    $item_config->{'data-target'} = '';
+    $new_item = new \stdClass();
+    $new_item->rows_content = $rows_content;
+    $new_item->submenu_config = $submenu_config;
+    $new_item->item_config = $item_config;
+    return $new_item;   
+  }
+
+  public static function createNewMegamenuCellItem($menu_item, $menu_id) {
+    $new_megamenu_item = new \stdClass();
+    $new_megamenu_item->mlid = $menu_id;
+    $new_megamenu_item->type = 'we-mega-menu-li';
+    $new_megamenu_item->title = $menu_item['title'];
+    $new_megamenu_item->item_config = new \stdClass();// $megamenu_config->{$derivativeId}['rows_content'][$i][$j]['col_content'][$k]['item_config'];
+    return $new_megamenu_item;
+  }
+
+  public static function createNewMegamenuColConfig() {
+    $col_config = new \stdClass();
+    $col_config->hidewhencollapse = "";
+    $col_config->type = 'we-mega-menu-col';
+    $col_config->width = 12;
+    $col_config->block = '';
+    $col_config->class = '';
+    $col_config->block_title = 0;
+    return $col_config;
+  }
+
+  public static function compareItem($item, $level, &$menu_config, &$megamenu_config) {
+    $menu_sub_count = count($item['subtree']);
+    $derivativeId = $item['derivativeId'];
+    $megamenu_sub_count = self::countMegamenuSubItem($menu_config, $derivativeId);
+
+    if(!isset($menu_config[$derivativeId])) {
+      $new_item = self::createNewMegamenuItem($level, $derivativeId, $item);
+      $megamenu_config->menu_config->{$derivativeId} = $new_item;
+      $menu_config[$derivativeId] = json_decode(json_encode($new_item), TRUE);
+    }
+
+    if($menu_sub_count == $megamenu_sub_count) {
+      $menu_ids = self::getMenuSubIds($item);
+      $megamenu_ids = self::getMegamenuSubIds($menu_config[$derivativeId]);
+      if(!self::equalArrays($menu_ids, $megamenu_ids)) {
+        $megamenu_item = $menu_config[$derivativeId];
+        $pos_item = 0;
+        foreach($megamenu_item['rows_content'] as $i => $cols) {
+          foreach($cols as $j => $col) {
+            $col_content = isset($col['col_content']) ? $col['col_content'] : [];
+            foreach($col_content as $k => $sub_item) {
+              if($sub_item['type'] == 'we-mega-menu-li') {
+                $menu_item = $item['subtree'][$pos_item];
+                $megamenu_mlid = $sub_item['mlid'];
+                $menu_id = $menu_item['derivativeId'];
+                if($megamenu_mlid != $menu_id) {
+                  $new_megamenu_item = self::createNewMegamenuCellItem($menu_item, $menu_id);
+                  
+                  if(!isset($menu_config[$derivativeId]['rows_content'][$i][$j]['col_config'])) {
+                    $new_col_config = self::createNewMegamenuColConfig();
+                    $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_config = $new_col_config;
+                    $menu_config[$derivativeId]['rows_content'][$i][$j]['col_config'] = json_decode(json_encode($new_col_config), TRUE);
+                  }
+
+                  $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_content[$k] = $new_megamenu_item;
+                  $menu_config[$derivativeId]['rows_content'][$i][$j]['col_content'][$k] = json_decode(json_encode($new_megamenu_item), TRUE);
+                }
+                $pos_item ++;
+              }
+            }
+          }
+        }        
+      }
+    }
+    else {
+      $megamenu_item = $menu_config[$derivativeId];
+      $pos_item = 0;
+      $ii = -1;
+      $jj = -1;
+      $i = -1;
+      $j = -1;
+      foreach($megamenu_item['rows_content'] as $i => $row) {
+        foreach($row as $j => $col) {
+          $col_content = isset($col['col_content']) ? $col['col_content'] : [];
+          foreach($col_content as $k => $sub_item) {
+            if($sub_item['type'] == 'we-mega-menu-li') {
+              $ii = $i;
+              $jj = $j;
+
+              if($pos_item < $menu_sub_count) {
+                $menu_item = $item['subtree'][$pos_item];
+                $megamenu_mlid = $sub_item['mlid'];
+                $menu_id = $menu_item['derivativeId'];
+                if($megamenu_mlid != $menu_id) {
+                  if(!isset($menu_config[$derivativeId]['rows_content'][$i][$j]['col_config'])) {
+                    $new_col_config = self::createNewMegamenuColConfig();
+                    $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_config = $new_col_config;
+                    $menu_config[$derivativeId]['rows_content'][$i][$j]['col_config'] = json_decode(json_encode($new_col_config), TRUE);
+                  }
+                  $new_megamenu_item = self::createNewMegamenuCellItem($menu_item, $menu_id);
+                  $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_content[$k] = $new_megamenu_item;
+                  $menu_config[$derivativeId]['rows_content'][$i][$j]['col_content'][$k] = json_decode(json_encode($new_megamenu_item), TRUE);
+                }
+              }
+              else {
+                $col_content = $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_content;
+                unset($col_content[$k]);
+                $megamenu_config->menu_config->{$derivativeId}->rows_content[$i][$j]->col_content = $col_content;
+                $menu_config[$derivativeId]['rows_content'][$i][$j]['col_content'] = json_decode(json_encode($col_content), TRUE);
+              }
+              $pos_item ++;
+            }
+          }
+        }
+      }
+
+      if($ii == -1) {
+        $i ++;
+        $ii = $i;
+        $jj = $j = 0;
+        if(!isset($menu_config[$derivativeId]['rows_content'][$ii][$jj])) {
+          $megamenu_config->menu_config->{$derivativeId}->rows_content[$ii][$jj] = new \stdClass();
+          $menu_config[$derivativeId]['rows_content'][$ii][$jj] = [];
+        }
+      }
+
+      for($l = $pos_item; $l < $menu_sub_count; $l ++) {
+        $menu_item = $item['subtree'][$l];
+        $menu_id = $menu_item['derivativeId'];
+        $new_megamenu_item = self::createNewMegamenuCellItem($menu_item, $menu_id);
+        if(!isset($menu_config[$derivativeId]['rows_content'][$ii][$jj]['col_config'])) {
+          $new_col_config = self::createNewMegamenuColConfig();
+          $megamenu_config->menu_config->{$derivativeId}->rows_content[$ii][$jj]->col_config = $new_col_config;
+          $menu_config[$derivativeId]['rows_content'][$ii][$jj]['col_config'] = json_decode(json_encode($new_col_config), TRUE);
+        }
+        $megamenu_config->menu_config->{$derivativeId}->rows_content[$ii][$jj]->col_content[] = $new_megamenu_item;
+        $menu_config[$derivativeId]['rows_content'][$ii][$jj]['col_content'][] = json_decode(json_encode($new_megamenu_item), TRUE);
+      }
+    }
+  }
+
+  public static function updateMegamenuFromDrupalMenu(&$megamenu_config, $menu_items, $level) {
+    $menu_config = json_decode(json_encode($megamenu_config->menu_config), TRUE);
+    foreach($menu_items as $item) {
+      self::compareItem($item, $level, $menu_config, $megamenu_config);
+      if(count($item['subtree'])) {
+        self::updateMegamenuFromDrupalMenu($megamenu_config, $item['subtree'], $level + 1);
+      }
+    }
+  }
+
+  public static function initMegamenu($menu_name, $theme_name) {
+    $megamenu_config = new \stdClass();
+    $megamenu_config->menu_update_flag = 0;
+    $megamenu_config->menu_config = new \stdClass();
+    $megamenu_config->block_config = [
+      'style' => 'Default',
+      'animation' => 'None',
+      'delay' => '',
+      'duration' => '',
+      'auto-arrow' => '',
+      'always-show-submenu' => '',
+      'action' => 'hover',
+      'auto-mobile-collapse' => 0,
+    ];
+    $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name, FALSE);
+    self::updateMegamenuFromDrupalMenu($megamenu_config, $menu_items, 0);
+    self::saveConfig($menu_name, $theme_name, json_encode($megamenu_config));
+    return $megamenu_config;
   }
 }

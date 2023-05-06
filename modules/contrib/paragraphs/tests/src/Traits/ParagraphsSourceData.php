@@ -16,7 +16,7 @@ trait ParagraphsSourceData {
   protected function getSourceData() {
     $data = [];
 
-    $data[]['source_data'] = [
+    $data[0]['source_data'] = [
       'paragraphs_bundle' => [
         [
           'bundle' => 'paragraphs_field',
@@ -31,6 +31,14 @@ trait ParagraphsSourceData {
           'bundle' => 'paragraphs_field',
           'data' => 'Serialized Instance Data',
           'deleted' => '0',
+          'field_id' => '1',
+        ],
+      ],
+      'field_config' => [
+        [
+          'id' => '1',
+          'field_name' => 'field_text',
+          'translatable' => '1',
         ],
       ],
       'field_revision_field_text' => [
@@ -95,7 +103,31 @@ trait ParagraphsSourceData {
           'revision_id' => '3',
         ],
       ],
+      'field_data_field_paragraphs_field' => [
+        [
+          'entity_type' => 'node',
+          'entity_id' => '5',
+          // @todo Don't we have to match also entity revision IDs?
+          // 'revision_id' => 'something',
+          'field_paragraphs_field_value' => '1',
+          'field_paragraphs_field_revision_id' => '1',
+        ],
+        [
+          'entity_type' => 'taxonomy_term',
+          'entity_id' => '42',
+          'field_paragraphs_field_value' => '2',
+          'field_paragraphs_field_revision_id' => '3',
+        ],
+      ],
     ];
+    $data[0]['source_data']['field_revision_field_paragraphs_field'] = array_merge($data[0]['source_data']['field_data_field_paragraphs_field'], [
+      [
+        'entity_type' => 'taxonomy_term',
+        'entity_id' => '42',
+        'field_paragraphs_field_value' => '2',
+        'field_paragraphs_field_revision_id' => '2',
+      ],
+    ]);
     return $data;
   }
 

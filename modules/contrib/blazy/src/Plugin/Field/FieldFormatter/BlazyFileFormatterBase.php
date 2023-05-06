@@ -2,17 +2,14 @@
 
 namespace Drupal\blazy\Plugin\Field\FieldFormatter;
 
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Image\ImageFactory;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\field\FieldConfigInterface;
 use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
-use Drupal\blazy\BlazyFormatterManager;
 use Drupal\blazy\BlazyDefault;
-use Drupal\blazy\Dejavu\BlazyDependenciesTrait;
+use Drupal\blazy\Field\BlazyDependenciesTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -25,36 +22,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see Drupal\blazy\Plugin\Field\FieldFormatter\BlazyFileFormatter.
  * @see Drupal\slick\Plugin\Field\FieldFormatter\SlickImageFormatter.
  * @see Drupal\slick\Plugin\Field\FieldFormatter\SlickFileFormatter.
+ *
+ * @todo remove no longer in use: ImageFactory at blazy:3.x.
  */
-abstract class BlazyFileFormatterBase extends FileFormatterBase implements ContainerFactoryPluginInterface {
+abstract class BlazyFileFormatterBase extends FileFormatterBase {
 
-  use BlazyFormatterTrait;
-  use BlazyDependenciesTrait;
-
-  /**
-   * Constructs a BlazyFormatter object.
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ImageFactory $image_factory, BlazyFormatterManager $formatter) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
-    $this->imageFactory = $image_factory;
-    $this->formatter = $this->blazyManager = $formatter;
+  use BlazyFormatterTrait {
+    getScopedFormElements as traitGetScopedFormElements;
   }
+  use BlazyDependenciesTrait;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['label'],
-      $configuration['view_mode'],
-      $configuration['third_party_settings'],
-      $container->get('image.factory'),
-      $container->get('blazy.formatter.manager')
-    );
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    return self::injectServices($instance, $container, 'image');
   }
 
   /**
@@ -67,7 +50,7 @@ abstract class BlazyFileFormatterBase extends FileFormatterBase implements Conta
   /**
    * Build individual item if so configured such as for file ER goodness.
    */
-  public function buildElement(array &$build, $entity) {
+  public function buildElement(array &$element, $entity) {
     // Do nothing.
   }
 
@@ -79,50 +62,86 @@ abstract class BlazyFileFormatterBase extends FileFormatterBase implements Conta
     $definition = $this->getScopedFormElements();
 
     $definition['_views'] = isset($form['field_api_classes']);
-    if (!empty($definition['_views'])) {
-      $view = $form_state->get('view');
-      // Disables problematic options for GridStack plugin since GridStack
-      // will not work with Responsive image, and has its own breakpoints.
-      if ($view->getExecutable()->getStyle()->getPluginId() == 'gridstack') {
-        $definition['breakpoints'] = $definition['ratio'] = FALSE;
-        $definition['responsive_image'] = FALSE;
-        $definition['no_ratio'] = TRUE;
-      }
-    }
-
     $this->admin()->buildSettingsForm($element, $definition);
 
     return $element;
   }
 
   /**
-   * Defines the scope for the form elements.
+   * Returns the Blazy elements, also for sub-modules to re-use.
    */
-  public function getScopedFormElements() {
-    $field       = $this->fieldDefinition;
-    $entity_type = $field->getTargetEntityTypeId();
-    $target_type = $this->getFieldSetting('target_type');
-    $multiple    = $field->getFieldStorageDefinition()->isMultiple();
+  protected function getElements(array &$build, $files, $caption_id = 'captions'): array {
+    $elements = [];
+    foreach ($files as $delta => $file) {
+      /** @var Drupal\image\Plugin\Field\FieldType\ImageItem $item */
+      $item  = $file->_referringItem;
+      $sets  = $build['settings'];
+      $blazy = $sets['blazies']->reset($sets);
+      $uri   = $sets['uri'] = $file->getFileUri();
+
+      // @todo update tests and move it out of here.
+      $blazy->set('delta', $delta)
+        ->set('media.type', 'image')
+        ->set('image.uri', $uri);
+
+      $element = ['item' => $item, 'settings' => $sets];
+
+      // Build individual element.
+      $this->buildElement($element, $file);
+
+      // Build captions if so configured.
+      if ($caption_id) {
+        $this->buildCaptions($element, $caption_id);
+      }
+
+      // Image with grid, responsive image, lazyLoad, and lightbox supports.
+      $elements[] = $element;
+    }
+    return $elements;
+  }
+
+  /**
+   * Builds the captions.
+   */
+  protected function buildCaptions(array &$element, $caption_id): void {
+    $settings = $element['settings'];
+    if (!empty($settings['caption']) && $item = ($element['item'] ?? NULL)) {
+      foreach ($settings['caption'] as $caption) {
+        if ($content = ($item->{$caption} ?? NULL)) {
+          $element[$caption_id][$caption] = [
+            '#markup' => Xss::filterAdmin($content),
+          ];
+        }
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getPluginScopes(): array {
+    $multiple = $this->isMultiple();
+    $captions = ['title' => $this->t('Title'), 'alt' => $this->t('Alt')];
 
     return [
       'background'        => TRUE,
       'box_captions'      => TRUE,
-      'breakpoints'       => BlazyDefault::getConstantBreakpoints(),
-      'captions'          => ['title' => $this->t('Title'), 'alt' => $this->t('Alt')],
-      'current_view_mode' => $this->viewMode,
-      'entity_type'       => $entity_type,
-      'field_name'        => $field->getName(),
-      'field_type'        => $field->getType(),
+      'captions'          => $captions,
       'grid_form'         => $multiple,
       'image_style_form'  => TRUE,
       'media_switch_form' => TRUE,
-      'namespace'         => 'blazy',
-      'plugin_id'         => $this->getPluginId(),
-      'settings'          => $this->getSettings(),
       'style'             => $multiple,
-      'target_type'       => $target_type,
       'thumbnail_style'   => TRUE,
     ];
+  }
+
+  /**
+   * Returns TRUE if a multi-value field.
+   */
+  protected function isMultiple(): bool {
+    return $this->fieldDefinition
+      ->getFieldStorageDefinition()
+      ->isMultiple();
   }
 
   /**
@@ -151,7 +170,7 @@ abstract class BlazyFileFormatterBase extends FileFormatterBase implements Conta
       if (empty($default_image['uuid']) && $this->fieldDefinition instanceof FieldConfigInterface) {
         $default_image = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('default_image');
       }
-      if (!empty($default_image['uuid']) && $file = \Drupal::service('entity.repository')->loadEntityByUuid('file', $default_image['uuid'])) {
+      if (!empty($default_image['uuid']) && $file = $this->formatter->loadByUuid($default_image['uuid'], 'file')) {
         // Clone the FieldItemList into a runtime-only object for the formatter,
         // so that the fallback image can be rendered without affecting the
         // field values in the entity being rendered.

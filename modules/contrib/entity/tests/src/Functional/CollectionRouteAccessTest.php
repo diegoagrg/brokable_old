@@ -20,16 +20,19 @@ class CollectionRouteAccessTest extends BrowserTestBase {
   use BlockCreationTrait;
 
   /**
-   * Modules to enable.
-   *
-   * @var array
+   * {@inheritdoc}
    */
-  public static $modules = ['entity_module_test', 'user', 'entity', 'block'];
+  protected static $modules = ['entity_module_test', 'user', 'entity', 'block'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
     parent::setUp();
 
     $this->placeBlock('local_tasks_block');

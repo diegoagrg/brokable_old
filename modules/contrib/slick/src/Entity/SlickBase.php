@@ -54,9 +54,9 @@ abstract class SlickBase extends ConfigEntityBase implements SlickBaseInterface 
         return NestedArray::getValue($this->options, (array) $group);
       }
       elseif (isset($property) && isset($this->options[$group])) {
-        return isset($this->options[$group][$property]) ? $this->options[$group][$property] : NULL;
+        return $this->options[$group][$property] ?? NULL;
       }
-      return $this->options[$group];
+      return $this->options[$group] ?? NULL;
     }
 
     return $this->options;
@@ -86,7 +86,7 @@ abstract class SlickBase extends ConfigEntityBase implements SlickBaseInterface 
    * {@inheritdoc}
    */
   public function getSetting($name) {
-    return isset($this->getSettings()[$name]) ? $this->getSettings()[$name] : NULL;
+    return $this->getSettings()[$name] ?? NULL;
   }
 
   /**
@@ -101,7 +101,44 @@ abstract class SlickBase extends ConfigEntityBase implements SlickBaseInterface 
    * {@inheritdoc}
    */
   public static function defaultSettings($group = 'settings') {
-    return self::load('default')->options[$group];
+    $settings = self::load('default')->options[$group];
+    self::removeUnsupportedSettings($settings);
+    return $settings;
+  }
+
+  /**
+   * Remove settings that aren't supported by the active library.
+   */
+  public static function removeUnsupportedSettings(array &$settings = []) {
+    $library = \Drupal::config('slick.settings')->get('library');
+    // The `focusOnSelect`is required to sync asNavFor, but removed. Here must
+    // be kept for future fix, or less breaking changes due to different logic.
+    if ($library == 'accessible-slick') {
+      unset($settings['accessibility']);
+      unset($settings['focusOnChange']);
+    }
+    else {
+      unset($settings['regionLabel']);
+      unset($settings['useGroupRole']);
+      unset($settings['instructionsText']);
+      unset($settings['useAutoplayToggleButton']);
+      unset($settings['pauseIcon']);
+      unset($settings['playIcon']);
+      unset($settings['arrowsPlacement']);
+    }
+  }
+
+  /**
+   * Load the optionset with a fallback.
+   */
+  public static function loadWithFallback($id) {
+    $optionset = self::load($id);
+
+    // Ensures deleted optionset while being used doesn't screw up.
+    if (empty($optionset)) {
+      $optionset = self::load('default');
+    }
+    return $optionset;
   }
 
 }

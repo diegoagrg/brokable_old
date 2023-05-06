@@ -3,6 +3,7 @@
 namespace Drupal\Tests\webform\Unit\Access;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\webform\Access\WebformSubmissionAccess;
 
 /**
@@ -19,6 +20,17 @@ class WebformSubmissionAccessTest extends WebformAccessTestBase {
    * @covers ::checkWizardPagesAccess
    */
   public function testWebformSubmissionAccess() {
+    // Mock Drupal service container.
+    $this->container = new ContainerBuilder();
+    \Drupal::setContainer($this->container);
+
+    // Mock module handler.
+    $module_handler = $this->createMock('Drupal\Core\Extension\ModuleHandlerInterface');
+    $module_handler->expects($this->any())
+      ->method('moduleExists')
+      ->will($this->returnValue(FALSE));
+    $this->container->set('module_handler', $module_handler);
+
     // Mock anonymous account.
     $anonymous_account = $this->mockAccount();
 
@@ -53,7 +65,7 @@ class WebformSubmissionAccessTest extends WebformAccessTestBase {
       ->method('hasMessageHandler')
       ->will($this->returnValue(TRUE));
 
-    // Mock email webform submission
+    // Mock email webform submission.
     $email_webform_submission = $this->createMock('Drupal\webform\WebformSubmissionInterface');
     $email_webform_submission->expects($this->any())
       ->method('getWebform')

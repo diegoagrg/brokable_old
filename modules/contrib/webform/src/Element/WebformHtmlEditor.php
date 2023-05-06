@@ -103,6 +103,13 @@ class WebformHtmlEditor extends FormElement {
         '#type' => 'text_format',
         '#format' => $format,
         '#allowed_formats' => [$format],
+        // Do not allow the text format value to be cleared when the text format
+        // is hidden via #states. We must use a wrapper <div> because
+        // The TextFormat element does not support #attributes.
+        // @see \Drupal\webform\Plugin\WebformElement\TextFormat::preRenderFixTextFormatStates
+        // @see \Drupal\filter\Element\TextFormat
+        '#prefix' => '<div data-webform-states-no-clear>',
+        '#suffix' => '</div>',
       ];
       WebformElementHelper::fixStatesWrapper($element);
       return $element;
@@ -218,16 +225,21 @@ class WebformHtmlEditor extends FormElement {
    *
    * @param string $text
    *   The text to be filtered.
+   * @param array $options
+   *   HTML markup options.
    *
    * @return array
    *   Render array containing 'processed_text'.
    *
    * @see \Drupal\webform\Plugin\WebformHandler\EmailWebformHandler::getMessage
    */
-  public static function checkMarkup($text) {
+  public static function checkMarkup($text, array $options = []) {
+    $options += [
+      'tidy' => \Drupal::config('webform.settings')->get('html_editor.tidy'),
+    ];
     // Remove <p> tags around a single line of text, which creates minor
     // margin issues.
-    if (\Drupal::config('webform.settings')->get('html_editor.tidy')) {
+    if ($options['tidy']) {
       if (substr_count($text, '<p>') === 1 && preg_match('#^\s*<p>.*</p>\s*$#m', $text)) {
         $text = preg_replace('#^\s*<p>#', '', $text);
         $text = preg_replace('#</p>\s*$#', '', $text);
@@ -243,6 +255,7 @@ class WebformHtmlEditor extends FormElement {
     }
     else {
       return [
+        '#theme' => 'webform_html_editor_markup',
         '#markup' => $text,
         '#allowed_tags' => static::getAllowedTags(),
       ];
@@ -259,8 +272,7 @@ class WebformHtmlEditor extends FormElement {
    *   HTML text with dis-allowed HTML tags removed.
    */
   public static function stripTags($text) {
-    $allowed_tags = '<' . implode('><', static::getAllowedTags()) . '>';
-    return strip_tags($text, $allowed_tags);
+    return Xss::filter($text, static::getAllowedTags());
   }
 
 }

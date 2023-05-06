@@ -2,22 +2,31 @@
 
 namespace Drupal\blazy\Dejavu;
 
-use Drupal\file\Entity\File;
+use Drupal\blazy\Blazy;
+use Drupal\blazy\Media\BlazyImage;
 
 /**
  * A Trait common for Media integration.
  *
+ * This file is no longer used nor needed, and will be removed at 3.x.
+ * VEF will continue working without this file via BlazyOEmbed instead.
+ *
+ * BVEF doesn't need this file, can adopt
+ * \Drupal\blazy\Plugin\Field\FieldFormatter\BlazyVideoFormatter instead.
+ *
  * @see Drupal\blazy\Plugin\views\field\BlazyViewsFieldPluginBase
  * @see Drupal\slick_browser\SlickBrowser::widgetEntityBrowserFileFormAlter()
  * @see Drupal\slick_browser\Plugin\EntityBrowser\FieldWidgetDisplay\...
- * @todo move it into BlazyMedia.
+ * @todo deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use
+ *   Drupal\blazy\Media\BlazyOEmbed instead.
+ * @see https://www.drupal.org/node/3103018
  */
 trait BlazyVideoTrait {
 
   /**
    * The blazy oembed service.
    *
-   * @var \Drupal\blazy\BlazyOEmbed
+   * @var \Drupal\blazy\Media\BlazyOEmbedInterface
    * @todo remove default null post Blazy 8.2.x full release.
    */
   protected $blazyOembed = NULL;
@@ -37,7 +46,7 @@ trait BlazyVideoTrait {
    */
   public function blazyOembed() {
     if (is_null($this->blazyOembed)) {
-      $this->blazyOembed = \Drupal::service('blazy.oembed');
+      $this->blazyOembed = Blazy::service('blazy.oembed');
     }
     return $this->blazyOembed;
   }
@@ -49,7 +58,7 @@ trait BlazyVideoTrait {
    */
   public function imageFactory() {
     if (is_null($this->imageFactory)) {
-      $this->imageFactory = \Drupal::service('image.factory');
+      $this->imageFactory = Blazy::service('image.factory');
     }
     return $this->imageFactory;
   }
@@ -62,44 +71,17 @@ trait BlazyVideoTrait {
    *
    * @return array
    *   The array of image item and settings if a file image, else empty.
+   *
+   * @todo enable post RC before release release.
+   * @todo deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use
+   *   BlazyImage::fromAny() instead.
+   * @see https://www.drupal.org/node/3103018
    */
   public function getImageItem($file) {
-    $data = [];
-    $entity = $file;
-
-    /** @var Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem $file */
-    if (isset($file->entity) && !isset($file->alt)) {
-      $entity = $file->entity;
-    }
-
-    if (!$entity instanceof File) {
-      return $data;
-    }
-
-    /** @var \Drupal\file\Entity\File $entity */
-    list($type,) = explode('/', $entity->getMimeType(), 2);
-    $uri = $entity->getFileUri();
-
-    if ($type == 'image' && ($image = $this->imageFactory()->get($uri)) && $image->isValid()) {
-      $item            = new \stdClass();
-      $item->target_id = $entity->id();
-      $item->width     = $image->getWidth();
-      $item->height    = $image->getHeight();
-      $item->alt       = $entity->getFilename();
-      $item->title     = $entity->getFilename();
-      $item->uri       = $uri;
-      $settings        = (array) $item;
-      $item->entity    = $entity;
-
-      // Build item and settings.
-      $settings['type'] = 'image';
-      $settings['uri']  = $uri;
-      $data['item']     = $item;
-      $data['settings'] = $settings;
-      unset($item);
-    }
-
-    return $data;
+    // @todo enable post release
+    // @trigger_error('getImageItem is deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use \Drupal\blazy\Media\BlazyImage::fromAny() instead. See https://www.drupal.org/node/3103018', E_USER_DEPRECATED);
+    $item = BlazyImage::fromAny($file);
+    return $item ? ['item' => $item] : [];
   }
 
   /**
@@ -110,11 +92,15 @@ trait BlazyVideoTrait {
    * @param object $media
    *   The core Media entity.
    *
-   * @deprecated for BlazyOEmbed::getMediaItem().
    * @todo remove post Blazy 8.2.x when blazy-plugins use core Media.
+   *
+   * @deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use
+   *   BlazyOEmbed::build() instead.
+   * @see https://www.drupal.org/node/3103018
    */
   public function getMediaItem(array &$data = [], $media = NULL) {
-    $this->blazyOembed()->getMediaItem($data, $media);
+    @trigger_error('getMediaItem is deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use \Drupal\blazy\Media\BlazyOEmbed::build() instead. See https://www.drupal.org/node/3103018', E_USER_DEPRECATED);
+    $this->blazyOembed()->build($data, $media);
   }
 
   /**
@@ -125,13 +111,17 @@ trait BlazyVideoTrait {
    * @param string $external_url
    *   A video URL.
    *
-   * @deprecated for BlazyOEmbed::build().
    * @todo remove post Blazy 8.2.x full release. This is still kept to
    * allow changing from video_embed_field into media field without breaking it,
    * and to allow transition from blazy-related modules to depend on media.
    * Currently this is only required by deprecated SlickVideoFormatter.
+   *
+   * @deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use
+   *   BlazyOEmbed::build() instead.
+   * @see https://www.drupal.org/node/3103018
    */
   public function buildVideo(array &$settings = [], $external_url = '') {
+    @trigger_error('buildVideo is deprecated in blazy:8.x-2.0 and is removed from blazy:8.x-3.0. Use \Drupal\blazy\Media\BlazyOEmbed::build() instead. See https://www.drupal.org/node/3103018', E_USER_DEPRECATED);
     $settings['input_url'] = empty($settings['input_url']) ? $external_url : $settings['input_url'];
     return $this->blazyOembed()->build($settings);
   }

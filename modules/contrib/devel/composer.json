@@ -2,44 +2,72 @@
   "name": "drupal/devel",
   "description": "Various blocks, pages, and functions for developers.",
   "type": "drupal-module",
-  "homepage": "http://drupal.org/project/devel",
-  "authors": [
-    {
-      "name": "Moshe Weitzman",
-      "email": "weitzman@tejasa.com",
-      "homepage": "https://github.com/weitzman",
-      "role": "Maintainer"
-    },
-    {
-      "name": "Hans Salvisberg",
-      "email": "drupal@salvisberg.com",
-      "homepage": "https://www.drupal.org/u/salvis",
-      "role": "Maintainer"
-    },
-    {
-      "name": "Luca Lusso",
-      "homepage": "https://www.drupal.org/u/lussoluca",
-      "role": "Maintainer"
-    },
-    {
-      "name": "Marco (willzyx)",
-      "homepage": "https://www.drupal.org/u/willzyx",
-      "role": "Maintainer"
-    },
-    {
-      "name": "See contributors",
-      "homepage": "https://www.drupal.org/node/3236/committers"
-    }
-  ],
   "support": {
-    "issues": "http://drupal.org/project/devel",
-    "irc": "irc://irc.freenode.org/drupal-contribute",
-    "source": "http://cgit.drupalcode.org/devel"
+    "issues": "https://gitlab.com/drupalspoons/devel/-/issues",
+    "slack": "https://drupal.slack.com/archives/C012WAW1MH6",
+    "docs": "https://www.drupal.org/docs/8/modules/devel",
+    "source": "https://gitlab.com/drupalspoons/devel/-/tree/8.x-3.x"
   },
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "minimum-stability": "dev",
-  "require": {},
+  "prefer-stable": true,
+  "require": {
+    "symfony/var-dumper": "^4 || ^5",
+    "doctrine/common": "^2.7"
+  },
+  "require-dev": {
+    "composer/installers": "^1",
+    "drupal/core-composer-scaffold": "^8.8",
+    "cweagans/composer-patches": "~1.0",
+    "drupal/core-recommended": "^8.8",
+    "drupal/core-dev": "^8.8",
+    "drush/drush": "^10",
+    "mglaman/phpstan-drupal": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "php-parallel-lint/php-parallel-lint": "^1.2",
+    "zaporylie/composer-drupal-optimizations": "^1.0"
+  },
   "suggest": {
-    "symfony/var-dumper": "Pretty print complex values better with var-dumper available"
+    "kint-php/kint": "Kint provides an informative display of arrays/objects. Useful for debugging and developing."
+  },
+  "conflict": {
+    "kint-php/kint": "<3"
+  },
+  "config": {
+  	"process-timeout": 36000
+  },
+    "scripts": {
+        "si": "drush si -v --db-url=sqlite://sites/default/files/.sqlite testing",
+        "phpcs": "PWD=$(pwd) && phpcs --runtime-set ignore_warnings_on_exit 1 --runtime-set ignore_errors_on_exit 1 --ignore=$PWD/web/,$PWD/vendor/",
+        "lint": "parallel-lint --exclude web --exclude vendor .",
+        "runserver": "drush runserver 0.0.0.0",
+        "chromedriver": "chromedriver --port=9515 --verbose --whitelisted-ips --log-path=/tmp/chromedriver.log --no-sandbox",
+        "create-symlinks": "cd web/modules/${PWD##*/} && find ../../.. -maxdepth 1 ! -name .git ! -name web ! -name vendor -print | while read file; do ln -s $file .; done",
+        "unit": "phpunit --verbose --printer '\\Drupal\\Tests\\Listeners\\HtmlOutputPrinter' web/modules/${PWD##*/}",
+        "phpstan": "phpstan analyse web/modules/${PWD##*/}",
+        "post-update-cmd": [
+            "DIR=${PWD##*/} && rm -rf web/modules/$DIR && mkdir -p web/modules/$DIR",
+            "@create-symlinks"
+        ]
+    },
+  "extra": {
+    "installer-paths": {
+      "web/core": ["type:drupal-core"],
+      "web/libraries/{$name}": ["type:drupal-library"],
+      "web/modules/{$name}": ["type:drupal-module"],
+      "web/profiles/{$name}": ["type:drupal-profile"],
+      "web/themes/{$name}": ["type:drupal-theme"],
+      "drush/{$name}": ["type:drupal-drush"]
+    },
+    "drupal-scaffold": {
+      "locations": {
+        "web-root": "web/"
+      }
+    },
+    "drush": {
+      "services": {
+        "drush.services.yml": "^9 || ^10"
+      }
+    }
   }
 }

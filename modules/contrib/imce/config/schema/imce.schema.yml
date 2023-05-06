@@ -42,6 +42,10 @@ imce.profile_conf.extensions:
   type: string
   label: 'Allowed file extensions'
 
+imce.profile_conf.usertab:
+  type: boolean
+  label: 'Display file browser tab in user profile pages'
+
 imce.profile_conf.maxsize:
   type: float
   label: 'Maximum file size'
@@ -61,6 +65,18 @@ imce.profile_conf.maxheight:
 imce.profile_conf.replace:
   type: integer
   label: 'Upload replace method'
+
+imce.profile_conf.thumbnail_style:
+  type: string
+  label: 'Thumbnail style'
+
+imce.profile_conf.thumbnail_grid_style:
+  type: boolean
+  label: 'Thumbnail grid style'
+
+imce.profile_conf.ignore_usage:
+  type: boolean
+  label: 'Ignore file usage'
 
 imce.profile_conf.folders:
   type: sequence

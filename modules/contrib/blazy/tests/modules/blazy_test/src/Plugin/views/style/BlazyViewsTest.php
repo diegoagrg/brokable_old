@@ -4,7 +4,6 @@ namespace Drupal\blazy_test\Plugin\views\style;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\blazy\BlazyDefault;
-use Drupal\blazy\BlazyGrid;
 use Drupal\blazy\Dejavu\BlazyStylePluginBase;
 
 /**
@@ -77,24 +76,23 @@ class BlazyViewsTest extends BlazyStylePluginBase {
    * Overrides StylePluginBase::render().
    */
   public function render() {
-    $view     = $this->view;
-    $settings = $this->options + BlazyDefault::entitySettings();
+    $settings = $this->buildSettings() + BlazyDefault::entitySettings();
+    $blazies = $settings['blazies'];
 
-    $settings['item_id']   = 'box';
     $settings['caption']   = array_filter($settings['caption']);
     $settings['namespace'] = 'blazy';
     $settings['ratio']     = '';
-    $settings['_views']    = TRUE;
 
     $elements = [];
-    foreach ($this->renderGrouping($view->result, $settings['grouping']) as $rows) {
+    foreach ($this->renderGrouping($this->view->result, $settings['grouping']) as $rows) {
       $items = $this->buildElements($settings, $rows);
 
-      // Supports Blazy formatter multi-breakpoint images if available.
-      $item = isset($items[0]) ? $items[0] : NULL;
-      $this->blazyManager()->isBlazy($settings, $item);
-
-      $elements = BlazyGrid::build($items, $settings);
+      // Supports Blazy multi-breakpoint images if using Blazy formatter.
+      if ($data = $this->getFirstImage($rows[0] ?? NULL)) {
+        $blazies->set('first.data', $data);
+      }
+      $build = ['items' => $items, 'settings' => $settings];
+      $elements = $this->blazyManager->build($build);
     }
 
     return $elements;
@@ -104,9 +102,10 @@ class BlazyViewsTest extends BlazyStylePluginBase {
    * Returns blazy_test contents.
    */
   public function buildElements(array $settings, $rows) {
+    $blazies = $settings['blazies'];
     $build   = [];
     $view    = $this->view;
-    $item_id = $settings['item_id'];
+    $item_id = $blazies->get('item.id');
 
     foreach ($rows as $index => $row) {
       $view->row_index = $index;

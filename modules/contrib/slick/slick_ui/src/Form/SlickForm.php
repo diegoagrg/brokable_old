@@ -6,6 +6,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\slick\Entity\Slick;
+use Drupal\slick\SlickDefault;
 
 /**
  * Extends base form for slick instance configuration form.
@@ -17,11 +18,13 @@ class SlickForm extends SlickFormBase {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form      = parent::form($form, $form_state);
+    $path      = SlickDefault::getPath('module', 'slick');
     $slick     = $this->entity;
     $options   = $slick->getOptions() ?: [];
     $tooltip   = ['class' => ['is-tooltip']];
     $route     = ['name' => 'slick_ui'];
-    $readme    = Url::fromRoute('help.page', $route)->toString();
+    $is_help   = $this->manager()->getModuleHandler()->moduleExists('help');
+    $readme    = $is_help ? Url::fromRoute('help.page', $route)->toString() : Url::fromUri('base:' . $path . '/docs/README.md')->toString();
     $admin_css = $this->manager->configLoad('admin_css', 'blazy.settings');
 
     $form['label'] = [
@@ -55,7 +58,7 @@ class SlickForm extends SlickFormBase {
       '#options'       => $this->admin->getSkinsByGroupOptions(),
       '#empty_option'  => $this->t('- None -'),
       '#default_value' => $slick->getSkin(),
-      '#description'   => $this->t('Skins allow swappable layouts like next/prev links, split image and caption, etc. However a combination of skins and options may lead to unpredictable layouts, get yourself dirty. See main <a href="@url">README</a> for details on Skins. Only useful for custom work, and ignored/overridden by slick formatters or sub-modules.', ['@url' => $readme]),
+      '#description'   => $this->t('Skins allow swappable layouts like next/prev links, split image and caption, etc. However a combination of skins and options may lead to unpredictable layouts, get yourself dirty. See main <a href="@url">README</a> for details on Skins. Only useful for custom work, and ignored/overridden by slick formatters or sub-modules. If you are using Slick Lightbox, this is the only option to change its skin at the Slick Lightbox optionset.', ['@url' => $readme]),
       '#attributes'    => $tooltip,
       '#prefix'        => '<div class="form__header form__half form__half--last has-tooltip clearfix">',
     ];
@@ -131,10 +134,11 @@ class SlickForm extends SlickFormBase {
     ];
 
     foreach ($this->getFormElements() as $name => $element) {
-      $element['default'] = isset($element['default']) ? $element['default'] : '';
+      $element['default'] = $element['default'] ?? '';
+      $default_value = (NULL !== $slick->getSetting($name)) ? $slick->getSetting($name) : $element['default'];
       $form['settings'][$name] = [
-        '#title'         => isset($element['title']) ? $element['title'] : '',
-        '#default_value' => (NULL !== $slick->getSetting($name)) ? $slick->getSetting($name) : $element['default'],
+        '#title'         => $element['title'] ?? '',
+        '#default_value' => $default_value,
       ];
 
       if (isset($element['type'])) {
@@ -171,7 +175,7 @@ class SlickForm extends SlickFormBase {
 
       // Expand textfield for easy edit.
       if (in_array($name, ['prevArrow', 'nextArrow'])) {
-        $form['settings'][$name]['#attributes']['class'][] = 'js-expandable';
+        $form['settings'][$name]['#default_value'] = trim(strip_tags($default_value));
       }
 
       if (isset($element['field_suffix'])) {
@@ -198,7 +202,7 @@ class SlickForm extends SlickFormBase {
       '#tree'        => TRUE,
       '#group'       => 'options',
       '#parents'     => ['options', 'responsives'],
-      '#description' => $this->t('Containing breakpoints and settings objects. Settings set at a given breakpoint/screen width is self-contained and does not inherit the main settings, but defaults. Be sure to set Breakpoints option above.'),
+      '#description' => $this->t('Containing breakpoints and settings objects. Settings set at a given breakpoint/screen width is self-contained and does not inherit the main settings, but defaults. Be sure to set Breakpoints option above (enter a number and press tab to populate the Responsive display tab).'),
     ];
 
     $form['responsives']['responsive'] = [
@@ -221,7 +225,7 @@ class SlickForm extends SlickFormBase {
     }
 
     $user_input = $form_state->getUserInput();
-    $breakpoints_input = isset($user_input['breakpoints']) ? (int) $user_input['breakpoints'] : $breakpoints_count;
+    $breakpoints_input = (int) ($user_input['breakpoints'] ?? $breakpoints_count);
 
     if ($breakpoints_input && ($breakpoints_input != $breakpoints_count)) {
       $form_state->setValue('breakpoints_count', $breakpoints_input);
@@ -254,7 +258,7 @@ class SlickForm extends SlickFormBase {
               $form['responsives']['responsive'][$i][$key] = [
                 '#type'          => $responsive['type'],
                 '#title'         => $responsive['title'],
-                '#default_value' => isset($options['responsives']['responsive'][$i][$key]) ? $options['responsives']['responsive'][$i][$key] : $responsive['default'],
+                '#default_value' => $options['responsives']['responsive'][$i][$key] ?? $responsive['default'],
                 '#description'   => $responsive['description'],
                 '#attributes'    => $tooltip,
               ];
@@ -298,11 +302,11 @@ class SlickForm extends SlickFormBase {
 
               // @fixme, boolean default is ignored at index 0 only.
               foreach ($responsive as $k => $item) {
-                $item['default'] = isset($item['default']) ? $item['default'] : '';
+                $item['default'] = $item['default'] ?? '';
                 $form['responsives']['responsive'][$i][$key][$k] = [
-                  '#title'         => isset($item['title']) ? $item['title'] : '',
-                  '#default_value' => isset($options['responsives']['responsive'][$i][$key][$k]) ? $options['responsives']['responsive'][$i][$key][$k] : $item['default'],
-                  '#description'   => isset($item['description']) ? $item['description'] : '',
+                  '#title'         => $item['title'] ?? '',
+                  '#default_value' => $options['responsives']['responsive'][$i][$key][$k] ?? $item['default'],
+                  '#description'   => $item['description'] ?? '',
                   '#attributes'    => $tooltip,
                 ];
 
@@ -316,6 +320,7 @@ class SlickForm extends SlickFormBase {
                   switch ($k) {
                     case 'pauseOnHover':
                     case 'pauseOnDotsHover':
+                    case 'pauseOnFocus':
                     case 'autoplaySpeed':
                       $states = ['visible' => [':input[name*="[' . $i . '][settings][autoplay]"]' => ['checked' => TRUE]]];
                       break;
@@ -392,13 +397,25 @@ class SlickForm extends SlickFormBase {
       $elements['asNavFor'] = [
         'type'        => 'textfield',
         'title'       => $this->t('asNavFor target'),
-        'description' => $this->t('Leave empty if using sub-modules to have it auto-matched. Set the slider to be the navigation of other slider (Class or ID Name). Use selector identifier ("." or "#") accordingly. See HTML structure section at README.txt for more info. Overriden by field formatter, or Views style.'),
+        'description' => $this->t('Leave empty if using sub-modules to have it auto-matched. Set the slider to be the navigation of other slider (Class or ID Name). Use selector identifier ("." or "#") accordingly. See HTML structure section at README.md for more info. Overriden by field formatter, or Views style.'),
       ];
 
       $elements['accessibility'] = [
         'type'        => 'checkbox',
         'title'       => $this->t('Accessibility'),
         'description' => $this->t('Enables tabbing and arrow key navigation'),
+      ];
+
+      $elements['regionLabel'] = [
+        'type'        => 'textfield',
+        'title'       => $this->t('Region label'),
+        'description' => $this->t('Text to use for the <code>aria-label</code> that is placed on the wrapper.'),
+      ];
+
+      $elements['useGroupRole'] = [
+        'type'        => 'checkbox',
+        'title'       => $this->t('Use group role'),
+        'description' => $this->t('Controls whether <code>role="group"</code> and an <code>aria-label</code> are applied to each slide.'),
       ];
 
       $elements['adaptiveHeight'] = [
@@ -419,6 +436,24 @@ class SlickForm extends SlickFormBase {
         'description' => $this->t('Autoplay speed in milliseconds'),
       ];
 
+      $elements['useAutoplayToggleButton'] = [
+        'type'        => 'checkbox',
+        'title'       => $this->t('Use autoplay toggle button'),
+        'description' => $this->t('Controls whether a pause/play icon button is added when autoplay is enabled. Turning this off without providing an alternative control would likely violate <a href=":url">WCAG 2.2.2</a>, so be careful!', [':url' => 'https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html']),
+      ];
+
+      $elements['pauseIcon'] = [
+        'type'        => 'textfield',
+        'title'       => $this->t('Pause icon classes'),
+        'description' => $this->t('A space-separated list of CSS classes to use on the Pause icon button.'),
+      ];
+
+      $elements['playIcon'] = [
+        'type'        => 'textfield',
+        'title'       => $this->t('Play icon classes'),
+        'description' => $this->t('A space-separated list of CSS classes to use on the Play icon button.'),
+      ];
+
       $elements['pauseOnHover'] = [
         'type'        => 'checkbox',
         'title'       => $this->t('Pause on hover'),
@@ -431,6 +466,12 @@ class SlickForm extends SlickFormBase {
         'description' => $this->t('Pause autoplay when a dot is hovered.'),
       ];
 
+      $elements['pauseOnFocus'] = [
+        'type'        => 'checkbox',
+        'title'       => $this->t('Pause on focus'),
+        'description' => $this->t('Pause autoplay on focus.'),
+      ];
+
       $elements['arrows'] = [
         'type'        => 'checkbox',
         'title'       => $this->t('Arrows'),
@@ -440,13 +481,28 @@ class SlickForm extends SlickFormBase {
       $elements['prevArrow'] = [
         'type'        => 'textfield',
         'title'       => $this->t('Previous arrow'),
-        'description' => $this->t("Customize the previous arrow markups. Be sure to keep the expected class: slick-prev."),
+        'description' => $this->t("Customize the previous arrow text, default to Previous."),
       ];
 
       $elements['nextArrow'] = [
         'type'        => 'textfield',
         'title'       => $this->t('Next arrow'),
-        'description' => $this->t("Customize the next arrow markups. Be sure to keep the expected class: slick-next."),
+        'description' => $this->t("Customize the next arrow text, default to Next."),
+      ];
+
+      $elements['arrowsPlacement'] = [
+        'type'         => 'select',
+        'title'        => $this->t('Arrows placement'),
+        'options'      => [
+          'beforeSlides' => $this->t('Before slides'),
+          'afterSlides'  => $this->t('After slides'),
+          'split'        => $this->t('Split'),
+        ],
+        'empty_option' => $this->t('- None -'),
+        'description'  => $this->t('Determines where the previous and next arrows are placed in the slider DOM, which determines their tabbing order. Arrows can be placed together before the slides or after the slides, or split so that the previous arrow is before the slides and the next arrow is after (this is the default). Use this setting to ensure the tabbing order is logical based on your visual design to fulfill <a href=":url1">WCAG 1.3.2</a> and <a href=":url2">2.4.3</a>.', [
+          ':url1' => 'https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html',
+          ':url2' => 'https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html',
+        ]),
       ];
 
       $elements['downArrow'] = [
@@ -638,7 +694,10 @@ class SlickForm extends SlickFormBase {
       $elements['cssEase'] = [
         'type'        => 'textfield',
         'title'       => $this->t('CSS ease'),
-        'description' => $this->t('CSS3 animation easing. <a href="@ceaser">Learn</a> <a href="@bezier">more</a>. Ignored if <strong>CSS ease override</strong> is provided.', ['@ceaser' => '//matthewlein.com/ceaser/', '@bezier' => '//cubic-bezier.com']),
+        'description' => $this->t('CSS3 animation easing. <a href="@ceaser">Learn</a> <a href="@bezier">more</a>. Ignored if <strong>CSS ease override</strong> is provided.', [
+          '@ceaser' => '//matthewlein.com/ceaser/',
+          '@bezier' => '//cubic-bezier.com',
+        ]),
       ];
 
       $elements['cssEaseBezier'] = [
@@ -664,7 +723,10 @@ class SlickForm extends SlickFormBase {
         'type'         => 'select',
         'options'      => $this->getJsEasingOptions(),
         'empty_option' => $this->t('- None -'),
-        'description'  => $this->t('Add easing for jQuery animate as fallback. Use with <a href="@easing">easing</a> libraries or default easing methods. Optionally install <a href="@jqeasing">jqeasing module</a>. This will be ignored and replaced by CSS ease for supporting browsers, or effective if useCSS is disabled.', ['@jqeasing' => '//drupal.org/project/jqeasing', '@easing' => '//gsgd.co.uk/sandbox/jquery/easing/']),
+        'description'  => $this->t('Add easing for jQuery animate as fallback. Use with <a href="@easing">easing</a> libraries or default easing methods. Optionally install <a href="@jqeasing">jqeasing module</a>. This will be ignored and replaced by CSS ease for supporting browsers, or effective if useCSS is disabled.', [
+          '@jqeasing' => '//drupal.org/project/jqeasing',
+          '@easing' => '//gsgd.co.uk/sandbox/jquery/easing/',
+        ]),
       ];
 
       $elements['variableWidth'] = [
@@ -691,11 +753,20 @@ class SlickForm extends SlickFormBase {
         'description' => $this->t('Ignores requests to advance the slide while animating.'),
       ];
 
+      $elements['instructionsText'] = [
+        'type'        => 'textarea',
+        'title'       => $this->t('Instructions text'),
+        'description' => $this->t('Instructions for screen reader users placed at the very beginning of the slider markup. If you are using asNavFor or adding custom functionality with API methods/events, you probably need to supply instructions!'),
+      ];
+
+      // Remove settings that aren't supported by the active library.
+      Slick::removeUnsupportedSettings($elements);
+
       // Defines the default values if available.
       $defaults = Slick::defaultSettings();
       foreach ($elements as $name => $element) {
         $default = $element['type'] == 'checkbox' ? FALSE : '';
-        $elements[$name]['default'] = isset($defaults[$name]) ? $defaults[$name] : $default;
+        $elements[$name]['default'] = $defaults[$name] ?? $default;
       }
 
       foreach (Slick::getDependentOptions() as $parent => $items) {
@@ -866,7 +937,7 @@ class SlickForm extends SlickFormBase {
       $form_state->setValue('breakpoints_count', $form_state->getValue('breakpoints'));
       if ($form_state->getValue('breakpoints') >= 6) {
         $message = $this->t('You are trying to load too many Breakpoints. Try reducing it to reasonable numbers say, between 1 to 5.');
-        $this->messenger->addMessage($message, 'warning');
+        $this->messenger()->addMessage($message, 'warning');
       }
     }
 
@@ -887,6 +958,25 @@ class SlickForm extends SlickFormBase {
 
     // Update cssEaseBezier value based on cssEaseOverride.
     $form_state->setValue(['options', 'settings', 'cssEaseBezier'], $override);
+
+    // Check if rows is set to 1 and show a warning.
+    // See: https://www.drupal.org/project/slick/issues/3123787#comment-13532059
+    if (($form['settings']['rows']['#value'] ?? -1) == 1) {
+      $message = $this->t('Hint: You set Slicks "rows" option to "1" (optionset: %optionset), this will result in markup issues on Slick versions >1.9.0. Consider to set it to "0" instead, or leave it as if not using >1.9.0. Check out <a href=":url">this issue</a> for further information.', [
+        ':url' => 'https://www.drupal.org/project/slick/issues/3123787',
+        '%optionset' => $form['name']['#value'],
+      ]);
+      $this->messenger()->addMessage($message, 'warning');
+    }
+    // Check if slidesPerRow is set to 0 and show a warning.
+    // See: https://www.drupal.org/project/slick/issues/3123787#comment-13532059
+    if (($form['settings']['slidesPerRow']['#value'] ?? -1) == 0) {
+      $message = $this->t('Important: You set Slicks "slidesPerRow" option to "0" (optionset: %optionset), this will result in browser crashes >1.9.0. Consider to set it to "1" instead. Consider to set it to "0" instead, or leave it as if not using >1.9.0. Check out <a href=":url">this issue</a> for further information.', [
+        ':url' => 'https://www.drupal.org/project/slick/issues/3123787',
+        '%optionset' => $form['name']['#value'],
+      ]);
+      $this->messenger()->addMessage($message, 'warning');
+    }
   }
 
   /**
@@ -906,6 +996,9 @@ class SlickForm extends SlickFormBase {
 
       // Cast the values.
       $this->typecastOptionset($settings);
+
+      // Remove settings that aren't supported by the active library.
+      Slick::removeUnsupportedSettings($settings);
 
       // Remove wasted dependent options if disabled, empty or not.
       $slick->removeWastedDependentOptions($settings);

@@ -21,7 +21,7 @@ class MessageTest extends KernelTestBase {
    */
   public function testMessages() {
     // Enable the Classy theme.
-    \Drupal::service('theme_handler')->install(['classy']);
+    \Drupal::service('theme_installer')->install(['classy']);
     $this->config('system.theme')->set('default', 'classy')->save();
 
     \Drupal::messenger()->addError('An error occurred');
@@ -32,6 +32,14 @@ class MessageTest extends KernelTestBase {
     $this->render($messages);
     $this->assertRaw('messages messages--error');
     $this->assertRaw('messages messages--status');
+    // Tests display of only one type of messages.
+    \Drupal::messenger()->addError('An error occurred');
+    $messages = [
+      '#type' => 'status_messages',
+      '#display' => 'error',
+    ];
+    $this->render($messages);
+    $this->assertRaw('messages messages--error');
   }
 
 }

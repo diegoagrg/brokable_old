@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Component\Utility\UrlHelper;
 /**
  * @file
  * Drupal 8 Mega Menu Module.
@@ -150,12 +151,28 @@ function we_megamenu_theme($existing, $type, $theme, $path) {
  *   Variables are declared in theme.
  */
 function template_preprocess_we_megamenu_backend(array &$vars) {
+  ini_set('xdebug.max_nesting_level', 1024);
   $menu_name = $vars['menu_name'];
   $block_theme = $vars['block_theme'];
+
   $data_config = WeMegaMenuBuilder::loadConfig($menu_name, $block_theme);
+  if(empty($data_config)) {
+    $data_config = WeMegaMenuBuilder::initMegamenu($menu_name, $block_theme);
+  }
+  else {
+    if(isset($data_config->menu_update_flag) && $data_config->menu_update_flag)  {
+      // drupal_flush_all_caches();
+      $theme_name = $block_theme;
+      $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name, FALSE);
+      WeMegaMenuBuilder::updateMegamenuFromDrupalMenu($data_config, $menu_items, 0);
+      $data_config->menu_update_flag = 0;
+      WeMegaMenuBuilder::saveConfig($menu_name, $theme_name, json_encode($data_config));
+      // drupal_flush_all_caches();      
+    }
+  }
 
   $block_config = isset($data_config->block_config) ? $data_config->block_config : [];
-  $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name);
+  $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name, TRUE);
   $trail = WeMegaMenuBuilder::buildPageTrail($menu_items);
 
   $vars['content'] = [
@@ -195,10 +212,27 @@ function template_preprocess_we_megamenu_backend(array &$vars) {
  *   Variables are declared in theme.
  */
 function template_preprocess_we_megamenu_frontend(&$vars) {
+  ini_set('xdebug.max_nesting_level', 1024);
   $menu_name = $vars['menu_name'];
   $block_theme = $vars['block_theme'];
+
   $data_config = WeMegaMenuBuilder::loadConfig($menu_name, $block_theme);
-  $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name);
+  if(empty($data_config)) {
+    $data_config = WeMegaMenuBuilder::initMegamenu($menu_name, $block_theme);
+  }
+  else {
+    if(isset($data_config->menu_update_flag) && $data_config->menu_update_flag)  {
+      // drupal_flush_all_caches();
+      $theme_name = $block_theme;
+      $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name, FALSE);
+      WeMegaMenuBuilder::updateMegamenuFromDrupalMenu($data_config, $menu_items, 0);
+      $data_config->menu_update_flag = 0;
+      WeMegaMenuBuilder::saveConfig($menu_name, $theme_name, json_encode($data_config));
+      // drupal_flush_all_caches();      
+    }
+  }
+
+  $menu_items = WeMegaMenuBuilder::getMenuTreeOrder($menu_name, FALSE);
   $trail = WeMegaMenuBuilder::buildPageTrail($menu_items);
   $vars['content'] = [
     '#theme' => 'we_megamenu_ul',
@@ -237,35 +271,35 @@ function template_preprocess_we_megamenu_frontend(&$vars) {
  * @param array $vars
  *   Variables are declared in theme.
  */
-function template_preprocess_we_megamenu_ul(array &$vars) {
+function template_preprocess_we_megamenu_ul(array &$vars, $backend = FALSE) {
   $data_config = $vars['data_config'];
   foreach ($vars['items'] as $key_li => $li) {
 
     $vars['href'] = '';
     if ($li['url'] == '<front>') {
       $vars['attributes']['data-id'] = 'home';
-      $vars['href'] = Drupal::url('<front>');
+      $vars['href'] = Url::fromRoute('<front>')->toString();
     }
     else {
       $vars['attributes']['data-id'] = !empty($li['derivativeId']) ? $li['derivativeId'] : $li['url'];
       $current_user = \Drupal::currentUser();
       if (WeMegaMenuBuilder::routeExists($li['url'])) {
-        $vars['href'] = Drupal::url($li['url']);
+        $vars['href'] = Url::fromRoute($li['url'])->toString();
       }
       else {
         $vars['href'] = $li['url'];
       }
     }
 
-    if (!\Drupal\Component\Utility\UrlHelper::isExternal($vars['href'])) {
-      if (Url::fromUri('internal:' . $vars['href'])->access() == FALSE) continue;
+    if (!UrlHelper::isExternal($vars['href'])) {
+      if ($backend === FALSE && Url::fromUri('internal:' . $vars['href'])->access() == FALSE) continue;
     }
 
-    if (strpos($vars['href'], 'user/logout') !== FALSE && $current_user->id() == 0 && $vars['section'] != 'admin') {
+    if (strpos($vars['href'], 'user/logout') !== FALSE && $current_user->id() == 0 && $vars['section'] != 'admin' && $backend === FALSE) {
       continue;
     }
 
-    if (strpos($vars['href'], 'user/login') !== FALSE && $current_user->id() != 0 && $vars['section'] != 'admin') {
+    if (strpos($vars['href'], 'user/login') !== FALSE && $current_user->id() != 0 && $vars['section'] != 'admin' && $backend === FALSE) {
       continue; 
     }
 
@@ -311,7 +345,7 @@ function template_preprocess_we_megamenu_li(&$vars) {
   $vars['href'] = '';
   if ($vars['item']['url'] == '<front>') {
     $vars['attributes']['data-id'] = 'home';
-    $vars['href'] = Drupal::url('<front>');
+    $vars['href'] = Url::fromRoute('<front>')->toString();
   }
   else {
     $vars['attributes']['data-id'] = !empty($vars['item']['derivativeId']) ? $vars['item']['derivativeId'] : $vars['item']['url'];
@@ -600,7 +634,7 @@ function we_megamenu_block_view_we_megamenu_block_alter(array &$build, BlockPlug
  *
  * Reset menu to default status when origin menu changed.
  */
-function we_megamenu_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
+function we_megamenu_entity_insert(EntityInterface $entity) {
   if (method_exists($entity, 'getTypedData') && method_exists($entity, 'getEntityTypeId')) {
     $data = $entity->getTypedData();
     $data = $data->toArray();
@@ -679,7 +713,7 @@ function we_megamenu_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
 /**
  * Implements hook_entity_delete().
  */
-function we_megamenu_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+function we_megamenu_entity_delete(EntityInterface $entity) {
   if (method_exists($entity, 'getTypedData') && method_exists($entity, 'getEntityTypeId')) {
     $data = $entity->getTypedData();
     $data = $data->toArray();
@@ -740,9 +774,10 @@ function we_megamenu_entity_presave(EntityInterface $entity) {
         ];
 
         $menu_config = WeMegaMenuBuilder::loadConfig($menu_name, $theme_name);
-        WeMegaMenuBuilder::dragDropMenuItems($menu_name, $theme_name, $menu_config, $child_item);
-        WeMegaMenuBuilder::orderMenuItems($menu_config);
-        WeMegaMenuBuilder::saveConfig($menu_name, $theme_name, json_encode($menu_config));
+        if(!empty($menu_config)) {
+          $menu_config->menu_update_flag = 1;
+          WeMegaMenuBuilder::saveConfig($menu_name, $theme_name, json_encode($menu_config));
+        }
         break;
       
       case 'menu_link_content':

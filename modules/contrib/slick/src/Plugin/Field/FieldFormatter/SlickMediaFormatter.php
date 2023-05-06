@@ -40,36 +40,16 @@ class SlickMediaFormatter extends SlickEntityReferenceFormatterBase {
       return [];
     }
 
-    // Collects specific settings to this formatter.
-    $settings = $this->buildSettings();
-
-    // Sets dimensions once to reduce method ::transformDimensions() calls.
-    // @todo: A more flexible way to also support paragraphs at one go.
-    $entities = array_values($entities);
-    if (!empty($settings['image_style']) && ($entities[0]->getEntityTypeId() == 'media' && $entities[0]->hasField('thumbnail'))) {
-      $item = $entities[0]->get('thumbnail')->first();
-      $settings['first_item'] = $item;
-      $settings['first_uri'] = $item->entity->getFileUri();
-    }
-
-    $build = ['settings' => $settings];
-
-    $this->formatter->buildSettings($build, $items);
-
-    // Build the elements.
-    $this->buildElements($build, $entities, $langcode);
-
-    return $this->manager()->build($build);
+    return $this->commonViewElements($items, $langcode, $entities);
   }
 
   /**
    * Builds the settings.
+   *
+   * @todo inherit and extends parent post blazy:2.x.
    */
   public function buildSettings() {
-    $settings = parent::buildSettings();
-    $settings['blazy'] = TRUE;
-
-    return $settings;
+    return ['blazy' => TRUE] + parent::buildSettings();
   }
 
   /**
@@ -81,7 +61,7 @@ class SlickMediaFormatter extends SlickEntityReferenceFormatterBase {
     return [
       'grid_form' => $multiple,
       'style'     => $multiple,
-    ] + parent::getScopedFormElements();
+    ] + $this->getCommonScopedFormElements() + parent::getScopedFormElements();
   }
 
   /**

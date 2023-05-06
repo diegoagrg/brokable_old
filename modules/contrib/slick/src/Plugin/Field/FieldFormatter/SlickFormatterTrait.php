@@ -3,32 +3,21 @@
 namespace Drupal\slick\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\blazy\Plugin\Field\FieldFormatter\BlazyFormatterTrait;
+use Drupal\blazy\Plugin\Field\FieldFormatter\BlazyFormatterViewTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * A Trait common for slick formatters.
  */
 trait SlickFormatterTrait {
 
-  /**
-   * The slick field formatter manager.
-   *
-   * @var \Drupal\slick\SlickManagerInterface
-   */
-  protected $manager;
-
-  /**
-   * Returns the slick field formatter service.
-   */
-  public function formatter() {
-    return $this->formatter;
+  use BlazyFormatterTrait {
+    injectServices as blazyInjectServices;
+    getCommonFieldDefinition as blazyCommonFieldDefinition;
   }
 
-  /**
-   * Returns the slick service.
-   */
-  public function manager() {
-    return $this->manager;
-  }
+  use BlazyFormatterViewTrait;
 
   /**
    * Returns the slick admin service shortcut.
@@ -38,10 +27,14 @@ trait SlickFormatterTrait {
   }
 
   /**
-   * {@inheritdoc}
+   * Injects DI services.
    */
-  public function settingsSummary() {
-    return $this->admin()->getSettingsSummary($this->getScopedFormElements());
+  protected static function injectServices($instance, ContainerInterface $container, $type = '') {
+    $instance = static::blazyInjectServices($instance, $container, $type);
+    $instance->formatter = $instance->blazyManager = $container->get('slick.formatter');
+    $instance->manager = $container->get('slick.manager');
+
+    return $instance;
   }
 
   /**
@@ -49,6 +42,21 @@ trait SlickFormatterTrait {
    */
   public static function isApplicable(FieldDefinitionInterface $field_definition) {
     return $field_definition->getFieldStorageDefinition()->isMultiple();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function pluginSettings(&$blazies, array &$settings): void {
+    $blazies->set('item.id', 'slide')
+      ->set('namespace', 'slick');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCommonFieldDefinition() {
+    return ['namespace' => 'slick'] + $this->blazyCommonFieldDefinition();
   }
 
 }

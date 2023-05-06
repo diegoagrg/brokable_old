@@ -4,11 +4,7 @@ namespace Drupal\slick\Plugin\Field\FieldFormatter;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Image\ImageFactory;
 use Drupal\blazy\Plugin\Field\FieldFormatter\BlazyFileFormatterBase;
-use Drupal\slick\SlickFormatterInterface;
-use Drupal\slick\SlickManagerInterface;
 use Drupal\slick\SlickDefault;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -17,31 +13,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class SlickFileFormatterBase extends BlazyFileFormatterBase {
 
-  /**
-   * Constructs a SlickFileFormatterBase instance.
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, ImageFactory $image_factory, SlickFormatterInterface $formatter, SlickManagerInterface $manager) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $image_factory, $formatter);
-    $this->formatter = $formatter;
-    $this->manager   = $manager;
-  }
+  use SlickFormatterTrait;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['label'],
-      $configuration['view_mode'],
-      $configuration['third_party_settings'],
-      $container->get('image.factory'),
-      $container->get('slick.formatter'),
-      $container->get('slick.manager')
-    );
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    return self::injectServices($instance, $container, 'image');
   }
 
   /**
@@ -55,30 +34,14 @@ abstract class SlickFileFormatterBase extends BlazyFileFormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $files = $this->getEntitiesToView($items, $langcode);
+    $entities = $this->getEntitiesToView($items, $langcode);
 
     // Early opt-out if the field is empty.
-    if (empty($files)) {
+    if (empty($entities)) {
       return [];
     }
 
-    // Collects specific settings to this formatter.
-    $settings = $this->buildSettings();
-    $settings['langcode'] = $langcode;
-    $build = ['settings' => $settings];
-
-    $this->formatter->buildSettings($build, $items);
-
-    // Build the elements.
-    $this->buildElements($build, $files);
-
-    // Supports Blazy multi-breakpoint images if provided.
-    // @todo move ::isBlazy() to #pre_render post Blazy beta1.
-    if (!empty($build['items'][0])) {
-      $this->formatter->isBlazy($build['settings'], $build['items'][0]);
-    }
-
-    return $this->manager()->build($build);
+    return $this->commonViewElements($items, $langcode, $entities);
   }
 
   /**
@@ -101,13 +64,12 @@ abstract class SlickFileFormatterBase extends BlazyFileFormatterBase {
 
       $element = ['item' => $item, 'settings' => $settings];
 
-      // If imported Drupal\blazy\Dejavu\BlazyVideoTrait.
+      // @todo remove, no longer file entity/VEF/M for pure Media.
       $this->buildElement($element, $file);
       $settings = $element['settings'];
 
       // Image with responsive image, lazyLoad, and lightbox supports.
-      // @todo replace with getBlazy() post Blazy RC, or last Beta.
-      $element[$item_id] = $this->formatter->getImage($element);
+      $element[$item_id] = $this->formatter->getBlazy($element);
 
       if (!empty($settings['caption'])) {
         foreach ($settings['caption'] as $caption) {
@@ -138,10 +100,12 @@ abstract class SlickFileFormatterBase extends BlazyFileFormatterBase {
    * {@inheritdoc}
    */
   public function getScopedFormElements() {
+    $captions = ['title' => $this->t('Title'), 'alt' => $this->t('Alt')];
+
     return [
       'namespace'       => 'slick',
       'nav'             => TRUE,
-      'thumb_captions'  => ['title' => $this->t('Title'), 'alt' => $this->t('Alt')],
+      'thumb_captions'  => $captions,
       'thumb_positions' => TRUE,
     ] + parent::getScopedFormElements();
   }

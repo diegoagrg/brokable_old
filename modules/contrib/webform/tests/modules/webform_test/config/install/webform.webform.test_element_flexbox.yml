@@ -57,6 +57,46 @@ elements: |
     flex_table_right:
       '#type': table
       '#title': 'Table 02'
+  flexbox_webform_table:
+    '#type': webform_flexbox
+    flex_webform_table_left:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+    flex_webform_table_right:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+  flexbox_webform_address:
+    '#type': webform_flexbox
+    flex_webform_address_left:
+      '#type': webform_address
+      '#title': 'Basic address 01'
+    flex_webform_address_right:
+      '#type': webform_address
+      '#title': 'Basic address 02'
   flexbox_address:
     '#type': webform_flexbox
     flex_address_left:
@@ -89,14 +129,6 @@ elements: |
     flex_webform_autocomplete_right:
       '#type': webform_autocomplete
       '#title': 'Autocomplete 02'
-  flexbox_webform_address:
-    '#type': webform_flexbox
-    flex_webform_address_left:
-      '#type': webform_address
-      '#title': 'Basic address 01'
-    flex_webform_address_right:
-      '#type': webform_address
-      '#title': 'Basic address 02'
   flexbox_webform_markup:
     '#type': webform_flexbox
     flex_webform_markup_left:
@@ -107,49 +139,21 @@ elements: |
       '#type': webform_markup
       '#title': 'Basic HTML 02'
       '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/2700667">Issue #2700667: Notice: Undefined index: #type in drupal_process_states()</a>'
-  flexbox_webform_buttons:
-    '#type': webform_flexbox
-    flex_webform_buttons_left:
-      '#type': webform_buttons
-      '#title': 'Buttons 01'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-    flex_webform_buttons_right:
-      '#type': webform_buttons
-      '#title': 'Buttons 02'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-  flexbox_webform_buttons_other:
-    '#type': webform_flexbox
-    flex_webform_buttons_other_left:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other 01'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-    flex_webform_buttons_other_right:
-      '#type': webform_buttons_other
-      '#title': 'Buttons other 02'
-      '#options':
-        one: One
-        two: Two
-        three: Three
   flexbox_captcha:
     '#type': webform_flexbox
     flex_captcha_left:
       '#type': captcha
       '#title': 'CAPTCHA 01'
       '#captcha_admin_mode': true
+      '#captcha_info':
+        form_id: ''
       '#captcha_type': image_captcha/Image
     flex_captcha_right:
       '#type': captcha
       '#title': 'CAPTCHA 02'
       '#captcha_admin_mode': true
+      '#captcha_info':
+        form_id: ''
       '#captcha_type': image_captcha/Image
   flexbox_checkbox:
     '#type': webform_flexbox
@@ -220,21 +224,21 @@ elements: |
     flex_webform_computed_token_left:
       '#type': webform_computed_token
       '#title': 'Computed token 01'
-      '#value': 'This is a Computed token value.'
+      '#template': 'This is a Computed token value.'
     flex_webform_computed_token_right:
       '#type': webform_computed_token
       '#title': 'Computed token 02'
-      '#value': 'This is a Computed token value.'
+      '#template': 'This is a Computed token value.'
   flexbox_webform_computed_twig:
     '#type': webform_flexbox
     flex_webform_computed_twig_left:
       '#type': webform_computed_twig
       '#title': 'Computed Twig 01'
-      '#value': 'This is a Computed Twig value.'
+      '#template': 'This is a Computed Twig value.'
     flex_webform_computed_twig_right:
       '#type': webform_computed_twig
       '#title': 'Computed Twig 02'
-      '#value': 'This is a Computed Twig value.'
+      '#template': 'This is a Computed Twig value.'
   flexbox_webform_contact:
     '#type': webform_flexbox
     flex_webform_contact_left:
@@ -431,6 +435,14 @@ elements: |
       '#type': managed_file
       '#title': 'File 02'
       '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/2705471">Issue #2705471: Webform states managed file fields</a><br /><a href="https://www.drupal.org/node/2113931">Issue #2113931: File Field design update</a><br /><a href="https://www.drupal.org/node/2346893">Issue #2346893: Duplicate Ajax wrapper around a file field</a><br /><a href="https://www.drupal.org/node/2482783">Issue #2482783: File upload errors not set or shown correctly</a>'
+  flexbox_webform_height:
+    '#type': webform_flexbox
+    flex_webform_height_left:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) 01'
+    flex_webform_height_right:
+      '#type': webform_height
+      '#title': 'Height (feet/inches) 02'
   flexbox_webform_horizontal_rule:
     '#type': webform_flexbox
     flex_webform_horizontal_rule_left:
@@ -460,29 +472,29 @@ elements: |
       '#title': 'Image select 01'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
     flex_webform_image_select_right:
       '#type': webform_image_select
       '#title': 'Image select 02'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
   flexbox_item:
     '#type': webform_flexbox
     flex_item_left:
@@ -551,16 +563,10 @@ elements: |
     '#type': webform_flexbox
     flex_webform_location_places_left:
       '#type': webform_location_places
-      '#title': 'Location 01'
-      '#map': true
-      '#geolocation': true
-      '#format': map
+      '#title': 'Location (Algolia Places) 01'
     flex_webform_location_places_right:
       '#type': webform_location_places
-      '#title': 'Location 02'
-      '#map': true
-      '#geolocation': true
-      '#format': map
+      '#title': 'Location (Algolia Places) 02'
   flexbox_machine_name:
     '#type': webform_flexbox
     flex_machine_name_left:
@@ -607,6 +613,16 @@ elements: |
       '#message_type': warning
       '#message_message': 'This is a <strong>warning</strong> message.'
       '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/77245">Issue #77245: A place for JavaScript status messages</a>'
+  flexbox_webform_more:
+    '#type': webform_flexbox
+    flex_webform_more_left:
+      '#type': webform_more
+      '#title': 'More 01'
+      '#more': 'This is more content'
+    flex_webform_more_right:
+      '#type': webform_more
+      '#title': 'More 02'
+      '#more': 'This is more content'
   flexbox_webform_name:
     '#type': webform_flexbox
     flex_webform_name_left:
@@ -713,6 +729,26 @@ elements: |
     flex_webform_rating_right:
       '#type': webform_rating
       '#title': 'Rating 02'
+  flexbox_webform_same:
+    '#type': webform_flexbox
+    flex_webform_same_left:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address 01'
+    flex_webform_same_right:
+      '#type': webform_same
+      '#title': 'Billing address is the same as the shipping address 02'
+  flexbox_webform_scale:
+    '#type': webform_flexbox
+    flex_webform_scale_left:
+      '#type': webform_scale
+      '#title': 'Scale 01'
+      '#min': 1
+      '#max': 5
+    flex_webform_scale_right:
+      '#type': webform_scale
+      '#title': 'Scale 02'
+      '#min': 1
+      '#max': 5
   flexbox_search:
     '#type': webform_flexbox
     flex_search_left:
@@ -901,30 +937,6 @@ elements: |
       '#type': webform_time
       '#title': 'Time 02'
       '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/1838234">Issue #1838234: Add jQuery Timepicker for the Time element of the datetime field</a>'
-  flexbox_webform_toggle:
-    '#type': webform_flexbox
-    flex_webform_toggle_left:
-      '#type': webform_toggle
-      '#title': 'Toggle 01'
-    flex_webform_toggle_right:
-      '#type': webform_toggle
-      '#title': 'Toggle 02'
-  flexbox_webform_toggles:
-    '#type': webform_flexbox
-    flex_webform_toggles_left:
-      '#type': webform_toggles
-      '#title': 'Toggles 01'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-    flex_webform_toggles_right:
-      '#type': webform_toggles
-      '#title': 'Toggles 02'
-      '#options':
-        one: One
-        two: Two
-        three: Three
   flexbox_url:
     '#type': webform_flexbox
     flex_url_left:
@@ -966,15 +978,18 @@ elements: |
     toggle_rating:
       '#type': rating
       '#title': rating
-  
 css: ''
 javascript: ''
 settings:
   ajax: false
   ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
   page: true
   page_submit_path: ''
   page_confirm_path: ''
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -983,6 +998,7 @@ settings:
   form_previous_submissions: true
   form_confidential: false
   form_confidential_message: ''
+  form_remote_addr: true
   form_convert_anonymous: false
   form_prepopulate: false
   form_prepopulate_source_entity: false
@@ -1003,6 +1019,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -1027,11 +1048,20 @@ settings:
   wizard_progress_pages: false
   wizard_progress_percentage: false
   wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -1045,6 +1075,8 @@ settings:
   draft_auto_save: false
   draft_saved_message: ''
   draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
   confirmation_message: ''
@@ -1055,6 +1087,7 @@ settings:
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
+  confirmation_update: false
   limit_total: null
   limit_total_interval: null
   limit_total_message: ''
@@ -1071,7 +1104,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
+  token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -1115,4 +1152,9 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
 handlers: {  }
+variants: {  }

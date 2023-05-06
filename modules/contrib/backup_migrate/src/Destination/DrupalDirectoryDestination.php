@@ -9,7 +9,6 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use BackupMigrate\Core\File\ReadableStreamBackupFile;
 
-
 /**
  * Class DrupalDirectoryDestination.
  *
@@ -119,17 +118,17 @@ class DrupalDirectoryDestination extends DirectoryDestination {
       uasort($out, function ($a, $b) use ($sort, $sort_direction) {
         if ($sort_direction == SORT_DESC) {
           if ($sort == 'name') {
-            return $a->getFullName() < $b->getFullName();
+            return $a->getFullName() <=> $b->getFullName();
           }
           // @TODO: fix this in core
-          return $a->getMeta($sort) < $b->getMeta($sort);
+          return $a->getMeta($sort) <=> $b->getMeta($sort);
         }
         else {
           if ($sort == 'name') {
-            return $a->getFullName() > $b->getFullName();
+            return $a->getFullName() <=> $b->getFullName();
           }
           // @TODO: fix this in core
-          return $a->getMeta($sort) > $b->getMeta($sort);
+          return $a->getMeta($sort) <=> $b->getMeta($sort);
         }
       });
     }

@@ -3,45 +3,56 @@
  * Provides Slick loader.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, _d) {
 
   'use strict';
+
+  var _id = 'slick';
+  var _unslick = 'unslick';
+  var _mounted = _id + '--initialized';
+  var _element = '.' + _id;
+  var _elSlider = '.slick__slider';
+  var _elArrow = '.slick__arrow';
+  var _elBlazy = '.b-lazy[data-src]:not(.b-loaded)';
+  var _elClose = '.media__icon--close';
+  var _isPlaying = 'is-playing';
+  var _isPaused = 'is-paused';
+  var _hidden = 'visually-hidden';
+  var _blazy = Drupal.blazy || {};
 
   /**
    * Slick utility functions.
    *
-   * @param {int} i
-   *   The index of the current element.
    * @param {HTMLElement} elm
    *   The slick HTML element.
    */
-  function doSlick(i, elm) {
-    var t = $('> .slick__slider', elm).length ? $('> .slick__slider', elm) : $(elm);
-    var a = $('> .slick__arrow', elm);
-    var o = t.data('slick') ? $.extend({}, drupalSettings.slick, t.data('slick')) : drupalSettings.slick;
+  function doSlick(elm) {
+    var t = $('> ' + _elSlider, elm).length ? $('> ' + _elSlider, elm) : $(elm);
+    var a = $('> ' + _elArrow, elm);
+    var o = t.data(_id) ? $.extend({}, drupalSettings.slick, t.data(_id)) : $.extend({}, drupalSettings.slick);
     var r = $.type(o.responsive) === 'array' && o.responsive.length ? o.responsive : false;
     var d = o.appendDots;
     var b;
-    var isBlazy = o.lazyLoad === 'blazy' && Drupal.blazy;
+    var isBlazy = o.lazyLoad === 'blazy' && _blazy;
     var isVideo = t.find('.media--player').length;
-    var unSlick = t.hasClass('unslick');
+    var unSlick = t.hasClass(_unslick);
 
     // Populate defaults + globals into each breakpoint.
     if (!unSlick) {
-      o.appendDots = d === '.slick__arrow' ? a : (d || $(t));
+      o.appendDots = d === _elArrow ? a : (d || $(t));
     }
 
     if (r) {
       for (b in r) {
-        if (r.hasOwnProperty(b) && r[b].settings !== 'unslick') {
+        if (Object.prototype.hasOwnProperty.call(r, b) && r[b].settings !== _unslick) {
           r[b].settings = $.extend({}, drupalSettings.slick, globals(o), r[b].settings);
         }
       }
     }
 
     // Update the slick settings object.
-    t.data('slick', o);
-    o = t.data('slick');
+    t.data(_id, o);
+    o = t.data(_id);
 
     /**
      * The event must be bound prior to slick being called.
@@ -51,32 +62,62 @@
         randomize();
       }
 
-      // Puts dots in between arrows for easy theming like this: < ooooo >.
-      if (d === '.slick__arrow' && !unSlick) {
+      if (!unSlick) {
         t.on('init.sl', function (e, slick) {
-          $(slick.$dots).insertAfter(slick.$prevArrow);
-        });
-      }
+          // Puts dots in between arrows for easy theming like this: < ooooo >.
+          if (d === _elArrow) {
+            $(slick.$dots).insertAfter(slick.$prevArrow);
+          }
 
-      // Blazy integration.
-      // .b-lazy can be attached to IMG, or DIV as CSS background.
-      var $src = $('.b-lazy:not(.b-loaded)', t);
-      if (isBlazy) {
-        t.on('beforeChange.sl', function () {
-          if ($src.length) {
-            // Enforces lazyload ahead to smoothen the UX.
-            Drupal.blazy.init.load($src);
+          // Fixes for slidesToShow > 1, centerMode, clones with Blazy IO.
+          var $src = t.find('.slick-cloned.slick-active ' + _elBlazy);
+          if (isBlazy && $src.length && _blazy.init) {
+            _blazy.init.load($src);
           }
         });
       }
+
+      // Lazyload ahead with Blazy integration.
+      if (isBlazy) {
+        t.on('beforeChange.sl', function () {
+          preloadBlazy(true);
+        });
+      }
       else {
-        // Useful to hide caption during loading, but watch out setBackground().
-        $('.media--loading', t).closest('.slide__content').addClass('is-loading');
+        // Useful to hide caption during loading, but watch out unloading().
+        var $media = $('.media', t);
+        if ($media.length) {
+          var isBlazyEl = $media.find('[data-src]').length || $media.hasClass('b-bg');
+          if (isBlazyEl) {
+            $media.closest('.slide__content').addClass('is-loading');
+          }
+        }
       }
 
       t.on('setPosition.sl', function (e, slick) {
         setPosition(slick);
       });
+    }
+
+    /**
+     * Blazy is not loaded on slidesToShow > 1 with Infinite on, reload.
+     *
+     * @param {bool} ahead
+     *   Whether to lazyload ahead, or not.
+     */
+    function preloadBlazy(ahead) {
+      if (t.find(_elBlazy).length) {
+        var $src = t.find(ahead ? '.slide:not(.slick-cloned) ' + _elBlazy : '.slick-active ' + _elBlazy);
+
+        // If selectively fails, always suspect .slick-cloned being rebuilt.
+        // This is not an issue if Infinite is disabled.
+        if (!$src.length) {
+          $src = t.find('.slick-cloned ' + _elBlazy);
+        }
+        if ($src.length && _blazy.init) {
+          _blazy.init.load($src);
+        }
+      }
     }
 
     /**
@@ -86,9 +127,9 @@
       if (isVideo) {
         closeOut();
       }
-      if (isBlazy && $('.b-lazy:not(.b-loaded)', t).length) {
-        // @todo recheck for Blazy is not loaded on slidesToShow > 1.
-        Drupal.blazy.init.revalidate();
+
+      if (isBlazy) {
+        preloadBlazy(false);
       }
     }
 
@@ -102,7 +143,7 @@
         var b = $(this);
         $('html, body').stop().animate({
           scrollTop: $(b.data('target')).offset().top - (b.data('offset') || 0)
-        }, 800, o.easing || 'swing');
+        }, 800, 'easeOutQuad' in $.easing && o.easing ? o.easing : 'swing');
       });
 
       if (o.mouseWheel) {
@@ -114,7 +155,7 @@
 
       if (!isBlazy) {
         t.on('lazyLoaded lazyLoadError', function (e, slick, img) {
-          setBackground(img);
+          unloading(img);
         });
       }
 
@@ -122,34 +163,25 @@
 
       // Turns off any video if any change to the slider.
       if (isVideo) {
-        t.on('click.sl', '.media__icon--close', closeOut);
+        t.on('click.sl', _elClose, closeOut);
         t.on('click.sl', '.media__icon--play', pause);
       }
     }
 
     /**
-     * Turns images into CSS background if so configured.
+     * Remove loadinbg classes if any.
      *
      * @param {HTMLElement} img
      *   The image HTML element.
-     *
-     * @deprecated to be removed for Blazy background.
      */
-    function setBackground(img) {
+    function unloading(img) {
       var $img = $(img);
-      var $bg = $img.closest('.media--background');
-      var p = $img.closest('.slide') || $img.closest('.unslick');
+      var p = $img.closest('.slide') || $img.closest('.' + _unslick);
 
+      // Cleans up (is-|media--)loading classes.
       $img.parentsUntil(p).removeClass(function (index, css) {
         return (css.match(/(\S+)loading/g) || []).join(' ');
       });
-
-      // @todo remove this for Blazy background.
-      if ($bg.length) {
-        $bg.css('background-image', 'url(' + $img.attr('src') + ')');
-        $bg.find('> img').remove();
-        $bg.removeAttr('data-lazy');
-      }
     }
 
     /**
@@ -188,12 +220,24 @@
         // @todo: Remove temp fix for when total <= slidesToShow at 1.6.1+.
         // Ensures the fix doesn't break responsive options.
         // @see https://github.com/kenwheeler/slick/issues/262
-        if (less && slick.$slideTrack.width() <= slick.$slider.width()) {
+        if (less && ((slick.$slideTrack.width() <= slick.$slider.width())
+          || $(elm).hasClass('slick--thumbnail'))) {
           slick.$slideTrack.css({left: '', transform: ''});
         }
 
+        // Cleans up preloader if any named b-loader due to clones.
+        var $preloader = t.find('.b-loaded ~ .b-loader');
+        if ($preloader.length) {
+          $preloader.remove();
+        }
+
         // Do not remove arrows, to allow responsive have different options.
-        a[hide ? 'addClass' : 'removeClass']('visually-hidden');
+        // Allows the down arrow to be prominent unless disabled.
+        if (a.length) {
+          $.each(['next', 'prev'], function (i, key) {
+            $('.slick-' + key, a)[hide ? 'addClass' : 'removeClass'](_hidden);
+          });
+        }
       }
     }
 
@@ -202,10 +246,11 @@
      */
     function closeOut() {
       // Clean up any pause marker at slider container.
-      t.removeClass('is-paused');
+      t.removeClass(_isPaused);
+      var $playing = t.find('.' + _isPlaying);
 
-      if (t.find('.is-playing').length) {
-        t.find('.is-playing').removeClass('is-playing').find('.media__icon--close').click();
+      if ($playing.length) {
+        $playing.removeClass(_isPlaying).find(_elClose).click();
       }
     }
 
@@ -213,7 +258,7 @@
      * Trigger pause on slick instance when media playing a video.
      */
     function pause() {
-      t.addClass('is-paused').slick('slickPause');
+      t.addClass(_isPaused).slick('slickPause');
     }
 
     /**
@@ -254,11 +299,11 @@
     // This allows Slick lazyload to run, but prevents further complication.
     // Should use lazyLoaded event, but images are not always there.
     if (unSlick) {
-      t.slick('unslick');
+      t.slick(_unslick);
     }
 
     // Add helper class for arrow visibility as they are outside slider.
-    $(elm).addClass('slick--initialized');
+    $(elm).addClass(_mounted);
   }
 
   /**
@@ -268,8 +313,33 @@
    */
   Drupal.behaviors.slick = {
     attach: function (context) {
-      $('.slick', context).once('slick').each(doSlick);
+
+      if (_d.context && _d.once.find) {
+        context = _d.context(context);
+        _d.once(doSlick, _id, _element, context);
+      }
+      else {
+        // @todo remove post Blazy 2.10.
+        // Weirdo: context may be null after Colorbox close.
+        context = context || document;
+
+        // jQuery may pass its object as non-expected context identified by length.
+        context = 'length' in context ? context[0] : context;
+        context = context instanceof HTMLDocument ? context : document;
+
+        // Prevents potential missing due to the newly added sitewide option.
+        var elms = context.querySelectorAll(_element + ':not(.' + _mounted + ')');
+        if (elms.length) {
+          _d.once(_d.forEach(elms, doSlick));
+        }
+      }
+    },
+    detach: function (context, setting, trigger) {
+      if (trigger === 'unload' && _d.once.removeSafely) {
+        context = _d.context(context);
+        _d.once.removeSafely(_id, _element, context);
+      }
     }
   };
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, dBlazy);

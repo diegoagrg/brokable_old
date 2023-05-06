@@ -5,6 +5,7 @@ namespace Drupal\webform\Element;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\OptGroup;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
 use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\Utility\WebformOptionsHelper;
@@ -32,6 +33,8 @@ abstract class WebformOtherBase extends FormElement {
    * The properties of the element.
    *
    * @var array
+   *
+   * @see \Drupal\webform\Element\WebformSelectOther::$properties
    */
   protected static $properties = [
     '#title',
@@ -39,8 +42,20 @@ abstract class WebformOtherBase extends FormElement {
     '#required_error',
     '#options',
     '#options_display',
+    '#options_randomize',
+    '#options_description_display',
+    '#options__properties',
     '#default_value',
     '#attributes',
+  ];
+
+  /**
+   * The properties of the other element.
+   *
+   * @var array
+   */
+  protected static $otherProperties = [
+    '#required_error',
   ];
 
   /**
@@ -102,6 +117,7 @@ abstract class WebformOtherBase extends FormElement {
 
     $element[$type]['#type'] = static::$type;
     $element[$type]['#webform_element'] = TRUE;
+    $element[$type]['#webform_other'] = TRUE;
     $element[$type] += array_intersect_key($element, array_combine($properties, $properties));
     $element[$type]['#title_display'] = 'invisible';
     if (!isset($element[$type]['#options'][static::OTHER_OPTION])) {
@@ -109,12 +125,8 @@ abstract class WebformOtherBase extends FormElement {
     }
     $element[$type]['#error_no_message'] = TRUE;
 
-    // Prevent nested fieldset by removing fieldset theme wrapper around
-    // radios and checkboxes.
-    // @see \Drupal\Core\Render\Element\CompositeFormElementTrait
-    $element[$type]['#pre_render'] = [];
-
     // Build other textfield.
+    $element += ['other' => []];
     foreach ($element as $key => $value) {
       if (strpos($key, '#other__') === 0) {
         $other_key = str_replace('#other__', '#', $key);
@@ -134,11 +146,12 @@ abstract class WebformOtherBase extends FormElement {
         '#title_display' => 'invisible',
       ];
     }
+    $element['other'] += array_intersect_key($element, array_combine(static::$otherProperties, static::$otherProperties));
 
     $element['other']['#wrapper_attributes']['class'][] = "js-webform-$type-other-input";
     $element['other']['#wrapper_attributes']['class'][] = "webform-$type-other-input";
 
-    if ($element['other']['#type'] == 'datetime') {
+    if ($element['other']['#type'] === 'datetime') {
       $element['other']['#prefix'] = '<div class="' . implode(' ', $element['other']['#wrapper_attributes']['class']) . '">';
       $element['other']['#suffix'] = '</div>';
       unset($element['other']['#wrapper_attributes']['class']);
@@ -150,21 +163,38 @@ abstract class WebformOtherBase extends FormElement {
       $element['other']['#parents'] = array_merge($element['#parents'], ['other']);
     }
 
-    // Initialize the other element to allow for webform enhancements.
+    // Add custom required error message so that clientside_validation.module
+    // can display it.
+    // @see https://www.drupal.org/project/clientside_validation/issues/3084798
+    if (\Drupal::moduleHandler()->moduleExists('clientside_validation')
+      && isset($element['other']['#required_error'])) {
+      $element['other']['#attributes']['data-msg-required'] = $element['other']['#required_error'];
+    }
+
+    // Initialize the type and other elements to allow for webform enhancements.
     /** @var \Drupal\webform\Plugin\WebformElementManagerInterface $element_manager */
     $element_manager = \Drupal::service('plugin.manager.webform.element');
+    $element_manager->buildElement($element[$type], $complete_form, $form_state);
     $element_manager->buildElement($element['other'], $complete_form, $form_state);
 
-    // Add attributes to the composite fieldset wrapper.
-    // @see \Drupal\webform\Element\WebformCompositeFormElementTrait
+    // Prevent nested fieldset by removing fieldset theme wrapper around
+    // radios and checkboxes.
+    // @see \Drupal\Core\Render\Element\CompositeFormElementTrait
+    $element[$type]['#pre_render'] = [];
 
-    // Add js trigger to fieldset.
-    $element['#attributes']['class'][] = "js-webform-$type-other";
-    $element['#attributes']['class'][] = "webform-$type-other";
+    // Add js trigger attributes to the composite wrapper.
+    // @see \Drupal\webform\Element\WebformCompositeFormElementTrait
+    $is_form_element_wrapper = (isset($element['#wrapper_type']) && $element['#wrapper_type'] === 'form_element');
+    $wrapper_attributes = ($is_form_element_wrapper) ? '#wrapper_attributes' : '#attributes';
+    $element[$wrapper_attributes]['class'][] = "js-webform-$type-other";
+    $element[$wrapper_attributes]['class'][] = "webform-$type-other";
 
     // Apply the element id to the wrapper so that inline form errors point
     // to the correct element.
     $element['#attributes']['id'] = $element['#id'];
+
+    // Make sure form element label has no 'for' attribute.
+    $element['#label_attributes']['webform-remove-for-attribute'] = TRUE;
 
     // Remove options.
     unset($element['#options']);
@@ -188,10 +218,7 @@ abstract class WebformOtherBase extends FormElement {
   public static function validateWebformOther(&$element, FormStateInterface $form_state, &$complete_form) {
     $type = static::getElementType();
 
-    // Determine if the element is visible. (#access !== FALSE)
-    $has_access = (!isset($element['#access']) || $element['#access'] === TRUE);
-
-    // Determine if the element has mulitple values.
+    // Determine if the element has multiple values.
     $is_multiple = static::isMultiple($element);
 
     // Get value.
@@ -218,7 +245,7 @@ abstract class WebformOtherBase extends FormElement {
     $other_is_empty = (isset($element_value[static::OTHER_OPTION]) && $other_value === '');
 
     // Display missing other or missing value error.
-    if ($has_access) {
+    if (Element::isVisibleElement($element)) {
       $required_error_title = (isset($element['#title'])) ? $element['#title'] : NULL;
       if ($other_is_empty) {
         WebformElementHelper::setRequiredError($element['other'], $form_state, $required_error_title);
@@ -294,7 +321,7 @@ abstract class WebformOtherBase extends FormElement {
    *   TRUE if the webform element contains multiple values.
    */
   protected static function isMultiple(array $element) {
-    return (!empty($element['#multiple']) || static::$type == 'checkboxes') ? TRUE : FALSE;
+    return (!empty($element['#multiple']) || static::$type === 'checkboxes') ? TRUE : FALSE;
   }
 
   /**
@@ -309,7 +336,7 @@ abstract class WebformOtherBase extends FormElement {
   protected static function convertDefaultValueToElementValue(array $element) {
     $type = str_replace('webform_', '', static::$type);
 
-    $default_value = isset($element['#default_value']) ? $element['#default_value'] : NULL;
+    $default_value = isset($element['#default_value']) && $element['#default_value'] !== '' ? $element['#default_value'] : NULL;
     if (static::isMultiple($element)) {
       // Handle edge case where $default_value is not an array.
       if (!is_array($default_value)) {
@@ -328,7 +355,7 @@ abstract class WebformOtherBase extends FormElement {
       return [$type => $default_options, 'other' => NULL];
     }
     else {
-      if (!empty($default_value) && !WebformOptionsHelper::hasOption($default_value, $element['#options'])) {
+      if ($default_value !== NULL && !WebformOptionsHelper::hasOption($default_value, $element['#options'])) {
         return [$type => static::OTHER_OPTION, 'other' => $default_value];
       }
 

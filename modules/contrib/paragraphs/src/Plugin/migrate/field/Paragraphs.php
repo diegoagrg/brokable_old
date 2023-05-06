@@ -8,9 +8,6 @@ use Drupal\migrate_drupal\Plugin\migrate\field\FieldPluginBase;
 /**
  * Field Plugin for paragraphs migrations.
  *
- * @todo Implement ::processFieldValues()
- * @see https://www.drupal.org/project/paragraphs/issues/2911244
- *
  * @MigrateField(
  *   id = "paragraphs",
  *   core = {7},
@@ -26,8 +23,151 @@ class Paragraphs extends FieldPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function processFieldWidget(MigrationInterface $migration) {
-    parent::processFieldWidget($migration);
+  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data) {
+    $process = [
+      'plugin' => 'sub_process',
+      'source' => $field_name,
+      'process' => [
+        'target_id' => [
+          [
+            'plugin' => 'paragraphs_lookup',
+            'tags' => 'Paragraphs Content',
+            'source' => 'value',
+          ],
+          [
+            'plugin' => 'extract',
+            'index' => ['id'],
+          ],
+        ],
+        'target_revision_id' => [
+          [
+            'plugin' => 'paragraphs_lookup',
+            'tags' => [
+              'Paragraphs Revisions Content',
+              'Paragraphs Content',
+            ],
+            'tag_ids' => [
+              'Paragraphs Revisions Content' => ['revision_id'],
+              'Paragraphs Content' => ['value'],
+            ],
+            // D8.4 Does not like an empty source value, Even when using ids.
+            'source' => 'value',
+          ],
+          [
+            'plugin' => 'extract',
+            'index' => ['revision_id'],
+          ],
+        ],
+      ],
+    ];
+    $migration->setProcessOfProperty($field_name, $process);
+
+    // Add paragraphs migration as a dependency (if this is not a paragraph
+    // migration).
+    // @todo: This is a great example why we should consider derive paragraph
+    // migrations based on parent entity type (and bundle).
+    if (!in_array('Paragraphs Content', $migration->getMigrationTags(), TRUE)) {
+      $dependencies = $migration->getMigrationDependencies() + ['required' => []];
+      $dependencies['required'] = array_unique(array_merge(array_values($dependencies['required']), [
+        'd7_paragraphs',
+      ]));
+      $migration->set('migration_dependencies', $dependencies);
+
+      if (strpos($migration->getDestinationPlugin()->getPluginId(), 'entity_revision:') === 0 || strpos($migration->getDestinationPlugin()->getPluginId(), 'entity_complete:') === 0) {
+        $dependencies['required'] = array_unique(array_merge(array_values($dependencies['required']), [
+          'd7_paragraphs_revisions',
+        ]));
+        $migration->set('migration_dependencies', $dependencies);
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alterFieldWidgetMigration(MigrationInterface $migration) {
+    parent::alterFieldWidgetMigration($migration);
+    $this->paragraphAlterFieldWidgetMigration($migration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alterFieldFormatterMigration(MigrationInterface $migration) {
+    $this->addViewModeProcess($migration);
+    parent::alterFieldFormatterMigration($migration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFieldFormatterMap() {
+    return [
+      'paragraphs_view' => 'entity_reference_revisions_entity_view',
+    ] + parent::getFieldFormatterMap();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFieldWidgetMap() {
+    return [
+      'paragraphs_embed' => 'entity_reference_paragraphs',
+    ] + parent::getFieldWidgetMap();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alterFieldMigration(MigrationInterface $migration) {
+    $settings = [
+      'paragraphs' => [
+        'plugin' => 'paragraphs_field_settings',
+      ],
+    ];
+    $migration->mergeProcessOfProperty('settings', $settings);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alterFieldInstanceMigration(MigrationInterface $migration) {
+    $settings = [
+      'paragraphs' => [
+        'plugin' => 'paragraphs_field_instance_settings',
+      ],
+    ];
+    $migration->mergeProcessOfProperty('settings', $settings);
+  }
+
+  /**
+   * Adds process for view mode settings.
+   *
+   * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+   *   The migration.
+   */
+  protected function addViewModeProcess(MigrationInterface $migration) {
+    $view_mode = [
+      'paragraphs' => [
+        'plugin' => 'paragraphs_process_on_value',
+        'source_value' => 'type',
+        'expected_value' => 'paragraphs',
+        'process' => [
+          'plugin' => 'get',
+          'source' => 'formatter/settings/view_mode',
+        ],
+      ],
+    ];
+    $migration->mergeProcessOfProperty('options/settings/view_mode', $view_mode);
+  }
+
+  /**
+   * Adds processes for paragraphs field widgets.
+   *
+   * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+   *   The migration.
+   */
+  protected function paragraphAlterFieldWidgetMigration(MigrationInterface $migration) {
     $title = [
       'paragraphs' => [
         'plugin' => 'paragraphs_process_on_value',
@@ -77,84 +217,6 @@ class Paragraphs extends FieldPluginBase {
     $migration->mergeProcessOfProperty('options/settings/title_plural', $title_plural);
     $migration->mergeProcessOfProperty('options/settings/edit_mode', $edit_mode);
     $migration->mergeProcessOfProperty('options/settings/add_mode', $add_mode);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processFieldFormatter(MigrationInterface $migration) {
-
-    $view_mode = [
-      'paragraphs' => [
-        'plugin' => 'paragraphs_process_on_value',
-        'source_value' => 'type',
-        'expected_value' => 'paragraphs',
-        'process' => [
-          'plugin' => 'get',
-          'source' => 'formatter/settings/view_mode',
-        ],
-      ],
-    ];
-    $migration->mergeProcessOfProperty('options/settings/view_mode', $view_mode);
-
-    // Workaround for Drupal 8.4. In D8.5+ this should only call the parent.
-    // @todo Remove all but parent call after Drupal 8.6 is released.
-    // @see https://www.drupal.org/project/paragraphs/issues/2950492
-    //
-    // Core issue:
-    // @see https://www.drupal.org/project/drupal/issues/2843617
-    $process = $migration->getProcess();
-    if (is_array($process['options/type'][0]['source'])) {
-      parent::processFieldFormatter($migration);
-    }
-    else {
-      $options_type[0]['map']['paragraphs_view'] = 'entity_reference_revisions_entity_view';
-      $migration->mergeProcessOfProperty('options/type', $options_type);
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFieldFormatterMap() {
-    return [
-      'paragraphs_view' => 'entity_reference_revisions_entity_view',
-    // TODO: Change the autogenerated stub.
-    ] + parent::getFieldFormatterMap();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFieldWidgetMap() {
-    return ['paragraphs_embed' => 'entity_reference_paragraphs']
-      + parent::getFieldWidgetMap();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processField(MigrationInterface $migration) {
-
-    $settings = [
-      'paragraphs' => [
-        'plugin' => 'paragraphs_field_settings',
-      ],
-    ];
-    $migration->mergeProcessOfProperty('settings', $settings);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processFieldInstance(MigrationInterface $migration) {
-
-    $settings = [
-      'paragraphs' => [
-        'plugin' => 'paragraphs_field_instance_settings',
-      ],
-    ];
-    $migration->mergeProcessOfProperty('settings', $settings);
   }
 
 }

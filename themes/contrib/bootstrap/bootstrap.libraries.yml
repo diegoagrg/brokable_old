@@ -23,6 +23,13 @@ drupal.bootstrap:
     - core/drupalSettings
     - bootstrap/framework
 
+dialog:
+  js:
+    js/dialog.js: {}
+  dependencies:
+    - bootstrap/theme
+    - bootstrap/modal
+
 # Create a library placeholder for livereload.
 # This is altered dynamically based on the set URL.
 # @see \Drupal\bootstrap\Plugin\Alter\LibraryInfo::alter
@@ -94,6 +101,8 @@ drupal.autocomplete:
 drupal.dialog.ajax:
   js:
     js/misc/dialog.ajax.js: {}
+  dependencies:
+    - bootstrap/drupal.bootstrap
 
 drupal.form:
   js:
@@ -163,52 +172,3 @@ drupal.vertical-tabs:
     - bootstrap/theme
     - core/jquery.once
     - core/drupal.form
-    - core/matchmedia
-
-brokable:
-  css:
-    base:
-      https://fonts.googleapis.com/css?family=Roboto+Condensed: { type: external }
-      /libraries/slick/slick/slick.css: {}
-      /libraries/slick/slick/slick-theme.css: {}
-      /libraries/brokable/css/brokable.css: {}
-      /libraries/slick/slick/slick.css: {}
-      /libraries/slick/slick/slick-theme.css: {}
-  js:
-    /libraries/slick/slick/slick.min.js: {}
-    /libraries/slick/slick.js: {}
-    /libraries/brokable/js/menu_vistas_cable/menu_vistas_cable.js: {}
-    /libraries/brokable/js/brokable.js: {}
-    /libraries/brokable/js/anclas/scroll_to.js: {}
-    /libraries/brokable/js/sticky_element/sticky_element.js: {}
-    /libraries/brokable/js/menu/menu.js: {}
-    /libraries/brokable/js/slider/slider.js: {}
-    /libraries/brokable/js/conectores/view_categorias_conectores.js: {}
-    /libraries/brokable/js/conectores/conector.js: {}
-  dependencies:
-    - core/jquery
-
-brokable_tabs:
-  js:
-    /libraries/brokable/js/tabs/tabs.js: {}
-  dependencies:
-    - core/jquery
-
-brokable_casos:
-  js:
-    /libraries/brokable/js/dropdown_tile/dropdown_tile.js: {}
-  dependencies:
-    - core/jquery
-
-brokable_sectores:
-  js:
-    /libraries/brokable/js/dropdown_tile/sector-industrial.js: {}
-  dependencies:
-    - core/jquery
-
-brokable_metales:
-  js:
-    /libraries/brokable/js/precios_metal/cobre.js: {}
-    /libraries/brokable/js/precios_metal/precios_metal_controlador.js: {}
-  dependencies:
-    - core/jquery

@@ -7,6 +7,7 @@
 
 use Drupal\webform\Entity\Webform;
 use Drupal\webform_scheduled_email\Plugin\WebformHandler\ScheduleEmailWebformHandler;
+use Drush\Drush;
 
 /**
  * Implements hook_drush_command().
@@ -29,7 +30,7 @@ function webform_scheduled_email_drush_command() {
       'send_limit' => 'The maximum number of emails to be sent. If set to 0 no emails will be sent. (Default 500)',
     ],
     'callback' => 'webform_scheduled_email_cron_process',
-    'aliases' => ['wfsec'],
+    'aliases' => ['wfsec', 'webform:scheduled-email:cron'],
   ];
 
   return $items;
@@ -63,6 +64,8 @@ function webform_scheduled_email_help($section) {
  * callback to prevent conflicts with webform_scheduled_email_cron().
  *
  * @see webform_scheduled_email_cron()
+ * @see \Drupal\webform_scheduled_email\Commands\WebformScheduledEmailCommands::drush_webform_scheduled_email_cron_validate()
+ * @see \Drupal\webform_scheduled_email\Commands\WebformScheduledEmailCommands::drush_webform_scheduled_email_cron()
  */
 function webform_scheduled_email_cron_process($webform_id = NULL, $handler_id = NULL) {
   $schedule_limit = drush_get_option('schedule_limit') ?: 1000;
@@ -94,5 +97,5 @@ function webform_scheduled_email_cron_process($webform_id = NULL, $handler_id = 
   /** @var \Drupal\webform_scheduled_email\WebformScheduledEmailManagerInterface $webform_scheduled_email_manager */
   $webform_scheduled_email_manager = \Drupal::service('webform_scheduled_email.manager');
   $stats = $webform_scheduled_email_manager->cron($webform, $handler_id, $schedule_limit, $send_limit);
-  drush_print(dt($stats['_message'], $stats['_context']));
+  Drush::output()->writeln(dt($stats['_message'], $stats['_context']));
 }

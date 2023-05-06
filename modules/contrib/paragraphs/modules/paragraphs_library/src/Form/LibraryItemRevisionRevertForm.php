@@ -7,7 +7,7 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use Drupal\paragraphs_library\LibraryItemInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -58,10 +58,10 @@ class LibraryItemRevisionRevertForm extends ConfirmFormBase {
    *   The date formatter service.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The time service.
-   * @param \Drupal\Core\Messenger\Messenger $messenger
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, DateFormatterInterface $date_formatter, TimeInterface $time, Messenger $messenger) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, DateFormatterInterface $date_formatter, TimeInterface $time, MessengerInterface $messenger) {
     $this->entityTypeManager = $entity_type_manager;
     $this->dateFormatter = $date_formatter;
     $this->time = $time;
@@ -102,7 +102,7 @@ class LibraryItemRevisionRevertForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $original_revision_timestamp = $this->revision->getChangedTime();
     $this->revision = $this->prepareRevertedRevision($this->revision);
-    $this->revision->revision_log = t('Copy of the revision from %date.', [
+    $this->revision->revision_log = $this->t('Copy of the revision from %date.', [
       '%date' => $this->dateFormatter->format($original_revision_timestamp)
     ]);
     $this->revision->setChangedTime($this->time->getRequestTime());

@@ -3,7 +3,6 @@
 namespace Drupal\webform\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
@@ -33,7 +32,14 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
   protected $configFactory;
 
   /**
-   * WebformEntityReferenceLinkFormatter constructor.
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * WebformEntityReferenceFormatterBase constructor.
    *
    * @param string $plugin_id
    *   The plugin_id for the formatter.
@@ -59,6 +65,12 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
 
     $this->configFactory = $config_factory;
     $this->renderer = $renderer;
+
+    // Make sure the time object is defined because the create method maybe
+    // overridden and we can't alter the constructor without breaking classes
+    // which extend the WebformEntityReferenceFormatterBase class.
+    // @todo Remove in Webform 6.x.
+    $this->time = \Drupal::service('datetime.time');
   }
 
   /**
@@ -90,12 +102,20 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
 
       // Only override an open webform.
       if ($entity->isOpen()) {
+        if (isset($item->open)) {
+          $entity->set('open', $item->open);
+        }
+        if (isset($item->close)) {
+          $entity->set('close', $item->close);
+        }
+        if (isset($item->status)) {
+          $entity->setStatus($item->status);
+        }
         // Directly call set override to prevent the altered webform from being
         // saved.
-        $entity->setOverride();
-        $entity->set('open', $item->open);
-        $entity->set('close', $item->close);
-        $entity->setStatus($item->status);
+        if (isset($item->open) || isset($item->close) || isset($item->status)) {
+          $entity->setOverride();
+        }
       }
     }
     return $entities;
@@ -113,7 +133,7 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
    */
   protected function setCacheContext(array &$elements, WebformInterface $webform, WebformEntityReferenceItem $item) {
     // Track if webform.settings is updated.
-    $config = \Drupal::config('webform.settings');
+    $config = $this->configFactory->get('webform.settings');
     $this->renderer->addCacheableDependency($elements, $config);
 
     // Track if the webform is updated.
@@ -126,8 +146,8 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
     foreach ($states as $state) {
       if ($item->status === WebformInterface::STATUS_SCHEDULED) {
         $item_state = $item->$state;
-        if ($item_state && strtotime($item_state) > time()) {
-          $item_seconds = strtotime($item_state) - time();
+        if ($item_state && strtotime($item_state) > $this->time->getRequestTime()) {
+          $item_seconds = strtotime($item_state) - $this->time->getRequestTime();
           if (!$max_age && $item_seconds > $max_age) {
             $max_age = $item_seconds;
           }
@@ -135,8 +155,8 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
       }
       if ($webform->status() === WebformInterface::STATUS_SCHEDULED) {
         $webform_state = $webform->get($state);
-        if ($webform_state && strtotime($webform_state) > time()) {
-          $webform_seconds = strtotime($webform_state) - time();
+        if ($webform_state && strtotime($webform_state) > $this->time->getRequestTime()) {
+          $webform_seconds = strtotime($webform_state) - $this->time->getRequestTime();
           if (!$max_age && $webform_seconds > $max_age) {
             $max_age = $webform_seconds;
           }
@@ -147,13 +167,6 @@ abstract class WebformEntityReferenceFormatterBase extends EntityReferenceFormat
     if ($max_age) {
       $elements['#cache']['max-age'] = $max_age;
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function checkAccess(EntityInterface $entity) {
-    return $entity->access('submission_create', NULL, TRUE);
   }
 
 }

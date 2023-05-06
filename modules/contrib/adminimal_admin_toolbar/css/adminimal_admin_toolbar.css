@@ -17,6 +17,11 @@
   color: #ccc;
 }
 
+#toolbar-item-administration-search-tray label {
+  background: transparent;
+  color: #ccc !important;
+}
+
 .adminimal-admin-toolbar .toolbar-tray .toolbar-menu li {
   background: #333;
 }
@@ -63,15 +68,12 @@
   color: #fff !important;
 }
 
-.adminimal-admin-toolbar .toolbar .toolbar-bar .toolbar-tab > .toolbar-item {
+.adminimal .toolbar .toolbar-bar .toolbar-tab:not(.workspaces-toolbar-tab) > .toolbar-item {
+  color: #bebebe;
   font-weight: 600;
 }
 
-.adminimal-admin-toolbar .toolbar .toolbar-bar .toolbar-item {
-  color: #bebebe;
-}
-
-.adminimal-admin-toolbar .toolbar .toolbar-bar .toolbar-tab > .toolbar-item:hover {
+.adminimal .toolbar .toolbar-bar .toolbar-tab:not(.workspaces-toolbar-tab) > .toolbar-item:hover {
   background-image: none;
   background-color: #2d2d2d;
   color: #fff;
@@ -81,7 +83,7 @@
 .adminimal-admin-toolbar .toolbar .toolbar-bar .toolbar-tab > .toolbar-item.is-active,
 .adminimal-admin-toolbar .toolbar .toolbar-bar .toolbar-tab > .toolbar-item:focus {
   background-image: none;
-  background-color: #333;
+  background-color: rgba(255, 255, 255, .03);
   text-decoration: none;
 }
 
@@ -105,7 +107,6 @@
 
 .adminimal-admin-toolbar .toolbar .toolbar-tray {
   background-color: #333;
-  box-shadow: -2px 2px 12px rgba(0,0,0,0.85);
 }
 
 .adminimal-admin-toolbar .toolbar .toolbar-tray-horizontal {
@@ -113,9 +114,22 @@
   box-shadow: none;
 }
 
+.adminimal-admin-toolbar .toolbar .toolbar-tray-vertical {
+  box-shadow: -2px 2px 12px rgba(0,0,0,0.85);
+}
+
 .adminimal-admin-toolbar .toolbar .toolbar-toggle-orientation {
   background-color: #333;
 }
+
+.adminimal-admin-toolbar .toolbar .toolbar-icon.toolbar-handle > span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 
 .adminimal-admin-toolbar .toolbar .toolbar-icon.toolbar-handle:focus {
   background-color: transparent;
@@ -215,8 +229,8 @@
   background-color: #333;
 }
 
-.adminimal-admin-toolbar .toolbar .menu-item:focus {
-  background: #abeae4;
+.adminimal-admin-toolbar .toolbar-tray-horizontal .menu-item a:focus {
+  background: #4c4c4c;
 }
 
 .adminimal-admin-toolbar .toolbar .menu-item--expanded {
@@ -230,6 +244,10 @@
 
 .adminimal-admin-toolbar .toolbar-tray-horizontal .toolbar-menu ul .toolbar-icon {
   padding: 1em 12px;
+}
+
+.toolbar-tray-horizontal .toolbar-menu:not(:first-child) li.menu-item--expanded > a:focus {
+  background-image: none !important;
 }
 
 .adminimal-admin-toolbar .toolbar-tray-horizontal ul li.menu-item--expanded .menu-item:hover ul {

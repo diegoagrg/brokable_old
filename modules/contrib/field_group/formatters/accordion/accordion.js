@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Provides the processing logic for accordion.
+ */
+
 (function ($) {
 
   'use strict';
@@ -39,7 +44,7 @@
 
           var $firstErrorItem = false;
 
-          // Add required fields mark to any element containing required fields
+          // Add required fields mark to any element containing required fields.
           wrapper.find('div.field-group-accordion-item').each(function (i) {
 
             var $this = $(this);
@@ -49,7 +54,7 @@
             if ($('.error', $this).length) {
               // Save first error item, for focussing it.
               if (!$firstErrorItem) {
-                $firstErrorItem = $this.parent().accordion('activate', i);
+                $firstErrorItem = $this.parent().accordion('option', 'active', i);
               }
               $('h3.ui-accordion-header').eq(i).addClass('error');
             }

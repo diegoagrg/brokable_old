@@ -6,11 +6,13 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\webform\Plugin\WebformElement\WebformCompositeBase;
 use Drupal\webform\Plugin\WebformElementManagerInterface;
 use Drupal\webform\Utility\WebformArrayHelper;
 use Drupal\webform\Utility\WebformElementHelper;
 use Drupal\webform\Utility\WebformYaml;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\webform\Plugin\WebformElement\WebformCustomComposite;
 
 /**
  * Defines a class to translate webform elements.
@@ -39,7 +41,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   protected $configFactory;
 
   /**
-   * Webform element manager.
+   * The webform element manager.
    *
    * @var \Drupal\webform\Plugin\WebformElementManagerInterface
    */
@@ -143,6 +145,18 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
     $config_elements = $this->getElements($webform, $default_langcode);
     $elements = WebformElementHelper::getFlattened($config_elements);
     foreach ($elements as $element_key => &$element) {
+      // Always include composite element's default '#{element}__title'.
+      $element_plugin = $this->elementManager->getElementInstance($element);
+      if ($element_plugin instanceof WebformCompositeBase) {
+        $composite_elements = $element_plugin->getCompositeElements();
+        foreach ($composite_elements as $composite_key => $composite_element) {
+          $property_key = $composite_key . '__title';
+          if (empty($element["#$property_key"])) {
+            $element["#$property_key"] = $element_plugin->getDefaultProperty($property_key);
+          }
+        }
+      }
+
       $this->removeUnTranslatablePropertiesFromElement($element);
       if (empty($element)) {
         unset($elements[$element_key]);
@@ -164,7 +178,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   public function getTranslationElements(WebformInterface $webform, $langcode) {
     $elements = $this->getSourceElements($webform);
     $translation_elements = $this->getElements($webform, $langcode);
-    if ($elements == $translation_elements) {
+    if ($elements === $translation_elements) {
       return $elements;
     }
     WebformElementHelper::merge($elements, $translation_elements);
@@ -196,7 +210,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
   protected function removeUnTranslatablePropertiesFromElement(array &$element) {
     $translatable_properties = $this->getTranslatableProperties();
 
-    $element_type = (isset($element['#type'])) ? $element['#type'] : NULL;
+    $element_plugin = $this->elementManager->getElementInstance($element);
     foreach ($element as $property_key => $property_value) {
       $translatable_property_key = $property_key;
 
@@ -210,7 +224,7 @@ class WebformTranslationManager implements WebformTranslationManagerInterface {
         // Unset options and answers that are webform option ids.
         unset($element[$property_key]);
       }
-      elseif ($translatable_property_key === '#element' && $element_type === 'webform_custom_composite') {
+      elseif ($translatable_property_key === '#element' && $element_plugin instanceof WebformCustomComposite) {
         foreach ($element[$property_key] as &$composite_element_value) {
           $this->removeUnTranslatablePropertiesFromElement($composite_element_value);
         }

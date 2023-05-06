@@ -37,7 +37,7 @@ class WebformResultsExportController extends ControllerBase implements Container
   protected $submissionExporter;
 
   /**
-   * Webform request handler.
+   * The webform request handler.
    *
    * @var \Drupal\webform\WebformRequestInterface
    */
@@ -181,8 +181,21 @@ class WebformResultsExportController extends ControllerBase implements Container
    *   A response object containing the CSV file.
    */
   public function downloadFile($file_path, $download = TRUE) {
-    $response = new BinaryFileResponse($file_path, 200, [], FALSE, $download ? 'attachment' : 'inline');
-    $response->deleteFileAfterSend(TRUE);
+    $headers = [];
+
+    // If the file is not meant to be downloaded, allow CSV files to be
+    // displayed as plain text.
+    if (!$download && preg_match('/\.csv$/', $file_path)) {
+      $headers['Content-Type'] = 'text/plain';
+    }
+
+    $response = new BinaryFileResponse($file_path, 200, $headers, FALSE, $download ? 'attachment' : 'inline');
+    // Don't delete the file during automated tests.
+    // @see \Drupal\webform\Tests\WebformResultsExportDownloadTest
+    // @see \Drupal\Tests\webform_entity_print\Functional\WebformEntityPrintFunctionalTest
+    if (!drupal_valid_test_ua()) {
+      $response->deleteFileAfterSend(TRUE);
+    }
     return $response;
   }
 
@@ -246,7 +259,7 @@ class WebformResultsExportController extends ControllerBase implements Container
    * @param mixed|array $context
    *   The batch current context.
    */
-  public static function batchProcess(WebformInterface $webform, EntityInterface $source_entity = NULL, array $export_options, &$context) {
+  public static function batchProcess(WebformInterface $webform, EntityInterface $source_entity = NULL, array $export_options = [], array &$context = []) {
     /** @var \Drupal\webform\WebformSubmissionExporterInterface $submission_exporter */
     $submission_exporter = \Drupal::service('webform_submission.exporter');
     $submission_exporter->setWebform($webform);
@@ -281,8 +294,11 @@ class WebformResultsExportController extends ControllerBase implements Container
     $context['message'] = t('Exported @count of @total submissions…', ['@count' => $context['sandbox']['progress'], '@total' => $context['sandbox']['max']]);
 
     // Track finished.
-    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    if ($context['sandbox']['max'] > 0 && $context['sandbox']['progress'] !== $context['sandbox']['max']) {
       $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+    else {
+      $context['finished'] = 1;
     }
   }
 

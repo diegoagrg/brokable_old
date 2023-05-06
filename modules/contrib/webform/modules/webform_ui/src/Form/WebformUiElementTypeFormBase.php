@@ -132,7 +132,7 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
       '#attributes' => [
         'class' => ['webform-form-filter-text'],
         'data-element' => '.webform-ui-element-type-table',
-        'data-item-single' => $this->t('element'),
+        'data-item-singlular' => $this->t('element'),
         'data-item-plural' => $this->t('elements'),
         'data-no-results' => '.webform-element-no-results',
         'title' => $this->t('Enter a part of the element name to filter by.'),
@@ -183,8 +183,10 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
    *   to a URL
    */
   public function submitAjaxForm(array &$form, FormStateInterface $form_state) {
-    // Remove wrapper.
-    unset($form['#prefix'], $form['#suffix']);
+    // Remove #id from wrapper so that the form is still wrapped in a <div>
+    // and triggerable.
+    // @see js/webform.element.details.toggle.js
+    $form['#prefix'] = '<div>';
 
     $response = new AjaxResponse();
     $response->addCommand(new HtmlCommand('#webform-ui-element-type-ajax-wrapper', $form));
@@ -240,7 +242,7 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
       '#type' => 'link',
       '#title' => $webform_element->getPluginLabel(),
       '#url' => $url,
-      '#attributes' => WebformDialogHelper::getOffCanvasDialogAttributes(),
+      '#attributes' => WebformDialogHelper::getOffCanvasDialogAttributes($webform_element->getOffCanvasWidth()),
       '#prefix' => '<span class="webform-form-filter-text-source">',
       '#suffix' => '</span>',
     ];
@@ -262,14 +264,14 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
       // Must clone the URL object to prevent the above 'label' link attributes
       // (i.e. webform-tooltip-link) from being copied to 'operation' link.
       '#url' => clone $url,
-      '#attributes' => WebformDialogHelper::getOffCanvasDialogAttributes(WebformDialogHelper::DIALOG_NORMAL, ['button', 'button--primary', 'button--small']),
+      '#attributes' => WebformDialogHelper::getOffCanvasDialogAttributes($webform_element->getOffCanvasWidth(), ['button', 'button--primary', 'button--small']),
     ];
 
     // Issue #2741877 Nested modals don't work: when using CKEditor in a
     // modal, then clicking the image button opens another modal,
     // which closes the original modal.
     // @todo Remove the below workaround once this issue is resolved.
-    if ($webform_element->getTypeName() == 'processed_text' && !WebformDialogHelper::useOffCanvas()) {
+    if ($webform_element->getTypeName() === 'processed_text' && !WebformDialogHelper::useOffCanvas()) {
       unset($row['type']['#attributes']);
       unset($row['operation']['#attributes']);
       if (isset($row['operation'])) {
@@ -316,7 +318,8 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
       $webform_element->initialize($element);
       $webform_element->prepare($element, $this->webformSubmission);
 
-      if ($webform_element->hasProperty('title_display')) {
+      if ($webform_element->hasProperty('title_display')
+        && $webform_element->getDefaultProperty('title_display') !== 'after') {
         $element['#title_display'] = 'invisible';
       }
     }
@@ -428,10 +431,6 @@ abstract class WebformUiElementTypeFormBase extends FormBase {
             '#suffix' => '</div></div>',
           ],
         ];
-        break;
-
-      case 'webform_location_geocomplete':
-        unset($element['#map'], $element['#geolocation']);
         break;
 
       case 'webform_toggles':

@@ -37,6 +37,13 @@ class WebformDialogHelper {
   const DIALOG_NARROW = 'narrow';
 
   /**
+   * Prevent dialog from being displayed.
+   *
+   * @var string
+   */
+  const DIALOG_NONE = 'none';
+
+  /**
    * Use outside-in off-canvas system tray instead of dialogs.
    *
    * @return bool
@@ -55,7 +62,7 @@ class WebformDialogHelper {
   public static function attachLibraries(array &$build) {
     $build['#attached']['library'][] = 'webform/webform.admin.dialog';
     if (static::useOffCanvas()) {
-      $build['#attached']['library'][] = 'webform/webform.off_canvas';
+      $build['#attached']['library'][] = 'webform/webform.admin.off_canvas';
     }
     // @see \Drupal\webform\Element\WebformHtmlEditor::preRenderWebformHtmlEditor
     if (\Drupal::moduleHandler()->moduleExists('imce') && \Drupal\imce\Imce::access()) {
@@ -112,7 +119,8 @@ class WebformDialogHelper {
    *   Modal dialog attributes.
    */
   public static function getOffCanvasDialogAttributes($width = self::DIALOG_NORMAL, array $class = []) {
-    if (\Drupal::config('webform.settings')->get('ui.dialog_disabled')) {
+    if (\Drupal::config('webform.settings')->get('ui.dialog_disabled')
+      || $width === self::DIALOG_NONE) {
       return $class ? ['class' => $class] : [];
     }
 

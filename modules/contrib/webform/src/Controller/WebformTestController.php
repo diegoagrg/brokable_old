@@ -4,23 +4,41 @@ namespace Drupal\webform\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Serialization\Yaml;
+use Drupal\webform\Plugin\WebformHandler\EmailWebformHandler;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformRequestInterface;
 use Drupal\webform\WebformSubmissionGenerateInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Provides route responses for webform testing.
+ * Provides route responses for Webform testing.
  */
 class WebformTestController extends ControllerBase implements ContainerInjectionInterface {
 
   /**
-   * Webform request handler.
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * The webform request handler.
    *
    * @var \Drupal\webform\WebformRequestInterface
    */
   protected $requestHandler;
+
+  /**
+   * The webform entity reference manager.
+   *
+   * @var \Drupal\webform\WebformEntityReferenceManagerInterface
+   */
+  protected $entityReferenceManager;
 
   /**
    * The webform submission generation service.
@@ -32,24 +50,31 @@ class WebformTestController extends ControllerBase implements ContainerInjection
   /**
    * Constructs a WebformTestController object.
    *
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    * @param \Drupal\webform\WebformRequestInterface $request_handler
    *   The webform request handler.
    * @param \Drupal\webform\WebformSubmissionGenerateInterface $submission_generate
    *   The webform submission generation service.
    */
-  public function __construct(WebformRequestInterface $request_handler, WebformSubmissionGenerateInterface $submission_generate) {
+  public function __construct(MessengerInterface $messenger, WebformRequestInterface $request_handler, WebformSubmissionGenerateInterface $submission_generate) {
+    $this->messenger = $messenger;
     $this->requestHandler = $request_handler;
     $this->generate = $submission_generate;
+
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
+    $instance = new static(
+      $container->get('messenger'),
       $container->get('webform.request'),
       $container->get('webform_submission.generate')
     );
+    $instance->entityReferenceManager = $container->get('webform.entity_reference_manager');
+    return $instance;
   }
 
   /**
@@ -65,16 +90,62 @@ class WebformTestController extends ControllerBase implements ContainerInjection
     /** @var \Drupal\webform\WebformInterface $webform */
     /** @var \Drupal\Core\Entity\EntityInterface $source_entity */
     list($webform, $source_entity) = $this->requestHandler->getWebformEntities();
+
+    // Test a single webform handler which is set via
+    // ?_webform_handler={handler_id}.
+    $test_webform_handler = $request->query->get('_webform_handler');
+    if ($test_webform_handler) {
+      // Make sure the handler exists.
+      if (!$webform->getHandlers()->has($test_webform_handler)) {
+        $t_args = [
+          '%webform' => $webform->label(),
+          '%handler' => $test_webform_handler,
+        ];
+        $this->messenger->addWarning($this->t('The %handler email/handler for the %webform webform does not exist.', $t_args));
+        throw new AccessDeniedHttpException();
+      }
+
+      // Enable only the selected handler for testing
+      // and disable all other handlers.
+      $handlers = $webform->getHandlers();
+      foreach ($handlers as $handler_id => $handler) {
+        if ($handler_id === $test_webform_handler) {
+          $handler->setStatus(TRUE);
+          $t_args = [
+            '%webform' => $webform->label(),
+            '%handler' => $handler->label(),
+            '@type' => ($handler instanceof EmailWebformHandler) ? $this->t('email') : $this->t('handler'),
+          ];
+          $this->messenger->addWarning($this->t('Testing the %webform webform %handler @type. <strong>All other emails/handlers are disabled.</strong>', $t_args));
+        }
+        else {
+          $handler->setStatus(FALSE);
+        }
+      }
+
+      // Set override to prevent the webform's altered handler statuses
+      // from being saved.
+      $webform->setOverride(TRUE);
+    }
+
+    // Set values.
     $values = [];
 
     // Set source entity type and id.
     if ($source_entity) {
       $values['entity_type'] = $source_entity->getEntityTypeId();
       $values['entity_id'] = $source_entity->id();
+
+      // Add source entity's default data to values data.
+      $field_names = $this->entityReferenceManager->getFieldNames($source_entity);
+      foreach ($field_names as $field_name) {
+        if ($source_entity->get($field_name)->target_id === $webform->id()
+          && $source_entity->get($field_name)->default_data) {
+          $values['data'] = Yaml::decode($source_entity->get($field_name)->default_data);
+        }
+      }
     }
 
-    // Generate date.
-    $values['data'] = $this->generate->getData($webform);
     return $webform->getSubmissionForm($values, 'test');
   }
 

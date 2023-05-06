@@ -147,12 +147,3 @@ function bootstrap_theme_registry_alter(&$data, &$context1 = NULL, &$context2 = 
 function bootstrap_theme_suggestions_alter(&$data, &$context1 = NULL, &$context2 = NULL) {
   Bootstrap::alter(__FUNCTION__, $data, $context1, $context2);
 }
-
-function bootstrap_preprocess_node(&$variables) {
-  $variables['articulos_todo_view'] = views_embed_view('articulos', 'articulos_todo');
-  $variables['articulos_noticias_view'] = views_embed_view('articulos', 'articulos_noticias');
-  $variables['articulos_opinion_view'] = views_embed_view('articulos', 'articulos_opinion');
-  $variables['articulos_medios_view'] = views_embed_view('articulos', 'articulos_medios');
-  $variables['articulos_videos_view'] = views_embed_view('articulos', 'articulos_videos');
-  return $variables;
-}

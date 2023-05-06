@@ -1,7 +1,48 @@
 /**
  * @file
- * Webform styles.
+ * Webform form styles.
  */
+
+/**
+ * This allows components to be hidden when a JS plugin provides the UI.
+ */
+html.js .js-webform-visually-hidden,
+html.js .js-webform-visually-hidden[style*="display: none"] {
+  display: inline !important;
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  word-wrap: normal;
+}
+
+/**
+ * Element states.
+ * @see \Drupal\webform\WebformSubmissionConditionsValidator::buildForm
+ * @see \Drupal\webform\Utility\WebformElementHelper::fixStatesWrapper
+ * @see \Drupal\webform\Plugin\WebformElement\TextFormat::preRenderFixTextFormatStates
+ * @see text-format-wrapper.html.twig
+ */
+.js-form-item.js-webform-states-hidden,
+.js-form-submit.js-webform-states-hidden,
+.js-form-wrapper.js-webform-states-hidden,
+.js-webform-text-format-hidden > .js-text-format-wrapper {
+  display: none;
+}
+
+/**
+ * Form inline. (This is not included in all themes)
+ */
+.form--inline .form-item {
+  float: left; /* LTR */
+  margin-right: 0.5em; /* LTR */
+}
+[dir="rtl"] .form--inline .form-item {
+  float: right;
+  margin-right: 0;
+  margin-left: 0.5em;
+}
 
 /**
  * Container inline
@@ -19,11 +60,15 @@
 }
 
 /**
- * Element title inline.
+ * Element title inline.z
  */
 .webform-element--title-inline > label {
   display: inline;
   padding-right: 0.5em;
+}
+
+.webform-element--title-inline > div.container-inline {
+  display: inline;
 }
 
 /**
@@ -33,8 +78,14 @@
  * @see webform_preprocess_fieldset()
  */
 .form-composite.webform-fieldset--title-inline legend {
-  float: left;
-  margin: 0.4em 0.5em 0.4em 0;
+  float: left; /* LTR */
+  margin: 0.4em 0.5em 0.4em 0; /* LTR */
+}
+
+[dir=rtl] .form-composite.webform-fieldset--title-inline legend {
+  float: right; /* RTL */
+  margin-right: 0; /* RTL */
+  margin-left: 0.5em; /* RTL */
 }
 
 .form-composite.webform-fieldset--title-inline .fieldset-wrapper,
@@ -48,6 +99,15 @@
 .webform-element--title-inline .form-radios,
 .webform-element--title-inline .form-checkboxes {
   display: inline;
+}
+
+/**
+ * Clientside validation errors.
+
+ * @see webform_clientside_validation.ife.css
+ */
+.webform-submission-form strong.error.form-item--error-message {
+  display: block;
 }
 
 /**
@@ -65,7 +125,7 @@
 .webform-readonly input[type="time"],
 .webform-readonly input[type="url"],
 .webform-readonly textarea {
-  background: #ededed;
-  border-color: #bbb;
   color: #717171;
+  border-color: #bbb;
+  background: #ededed;
 }

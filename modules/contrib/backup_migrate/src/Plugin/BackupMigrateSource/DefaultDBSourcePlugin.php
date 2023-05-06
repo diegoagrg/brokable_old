@@ -65,6 +65,7 @@ class DefaultDBSourcePlugin extends SourcePluginBase {
           'cache_entity',
           'cache_menu',
           'cache_migrate',
+          'cache_page',
           'cache_render',
           'cache_rest',
           'cache_toolbar',

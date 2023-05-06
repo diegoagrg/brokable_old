@@ -2,9 +2,12 @@
 
 namespace Drupal\Tests\slick\Kernel;
 
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\slick\SlickDefault;
 use Drupal\slick\Entity\Slick;
 use Drupal\Tests\blazy\Kernel\BlazyKernelTestBase;
 use Drupal\Tests\slick\Traits\SlickUnitTestTrait;
+use PHPUnit\Framework\Exception as UnitException;
 
 /**
  * Tests creation, loading, updating, deleting of Slick optionsets.
@@ -20,7 +23,7 @@ class SlickCrudTest extends BlazyKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'image',
     'blazy',
     'slick',
@@ -30,14 +33,13 @@ class SlickCrudTest extends BlazyKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installConfig(static::$modules);
     $this->installEntitySchema('slick');
 
     $this->blazyAdmin     = $this->container->get('blazy.admin.extended');
-    $this->blazyManager   = $this->container->get('blazy.manager');
     $this->slickManager   = $this->container->get('slick.manager');
     $this->slickFormatter = $this->container->get('slick.formatter');
     $this->slickAdmin     = $this->container->get('slick.admin');
@@ -85,11 +87,11 @@ class SlickCrudTest extends BlazyKernelTestBase {
 
     $this->verifySlickOptionset($main);
 
-    // @todo: Use dataProvider.
+    // @todo Use dataProvider.
     try {
       $responsive_options = $main->getResponsiveOptions();
     }
-    catch (\PHPUnit_Framework_Exception $e) {
+    catch (UnitException $e) {
     }
 
     $this->assertTrue(TRUE);
@@ -162,11 +164,11 @@ class SlickCrudTest extends BlazyKernelTestBase {
     $nav->save();
     $this->assertNotEmpty($nav->getSetting('mobileFirst'));
 
-    // @todo: Use dataProvider.
+    // @todo Use dataProvider.
     try {
       $mobile_first = $nav->getOptions('settings', 'mobileFirst');
     }
-    catch (\PHPUnit_Framework_Exception $e) {
+    catch (UnitException $e) {
     }
 
     $this->assertTrue(!empty($mobile_first));
@@ -174,7 +176,7 @@ class SlickCrudTest extends BlazyKernelTestBase {
     try {
       $mobile_first = $nav->getOptions(['settings', 'mobileFirst']);
     }
-    catch (\PHPUnit_Framework_Exception $e) {
+    catch (UnitException $e) {
     }
 
     $this->assertTrue(!empty($mobile_first));
@@ -185,7 +187,7 @@ class SlickCrudTest extends BlazyKernelTestBase {
     $options = $nav->getOptions();
     $this->assertArrayHasKey('settings', $options);
 
-    $merged = array_merge(Slick::defaultSettings() + Slick::jsSettings(), $settings);
+    $merged = array_merge(Slick::defaultSettings() + SlickDefault::jsSettings(), $settings);
     $nav->setSettings($merged);
     $nav->save();
     $this->assertTrue(!empty($nav->getSetting('mobileFirst')));
@@ -198,12 +200,6 @@ class SlickCrudTest extends BlazyKernelTestBase {
 
     $slicks = Slick::loadMultiple();
     $this->assertFalse(isset($slicks[$nav->id()]), 'Slick::loadMultiple: Disabled slick optionset no longer exists.');
-
-    $id1 = Slick::getHtmlId('slick');
-    $this->assertNotEmpty($id1);
-
-    $id2 = Slick::getHtmlId('slick', 'slick-image');
-    $this->assertEquals($id2, 'slick-image');
   }
 
   /**
@@ -218,11 +214,11 @@ class SlickCrudTest extends BlazyKernelTestBase {
 
     // Verify the loaded slick has all properties.
     $slick = Slick::load($slick->id());
-    $this->assertEqual($slick->id(), $slick->id(), format_string('Slick::load: Proper slick id for slick optionset %slick.', $t_args));
-    $this->assertEqual($slick->label(), $slick->label(), format_string('Slick::load: Proper title for slick optionset %slick.', $t_args));
+    $this->assertEquals($slick->id(), $slick->id(), new FormattableMarkup('Slick::load: Proper slick id for slick optionset %slick.', $t_args));
+    $this->assertEquals($slick->label(), $slick->label(), new FormattableMarkup('Slick::load: Proper title for slick optionset %slick.', $t_args));
 
     // Check that the slick was created in site default language.
-    $this->assertEqual($slick->language()->getId(), $default_langcode, format_string('Slick::load: Proper language code for slick optionset %slick.', $t_args));
+    $this->assertEquals($slick->language()->getId(), $default_langcode, new FormattableMarkup('Slick::load: Proper language code for slick optionset %slick.', $t_args));
   }
 
 }

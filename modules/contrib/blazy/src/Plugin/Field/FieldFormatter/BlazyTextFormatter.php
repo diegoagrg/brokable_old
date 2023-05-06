@@ -6,8 +6,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\blazy\BlazyManagerInterface;
 use Drupal\blazy\BlazyDefault;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,70 +23,46 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   quickedit = {"editor" = "disabled"}
  * )
  */
-class BlazyTextFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
+class BlazyTextFormatter extends FormatterBase {
 
   use BlazyFormatterTrait;
-
-  /**
-   * Constructs a BlazyImageFormatter instance.
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, BlazyManagerInterface $formatter) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
-    $this->formatter = $formatter;
-  }
+  use BlazyFormatterViewBaseTrait;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['label'],
-      $configuration['view_mode'],
-      $configuration['third_party_settings'],
-      $container->get('blazy.formatter.manager')
-    );
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    return self::injectServices($instance, $container, 'text');
   }
 
   /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return BlazyDefault::baseSettings() + BlazyDefault::gridSettings();
+    return BlazyDefault::textSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    // Early opt-out if the field is empty.
-    if ($items->isEmpty()) {
-      return [];
-    }
+    return $this->baseViewElements($items, $langcode);
+  }
 
-    // Build the settings.
-    $settings              = $this->buildSettings();
-    $settings['namespace'] = 'blazy';
-    $settings['langcode']  = $langcode;
-    $settings['_grid']     = TRUE;
+  /**
+   * Build the grid text elements.
+   */
+  public function buildElements(array &$build, $items) {
+    $settings = &$build['settings'];
+    $blazies  = $settings['blazies'];
 
-    // The ProcessedText element already handles cache context & tag bubbling.
-    // @see \Drupal\filter\Element\ProcessedText::preRenderText()
-    $build = ['settings' => $settings];
-    foreach ($items as $item) {
-      $build[] = [
-        '#type'     => 'processed_text',
-        '#text'     => $item->value,
-        '#format'   => $item->format,
-        '#langcode' => $item->getLangcode(),
-      ];
-    }
+    $blazies->set('is.grid', TRUE)
+      ->set('is.unblazy', TRUE)
+      ->set('is.text', TRUE)
+      ->set('lazy', []);
 
-    // Pass to manager for easy updates to all Blazy formatters.
-    return $this->formatter->build($build);
+    $build += $this->getElements($items);
   }
 
   /**
@@ -101,19 +75,40 @@ class BlazyTextFormatter extends FormatterBase implements ContainerFactoryPlugin
   }
 
   /**
-   * Defines the scope for the form elements.
+   * Returns the Blazy elements, also for sub-modules to re-use.
    */
-  public function getScopedFormElements() {
+  protected function getElements($items): array {
+    $elements = [];
+    // The ProcessedText element already handles cache context & tag bubbling.
+    // @see \Drupal\filter\Element\ProcessedText::preRenderText()
+    foreach ($items as $item) {
+      if (empty($item->value)) {
+        continue;
+      }
+
+      $element = [
+        '#type'     => 'processed_text',
+        '#text'     => $item->value,
+        '#format'   => $item->format,
+        '#langcode' => $item->getLangcode(),
+      ];
+
+      $elements[] = $element;
+    }
+    return $elements;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getPluginScopes(): array {
     return [
-      'current_view_mode' => $this->viewMode,
-      'grid_form'         => TRUE,
-      'grid_required'     => TRUE,
-      'no_image_style'    => TRUE,
-      'no_layouts'        => TRUE,
-      'responsive_image'  => FALSE,
-      'style'             => TRUE,
-      'plugin_id'         => $this->getPluginId(),
-      'settings'          => $this->getSettings(),
+      'grid_form'        => TRUE,
+      'grid_required'    => TRUE,
+      'no_image_style'   => TRUE,
+      'no_layouts'       => TRUE,
+      'responsive_image' => FALSE,
+      'style'            => TRUE,
     ];
   }
 

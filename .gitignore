@@ -1,4 +1,3 @@
 # Excludes for installed Drupal site
 sites/*/files/
-sites/*/settings.php
 .htaccess

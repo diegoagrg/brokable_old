@@ -5,9 +5,12 @@ namespace Drupal\webform\Plugin\Block;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\webform\Utility\WebformYaml;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformTokenManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -46,6 +49,13 @@ class WebformBlock extends BlockBase implements ContainerFactoryPluginInterface 
   protected $tokenManager;
 
   /**
+   * The route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * Creates a WebformBlock instance.
    *
    * @param array $configuration
@@ -60,12 +70,15 @@ class WebformBlock extends BlockBase implements ContainerFactoryPluginInterface 
    *   The entity type manager.
    * @param \Drupal\webform\WebformTokenManagerInterface $token_manager
    *   The webform token manager.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The current route match.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, RequestStack $request_stack, EntityTypeManagerInterface $entity_type_manager, WebformTokenManagerInterface $token_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, RequestStack $request_stack, EntityTypeManagerInterface $entity_type_manager, WebformTokenManagerInterface $token_manager, RouteMatchInterface $route_match = NULL) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->requestStack = $request_stack;
     $this->entityTypeManager = $entity_type_manager;
     $this->tokenManager = $token_manager;
+    $this->routeMatch = $route_match ?: \Drupal::routeMatch();
   }
 
   /**
@@ -78,7 +91,8 @@ class WebformBlock extends BlockBase implements ContainerFactoryPluginInterface 
       $plugin_definition,
       $container->get('request_stack'),
       $container->get('entity_type.manager'),
-      $container->get('webform.token_manager')
+      $container->get('webform.token_manager'),
+      $container->get('current_route_match')
     );
   }
 
@@ -97,6 +111,29 @@ class WebformBlock extends BlockBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
+    $wrapper_format = $this->requestStack->getCurrentRequest()
+      ->get(MainContentViewSubscriber::WRAPPER_FORMAT);
+    $is_off_canvas = in_array($wrapper_format, ['drupal_dialog.off_canvas']);
+
+    // Get title, description, and code example.
+    $title = $this->t('Default webform submission data (YAML)');
+    $description = [
+      'content' => ['#markup' => $this->t('Enter submission data as name and value pairs as <a href=":href">YAML</a> which will be used to prepopulate the selected webform.', [':href' => 'https://en.wikipedia.org/wiki/YAML']), '#suffix' => ' '],
+      'token' => $this->tokenManager->buildTreeLink(),
+    ];
+    $example = [];
+    $example[] = '# ' . $this->t('This is an example of a comment.');
+    $example[] = "element_key: 'some value'";
+    $example[] = '';
+    $example[] = '# ' . $this->t("The below example uses a token to get the current node's title.");
+    $example[] = "title: '[webform_submission:node:title:clear]'";
+    $example[] = '';
+    $example[] = '# ' . $this->t("Add ':clear' to the end token to return an empty value when the token is missing.");
+    $example[] = '# ' . $this->t('The below example uses a token to get a field value from the current node.');
+    $example[] = "full_name: '[webform_submission:node:field_full_name:clear]'";
+    $example[] = '';
+
+    $form['#attributes'] = ['class' => ['webform-block-settings-tray-form']];
     $form['webform_id'] = [
       '#title' => $this->t('Webform'),
       '#type' => 'entity_autocomplete',
@@ -104,30 +141,41 @@ class WebformBlock extends BlockBase implements ContainerFactoryPluginInterface 
       '#required' => TRUE,
       '#default_value' => $this->getWebform(),
     ];
-    $form['default_data'] = [
-      '#title' => $this->t('Default webform submission data (YAML)'),
-      '#type' => 'webform_codemirror',
-      '#mode' => 'yaml',
-      '#default_value' => $this->configuration['default_data'],
-      '#webform_element' => TRUE,
-      '#description' => [
-        'content' => ['#markup' => $this->t('Enter submission data as name and value pairs as <a href=":href">YAML</a> which will be used to prepopulate the selected webform.', [':href' => 'https://en.wikipedia.org/wiki/YAML']), '#suffix' => ' '],
-        'token' => $this->tokenManager->buildTreeLink(),
-      ],
-      '#more_title' => $this->t('Example'),
-      '#more' => [
-        '#theme' => 'webform_codemirror',
-        '#type' => 'yaml',
-        '#code' => "# This is an example of a comment.
-element_key: 'some value'
-
-# The below example uses a token to get the current node's title.
-# Add ':clear' to the end token to return an empty value when the token is missing.
-title: '[webform_submission:node:title:clear]'
-# The below example uses a token to get a field value from the current node.
-full_name: '[webform_submission:node:field_full_name:clear]",
-      ],
-    ];
+    if ($is_off_canvas) {
+      $form['default_data'] = [
+        '#title' => $title,
+        '#type' => 'textarea',
+        '#default_value' => $this->configuration['default_data'],
+        '#webform_element' => TRUE,
+        '#description' => $description,
+        '#more_title' => $this->t('Example'),
+        '#wrapper_attributes' => [
+          'class' => ['webform-default-data'],
+        ],
+        '#more' => [
+          '#markup' => implode(PHP_EOL, $example),
+          '#prefix' => '<pre>',
+          '#suffix' => '</pre>',
+        ],
+      ];
+      $form['#attached']['library'][] = 'webform/webform.off_canvas';
+    }
+    else {
+      $form['default_data'] = [
+        '#title' => $title,
+        '#type' => 'webform_codemirror',
+        '#mode' => 'yaml',
+        '#default_value' => $this->configuration['default_data'],
+        '#webform_element' => TRUE,
+        '#description' => $description,
+        '#more_title' => $this->t('Example'),
+        '#more' => [
+          '#theme' => 'webform_codemirror',
+          '#type' => 'yaml',
+          '#code' => implode(PHP_EOL, $example),
+        ],
+      ];
+    }
     $form['redirect'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to the webform'),
@@ -156,10 +204,20 @@ full_name: '[webform_submission:node:field_full_name:clear]",
    * {@inheritdoc}
    */
   public function build() {
+    $webform = $this->getWebform();
+    if (!$webform) {
+      if (strpos($this->routeMatch->getRouteName(), 'layout_builder.') === 0) {
+        return ['#markup' => $this->t('The webform (@webform) is broken or missing.', ['@webform' => $this->configuration['webform_id']])];
+      }
+      else {
+        return [];
+      }
+    }
+
     $build = [
       '#type' => 'webform',
-      '#webform' => $this->getWebform(),
-      '#default_data' => $this->configuration['default_data'],
+      '#webform' => $webform,
+      '#default_data' => WebformYaml::decode($this->configuration['default_data']),
     ];
 
     // If redirect, set the #action property on the form.
@@ -197,8 +255,9 @@ full_name: '[webform_submission:node:field_full_name:clear]",
   public function calculateDependencies() {
     $dependencies = parent::calculateDependencies();
 
-    $webform = $this->getWebform();
-    $dependencies[$webform->getConfigDependencyKey()][] = $webform->getConfigDependencyName();
+    if ($webform = $this->getWebform()) {
+      $dependencies[$webform->getConfigDependencyKey()][] = $webform->getConfigDependencyName();
+    }
 
     return $dependencies;
   }

@@ -18,6 +18,7 @@
 .slick iframe {
   border: 0;
   max-width: 100%;
+  min-height: 1px;
 }
 
 /* Prevents overflowing nested slides. */
@@ -86,7 +87,7 @@
 
 /* Fix for Chrome blue outline */
 .slick__slide:focus {
-  outline: 0;
+  outline: 0; /* csslint allow: outline-none */
 }
 
 /* Prevents collapsing slick when unslick like one item. */
@@ -251,7 +252,7 @@ img[data-lazy] {
 }
 
 /* Center the image to reduce gap at RHS with smaller image, larger container */
-.media__image {
+.slick img.media__element {
   margin: 0 auto;
 }
 
@@ -263,7 +264,8 @@ img[data-lazy] {
   text-align: center;
 }
 
-.slick--less .slick-slide {
+/* Fix for BigPipe CSS re-orders issue. */
+.slick.slick--less .slick-slide {
   float: none;
   display: inline-block;
   vertical-align: top;

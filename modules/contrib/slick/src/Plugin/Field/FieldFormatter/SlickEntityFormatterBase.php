@@ -2,13 +2,10 @@
 
 namespace Drupal\slick\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\blazy\Dejavu\BlazyEntityBase;
-use Drupal\slick\SlickFormatterInterface;
-use Drupal\slick\SlickManagerInterface;
+// @todo enabled post Blazy:2.10:
+// use Drupal\blazy\Field\BlazyEntityVanillaBase;
+use Drupal\blazy\Dejavu\BlazyEntityBase as BlazyEntityVanillaBase;
 use Drupal\slick\SlickDefault;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,43 +15,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see \Drupal\slick_paragraphs\Plugin\Field\FieldFormatter
  * @see \Drupal\slick_entityreference\Plugin\Field\FieldFormatter
  */
-abstract class SlickEntityFormatterBase extends BlazyEntityBase implements ContainerFactoryPluginInterface {
+abstract class SlickEntityFormatterBase extends BlazyEntityVanillaBase {
 
   use SlickFormatterTrait;
-
-  /**
-   * The logger factory.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  protected $loggerFactory;
-
-  /**
-   * Constructs a SlickMediaFormatter instance.
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, LoggerChannelFactoryInterface $logger_factory, SlickFormatterInterface $formatter, SlickManagerInterface $manager) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
-    $this->loggerFactory = $logger_factory;
-    $this->formatter     = $formatter;
-    $this->manager       = $manager;
-  }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['label'],
-      $configuration['view_mode'],
-      $configuration['third_party_settings'],
-      $container->get('logger.factory'),
-      $container->get('slick.formatter'),
-      $container->get('slick.manager')
-    );
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    return self::injectServices($instance, $container, 'entity');
   }
 
   /**
@@ -68,10 +38,7 @@ abstract class SlickEntityFormatterBase extends BlazyEntityBase implements Conta
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    $settings = SlickDefault::baseSettings();
-    $settings['view_mode'] = '';
-
-    return $settings;
+    return ['view_mode' => ''] + SlickDefault::baseSettings();
   }
 
   /**
@@ -85,40 +52,7 @@ abstract class SlickEntityFormatterBase extends BlazyEntityBase implements Conta
       return [];
     }
 
-    // Collects specific settings to this formatter.
-    $settings = $this->buildSettings();
-
-    // Asks for Blazy to deal with iFrames, and mobile-optimized lazy loading.
-    $build = ['settings' => $settings];
-
-    $this->formatter->buildSettings($build, $items);
-
-    // Build the elements.
-    $this->buildElements($build, $entities, $langcode);
-
-    return $this->manager()->build($build);
-  }
-
-  /**
-   * Builds the settings.
-   */
-  public function buildSettings() {
-    $settings              = $this->getSettings();
-    $settings['plugin_id'] = $this->getPluginId();
-    $settings['blazy']     = TRUE;
-    $settings['vanilla']   = TRUE;
-
-    return $settings;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getScopedFormElements() {
-    return [
-      'namespace'  => 'slick',
-      'no_layouts' => TRUE,
-    ] + parent::getScopedFormElements();
+    return $this->commonViewElements($items, $langcode, $entities);
   }
 
 }

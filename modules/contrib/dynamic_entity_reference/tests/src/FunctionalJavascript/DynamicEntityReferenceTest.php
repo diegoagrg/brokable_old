@@ -51,7 +51,7 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'field_ui',
     'dynamic_entity_reference',
     'entity_test',
@@ -74,9 +74,14 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
   ];
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Sets the test up.
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser($this->permissions);
     $this->anotherUser = $this->drupalCreateUser();
@@ -107,13 +112,10 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
     $this->drupalGet('entity_test/structure/entity_test/fields/add-field');
     $select = $assert_session->selectExists('new_storage_type');
     $select->selectOption('dynamic_entity_reference');
-    // This is needed to execute machine name JS.
     $label = $assert_session->fieldExists('label');
-    $label->focus();
     $label->setValue('Foobar');
-    $label->blur();
-    $select->focus();
-    sleep(1);
+    // Wait for the machine name.
+    $assert_session->waitForElementVisible('css', '[name="label"] + * .machine-name-value');
     $this->submitForm([], t('Save and continue'), 'field-ui-field-storage-add-form');
     $page = $this->getSession()->getPage();
     $entity_type_ids_select = $assert_session->selectExists('settings[entity_type_ids][]', $page);
@@ -152,7 +154,10 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
     \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
     $field_storage = FieldStorageConfig::loadByName('entity_test', 'field_foobar');
     $this->assertEmpty($field_storage->getSetting('exclude_entity_types'));
-    $this->assertEquals($field_storage->getSetting('entity_type_ids'), ['entity_test' => 'entity_test', 'user' => 'user']);
+    $this->assertEquals($field_storage->getSetting('entity_type_ids'), [
+      'entity_test' => 'entity_test',
+      'user' => 'user',
+    ]);
     $field_config = FieldConfig::loadByName('entity_test', 'entity_test', 'field_foobar');
     $settings = $field_config->getSettings();
     $this->assertEquals($settings['entity_test']['handler'], 'default:entity_test');
@@ -187,13 +192,10 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
     $this->drupalGet('/admin/structure/types/manage/test_content/fields/add-field');
     $select = $assert_session->selectExists('new_storage_type');
     $select->selectOption('dynamic_entity_reference');
-    // This is needed to execute machine name JS.
     $label = $assert_session->fieldExists('label');
-    $label->focus();
     $label->setValue('Foobar');
-    $label->blur();
-    $select->focus();
-    sleep(1);
+    // Wait for the machine name.
+    $assert_session->waitForElementVisible('css', '[name="label"] + * .machine-name-value');
     $this->submitForm([], t('Save and continue'), 'field-ui-field-storage-add-form');
     $page = $this->getSession()->getPage();
     $entity_type_ids_select = $assert_session->selectExists('settings[entity_type_ids][]', $page);
@@ -257,11 +259,14 @@ class DynamicEntityReferenceTest extends WebDriverTestBase {
    * @param string $target_type
    *   The entity type id.
    *
-   * @return array
+   * @return string
    *   Auto complete paths for the target type.
    */
   protected function createAutoCompletePath($target_type) {
-    $selection_settings = [];
+    $selection_settings = [
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ];
     $data = serialize($selection_settings) . $target_type . "default:$target_type";
     $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
     return Url::fromRoute('system.entity_autocomplete', [

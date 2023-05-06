@@ -56,6 +56,8 @@ elements: |
       '#type': captcha
       '#title': '<u>CAPTCHA</u>'
       '#captcha_admin_mode': true
+      '#captcha_info':
+        form_id: ''
       '#captcha_type': image_captcha/Image
     webform_codemirror:
       '#type': webform_codemirror
@@ -77,6 +79,13 @@ elements: |
     webform_email_multiple:
       '#type': webform_email_multiple
       '#title': '<u>Email multiple</u>'
+    webform_height:
+      '#type': webform_height
+      '#title': '<u>Height (feet/inches)</u>'
+    webform_height_multiple:
+      '#type': webform_height
+      '#title': '<u>Height (feet/inches) multiple</u>'
+      '#multiple': true
     number:
       '#type': number
       '#title': '<u>Number</u>'
@@ -106,6 +115,14 @@ elements: |
     webform_rating:
       '#type': webform_rating
       '#title': '<u>Rating</u>'
+    webform_same:
+      '#type': webform_same
+      '#title': '<u>Billing address is the same as the shipping address</u>'
+    webform_scale:
+      '#type': webform_scale
+      '#title': '<u>Scale</u>'
+      '#min': 1
+      '#max': 5
     search:
       '#type': search
       '#title': '<u>Search</u>'
@@ -127,9 +144,6 @@ elements: |
       '#required': true
       '#terms_type': slideout
       '#terms_content': '<em>These are the terms of service.</em>'
-    webform_toggle:
-      '#type': webform_toggle
-      '#title': '<u>Toggle</u>'
     url:
       '#type': url
       '#title': '<u>URL</u>'
@@ -137,6 +151,10 @@ elements: |
       '#type': url
       '#title': '<u>URL multiple</u>'
       '#multiple': true
+    value:
+      '#type': value
+      '#title': '<u>Value</u>'
+      '#value': preview
   markup_elements:
     '#type': details
     '#title': '<u>Markup elements</u>'
@@ -154,12 +172,35 @@ elements: |
         class:
           - webform-horizontal-rule--dotted
           - webform-horizontal-rule--thick
+    label:
+      '#type': label
+      '#title': '<u>Label</u>'
     webform_message:
       '#type': webform_message
       '#title': '<u>Message</u>'
       '#message_type': warning
       '#message_message': 'This is a <strong>warning</strong> message.'
       '#description': '<b>Known Issues:</b><br /><a href="https://www.drupal.org/node/77245">Issue #77245: A place for JavaScript status messages</a>'
+    webform_more:
+      '#type': webform_more
+      '#title': '<u>More</u>'
+      '#more': 'This is more content'
+  file_attachment_elements:
+    '#type': details
+    '#title': '<u>File attachment elements</u>'
+    '#open': true
+    webform_entity_print_attachment_pdf:
+      '#type': webform_entity_print_attachment
+      '#title': '<u>Attachment PDF</u>'
+    webform_attachment_token:
+      '#type': webform_attachment_token
+      '#title': '<u>Attachment token</u>'
+    webform_attachment_twig:
+      '#type': webform_attachment_twig
+      '#title': '<u>Attachment Twig</u>'
+    webform_attachment_url:
+      '#type': webform_attachment_url
+      '#title': '<u>Attachment URL</u>'
   file_upload_elements:
     '#type': details
     '#title': '<u>File upload elements</u>'
@@ -204,20 +245,6 @@ elements: |
     '#type': details
     '#title': '<u>Options elements</u>'
     '#open': true
-    webform_buttons:
-      '#type': webform_buttons
-      '#title': '<u>Buttons</u>'
-      '#options':
-        one: One
-        two: Two
-        three: Three
-    webform_buttons_other:
-      '#type': webform_buttons_other
-      '#title': '<u>Buttons other</u>'
-      '#options':
-        one: One
-        two: Two
-        three: Three
     checkboxes:
       '#type': checkboxes
       '#title': '<u>Checkboxes</u>'
@@ -240,29 +267,29 @@ elements: |
       '#title': '<u>Image select</u>'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
     webform_image_select_multiple:
       '#type': webform_image_select
       '#title': '<u>Image select multiple</u>'
       '#show_label': true
       '#images':
-        bear_1:
-          text: 'Bear 1'
-          src: 'https://www.placebear.com/80/100'
-        bear_2:
-          text: 'Bear 2'
-          src: 'https://www.placebear.com/100/100'
-        bear_3:
-          text: 'Bear 3'
-          src: 'https://www.placebear.com/120/100'
+        dog_1:
+          text: 'Dog 1'
+          src: 'https://www.placedog.net/80/100'
+        dog_2:
+          text: 'Dog 2'
+          src: 'https://www.placedog.net/100/100'
+        dog_3:
+          text: 'Dog 3'
+          src: 'https://www.placedog.net/120/100'
       '#multiple': true
     radios:
       '#type': radios
@@ -335,13 +362,6 @@ elements: |
         one: One
         two: Two
         three: Three
-    webform_toggles:
-      '#type': webform_toggles
-      '#title': '<u>Toggles</u>'
-      '#options':
-        one: One
-        two: Two
-        three: Three
   computed_elements:
     '#type': details
     '#title': '<u>Computed Elements</u>'
@@ -349,11 +369,11 @@ elements: |
     webform_computed_token:
       '#type': webform_computed_token
       '#title': '<u>Computed token</u>'
-      '#value': 'This is a Computed token value.'
+      '#template': 'This is a Computed token value.'
     webform_computed_twig:
       '#type': webform_computed_twig
       '#title': '<u>Computed Twig</u>'
-      '#value': 'This is a Computed Twig value.'
+      '#template': 'This is a Computed Twig value.'
   containers:
     '#type': details
     '#title': '<u>Containers</u>'
@@ -378,6 +398,24 @@ elements: |
     webform_section:
       '#type': webform_section
       '#title': '<u>Section</u>'
+    webform_table:
+      '#type': table
+      '#header':
+        - 'Header 1'
+        - 'Header 2'
+      '#rows':
+        -
+          - 'Row 1 - Col 1'
+          - 'Row 1 - Col 2'
+        -
+          - 'Row 2 - Col 1'
+          - 'Row 2 - Col 2'
+        -
+          - 'Row 3 - Col 1'
+          - 'Row 3 - Col 2'
+    webform_table_row:
+      '#type': webform_table_row
+      '#title': '<u>Table row</u>'
   date_time_elements:
     '#type': details
     '#title': '<u>Date/time elements</u>'
@@ -498,13 +536,6 @@ elements: |
       '#vocabulary': tags
       '#multiple': true
       '#select2': true
-  markup:
-    '#type': details
-    '#title': '<u>Markup</u>'
-    '#open': true
-    label:
-      '#type': label
-      '#title': '<u>Label</u>'
   other_elements:
     '#type': details
     '#title': '<u>Other elements</u>'
@@ -518,15 +549,18 @@ elements: |
     table:
       '#type': table
       '#title': '<u>Table</u>'
-  
 css: ''
 javascript: ''
 settings:
   ajax: false
   ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
   page: true
   page_submit_path: ''
   page_confirm_path: ''
+  page_theme_name: ''
   form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
@@ -535,6 +569,7 @@ settings:
   form_previous_submissions: true
   form_confidential: false
   form_confidential_message: ''
+  form_remote_addr: true
   form_convert_anonymous: false
   form_prepopulate: false
   form_prepopulate_source_entity: false
@@ -555,6 +590,11 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
   submission_label: ''
   submission_log: false
   submission_views: {  }
@@ -579,11 +619,20 @@ settings:
   wizard_progress_pages: false
   wizard_progress_percentage: false
   wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -597,6 +646,8 @@ settings:
   draft_auto_save: false
   draft_saved_message: ''
   draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
   confirmation_message: ''
@@ -607,6 +658,7 @@ settings:
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
+  confirmation_update: false
   limit_total: null
   limit_total_interval: null
   limit_total_message: ''
@@ -623,7 +675,11 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  results_customize: false
+  token_view: false
   token_update: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -667,4 +723,9 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
 handlers: {  }
+variants: {  }

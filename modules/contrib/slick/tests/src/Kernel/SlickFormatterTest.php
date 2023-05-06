@@ -21,7 +21,7 @@ class SlickFormatterTest extends BlazyKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'system',
     'user',
     'help',
@@ -40,7 +40,7 @@ class SlickFormatterTest extends BlazyKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installConfig(static::$modules);
@@ -77,7 +77,7 @@ class SlickFormatterTest extends BlazyKernelTestBase {
     $this->displayEmpty = $this->setUpFormatterDisplay($bundle, $data);
 
     $this->formatterInstance = $this->getFormatterInstance();
-    $this->skins = $this->slickManager->getSkins();
+    $this->skins = $this->slickManager->skinManager()->getSkins();
 
     $this->setUpContentWithItems($bundle);
     $this->setUpRealImage();
@@ -121,17 +121,20 @@ class SlickFormatterTest extends BlazyKernelTestBase {
    *
    * @param string $uri
    *   The uri being tested.
+   * @param bool $use_item
+   *   Whether to use ImageItem.
    * @param bool $expected
    *   The expected output.
    *
    * @covers \Drupal\slick\SlickFormatter::getThumbnail
    * @dataProvider providerTestGetThumbnail
    */
-  public function testGetThumbnail($uri, $expected) {
+  public function testGetThumbnail($uri, $use_item, $expected) {
     $settings = $this->getFormatterSettings() + SlickDefault::extendedSettings();
     $settings['uri'] = empty($uri) ? '' : $this->uri;
+    $item = $use_item ? $this->testItem : NULL;
 
-    $thumbnail = $this->slickFormatter->getThumbnail($settings, $this->image);
+    $thumbnail = $this->slickFormatter->getThumbnail($settings, $item);
     $this->assertEquals($expected, !empty($thumbnail));
   }
 
@@ -145,9 +148,16 @@ class SlickFormatterTest extends BlazyKernelTestBase {
     $data[] = [
       '',
       FALSE,
+      FALSE,
+    ];
+    $data[] = [
+      '',
+      TRUE,
+      TRUE,
     ];
     $data[] = [
       'public://example.jpg',
+      FALSE,
       TRUE,
     ];
 
@@ -179,29 +189,24 @@ class SlickFormatterTest extends BlazyKernelTestBase {
    *   An array of tested data.
    */
   public function providerTestBuildSettings() {
-    $breakpoints = $this->getDataBreakpoints(TRUE);
-
     $data[] = [
       [
-        'vanilla'     => TRUE,
-        'breakpoints' => [],
+        'vanilla' => TRUE,
       ],
       FALSE,
     ];
     $data[] = [
       [
-        'vanilla'     => FALSE,
-        'breakpoints' => [],
-        'blazy'       => FALSE,
-        'ratio'       => 'fluid',
+        'vanilla' => FALSE,
+        'blazy' => FALSE,
+        'ratio' => 'fluid',
       ],
       TRUE,
     ];
     $data[] = [
       [
-        'vanilla'     => FALSE,
-        'breakpoints' => $breakpoints,
-        'blazy'       => TRUE,
+        'vanilla' => FALSE,
+        'blazy' => TRUE,
       ],
       TRUE,
     ];

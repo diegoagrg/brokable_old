@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \BackupMigrate\Core\File\BackupFile.
- */
-
 namespace BackupMigrate\Core\File;
 
 use BackupMigrate\Core\File\BackupFileInterface;
@@ -15,6 +10,7 @@ use BackupMigrate\Core\File\BackupFileInterface;
  * @package BackupMigrate\Core\File
  */
 class BackupFile implements BackupFileInterface {
+
   /**
    * The file info (size, timestamp, etc.).
    *
@@ -112,7 +108,7 @@ class BackupFile implements BackupFileInterface {
    * {@inheritdoc}
    */
   public function getFullName() {
-    return rtrim($this->name . '.' . implode($this->getExtList(), '.'));
+    return rtrim($this->name . '.' . implode('.', $this->getExtList()));
   }
 
   /**
@@ -144,7 +140,7 @@ class BackupFile implements BackupFileInterface {
    * {@inheritdoc}
    */
   public function getExt() {
-    return implode($this->getExtList(), '.');
+    return implode('.', $this->getExtList());
   }
 
   /**

@@ -2,104 +2,70 @@
 
 namespace Drupal\blazy;
 
-use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Template\Attribute;
-use Drupal\Core\Cache\Cache;
+use Drupal\blazy\Theme\BlazyAttribute;
+use Drupal\blazy\Cache\BlazyCache;
+use Drupal\blazy\Theme\Lightbox;
+use Drupal\blazy\Utility\CheckItem;
 
 /**
  * Implements a public facing blazy manager.
  *
  * A few modules re-use this: GridStack, Mason, Slick...
  */
-class BlazyManager extends BlazyManagerBase {
+class BlazyManager extends BlazyManagerBase implements TrustedCallbackInterface {
 
   /**
-   * Checks if image dimensions are set.
-   *
-   * @var array
+   * {@inheritdoc}
    */
-  private $isDimensionSet;
-
-  /**
-   * Sets dimensions once to reduce method calls, if image style contains crop.
-   *
-   * The implementor should only call this if not using Responsive image style.
-   *
-   * @param array $settings
-   *   The settings being modified.
-   *
-   * @todo replace uri with first_uri to be usable for colorbox-like gallery.
-   */
-  public function setDimensionsOnce(array &$settings = []) {
-    if (!isset($this->isDimensionSet[md5($settings['first_uri'])])) {
-      $item                 = $settings['first_item'];
-      $dimensions['width']  = $settings['original_width'] = isset($item->width) ? $item->width : NULL;
-      $dimensions['height'] = $settings['original_height'] = isset($item->height) ? $item->height : NULL;
-
-      // If image style contains crop, sets dimension once, and let all inherit.
-      if (!empty($settings['image_style']) && ($style = $this->entityLoad($settings['image_style']))) {
-        if ($this->isCrop($style)) {
-          $style->transformDimensions($dimensions, $settings['first_uri']);
-
-          $settings['height'] = $dimensions['height'];
-          $settings['width']  = $dimensions['width'];
-
-          // Informs individual images that dimensions are already set once.
-          $settings['_dimensions'] = TRUE;
-        }
-      }
-
-      // Also sets breakpoint dimensions once, if cropped.
-      if (!empty($settings['breakpoints'])) {
-        $this->buildDataBlazy($settings, $item);
-      }
-
-      $this->isDimensionSet[md5($settings['first_uri'])] = TRUE;
-    }
+  public static function trustedCallbacks() {
+    return ['preRenderBlazy', 'preRenderBuild'];
   }
 
   /**
-   * Returns the enforced content, or image using theme_blazy().
+   * Returns the enforced rich media content, or media using theme_blazy().
    *
    * @param array $build
    *   The array containing: item, content, settings, or optional captions.
+   * @param int $delta
+   *   The optional delta.
    *
    * @return array
    *   The alterable and renderable array of enforced content, or theme_blazy().
+   *
+   * @todo remove some $settings after sub-modules.
    */
-  public function getBlazy(array $build = []) {
-    if (empty($build['item'])) {
-      return [];
+  public function getBlazy(array $build = [], $delta = -1) {
+    foreach (BlazyDefault::themeProperties() as $key) {
+      $build[$key] = $build[$key] ?? [];
     }
 
-    /** @var Drupal\image\Plugin\Field\FieldType\ImageItem $item */
-    $item                    = $build['item'];
-    $settings                = &$build['settings'];
-    $settings['delta']       = isset($settings['delta']) ? $settings['delta'] : 0;
-    $settings['image_style'] = isset($settings['image_style']) ? $settings['image_style'] : '';
+    $settings = &$build['settings'];
+    $settings += BlazyDefault::itemSettings();
+    $item = $build['item'];
 
-    // The image URI may not always be given.
-    // @todo remove if no need for sure.
-    // @todo if (empty($settings['uri']) && is_object($item)) {
-    // @todo $settings['uri'] = ($entity = $item->entity) && empty($item->uri) ? $entity->getFileUri() : $item->uri;
-    // @todo }
+    CheckItem::essentials($settings, $item, $delta);
+
+    // Prevents double checks.
+    // @todo re-check for dup thumbnails without a reset here, see #3278525.
+    $blazies = $settings['blazies']->reset($settings);
+    $blazies->set('is.api', TRUE);
+
     // Respects content not handled by theme_blazy(), but passed through.
-    if (empty($build['content'])) {
-      $image = [
-        '#theme'       => 'blazy',
-        '#delta'       => $settings['delta'],
-        '#item'        => isset($settings['entity_type_id']) && $settings['entity_type_id'] == 'user' ? $item : [],
-        '#image_style' => $settings['image_style'],
-        '#build'       => $build,
-        '#pre_render'  => [[$this, 'preRenderImage']],
-      ];
-    }
-    else {
-      $image = $build['content'];
-    }
+    // Yet allows rich contents which might still be processed by theme_blazy().
+    $content = !$blazies->get('image.uri') ? $build['content'] : [
+      '#theme'       => 'blazy',
+      '#delta'       => $blazies->get('delta'),
+      '#item'        => $item,
+      '#image_style' => $settings['image_style'],
+      '#build'       => $build,
+      '#pre_render'  => [[$this, 'preRenderBlazy']],
+    ];
 
-    $this->moduleHandler->alter('blazy', $image, $settings);
-    return $image;
+    $this->moduleHandler->alter('blazy', $content, $settings);
+    return $content;
   }
 
   /**
@@ -111,145 +77,33 @@ class BlazyManager extends BlazyManagerBase {
    * @return array
    *   The renderable array of pre-rendered element.
    */
-  public function preRenderImage(array $element) {
+  public function preRenderBlazy(array $element) {
     $build = $element['#build'];
-    $item = $build['item'];
     unset($element['#build']);
 
-    if (empty($item)) {
-      return [];
+    // Prepare the main image.
+    $this->prepareBlazy($element, $build);
+
+    // Fetch the newly modified settings.
+    $settings = $element['#settings'];
+    $blazies = $settings['blazies'];
+    $url = $blazies->get('entity.url');
+
+    if ($blazies->get('switch') == 'content' && $url) {
+      $element['#url'] = $url;
     }
-
-    $settings = $build['settings'];
-    $settings += BlazyDefault::itemSettings();
-    $settings['_api'] = TRUE;
-
-    // Extract field item attributes for the theme function, and unset them
-    // from the $item so that the field template does not re-render them.
-    $attributes = isset($build['attributes']) ? $build['attributes'] : [];
-    $item_attributes = isset($build['item_attributes']) ? $build['item_attributes'] : [];
-    $url_attributes = isset($build['url_attributes']) ? $build['url_attributes'] : [];
-    if (isset($item->_attributes)) {
-      $item_attributes += $item->_attributes;
-    }
-    unset($item->_attributes, $build['attributes'], $build['item_attributes'], $build['url_attributes']);
-
-    // Gets the file extension, and ensures the image has valid extension.
-    $pathinfo = pathinfo($settings['uri']);
-    $settings['extension'] = isset($pathinfo['extension']) ? $pathinfo['extension'] : '';
-    $settings['ratio'] = empty($settings['ratio']) ? '' : str_replace(':', '', $settings['ratio']);
-
-    // Prepare image URL and its dimensions.
-    Blazy::buildUrlAndDimensions($settings, $item);
-
-    // Responsive image integration.
-    $settings['responsive_image_style_id'] = '';
-    if (!empty($settings['resimage']) && !empty($settings['responsive_image_style'])) {
-      $responsive_image_style = $this->entityLoad($settings['responsive_image_style'], 'responsive_image_style');
-      $settings['lazy'] = '';
-      if (!empty($responsive_image_style)) {
-        $settings['responsive_image_style_id'] = $responsive_image_style->id();
-        if ($this->configLoad('responsive_image')) {
-          $item_attributes['data-srcset'] = TRUE;
-          $settings['lazy'] = 'responsive';
-        }
-        $element['#cache']['tags'] = $this->getResponsiveImageCacheTags($responsive_image_style);
-      }
-    }
-
-    // Regular image with custom responsive breakpoints.
-    if (empty($settings['responsive_image_style_id'])) {
-      if ($settings['width'] && !empty($settings['ratio']) && in_array($settings['ratio'], ['enforced', 'fluid'])) {
-        $padding = empty($settings['padding_bottom']) ? round((($settings['height'] / $settings['width']) * 100), 2) : $settings['padding_bottom'];
-        $attributes['style'] = 'padding-bottom: ' . $padding . '%';
-
-        // Provides hint to breakpoints to work with multi-breakpoint ratio.
-        $settings['_breakpoint_ratio'] = $settings['ratio'];
-
-        // Views rewrite results or Twig inline_template may strip out `style`
-        // attributes, provide hint to JS.
-        $attributes['data-ratio'] = $padding;
-      }
-
-      if (!empty($settings['lazy'])) {
-        // Attach data attributes to either IMG tag, or DIV container.
-        if (!empty($settings['background'])) {
-          Blazy::buildBreakpointAttributes($attributes, $settings);
-          $attributes['class'][] = 'media--background';
-        }
-        else {
-          Blazy::buildBreakpointAttributes($item_attributes, $settings);
-        }
-
-        // Multi-breakpoint aspect ratio only applies if lazyloaded.
-        if (!empty($settings['blazy_data']['dimensions'])) {
-          $attributes['data-dimensions'] = Json::encode($settings['blazy_data']['dimensions']);
-        }
-      }
-
-      if (empty($settings['_no_cache'])) {
-        $file_tags = isset($settings['file_tags']) ? $settings['file_tags'] : [];
-        $settings['cache_tags'] = empty($settings['cache_tags']) ? $file_tags : Cache::mergeTags($settings['cache_tags'], $file_tags);
-
-        $element['#cache']['max-age'] = -1;
-        foreach (['contexts', 'keys', 'tags'] as $key) {
-          if (!empty($settings['cache_' . $key])) {
-            $element['#cache'][$key] = $settings['cache_' . $key];
-          }
-        }
-      }
-    }
-
-    $captions = empty($build['captions']) ? [] : $this->buildCaption($build['captions'], $settings);
-    if ($captions) {
-      $element['#caption_attributes']['class'][] = $settings['item_id'] . '__caption';
-    }
-
-    $element['#attributes']      = $attributes;
-    $element['#captions']        = $captions;
-    $element['#item']            = $item;
-    $element['#item_attributes'] = $item_attributes;
-    $element['#url_attributes']  = $url_attributes;
-    $element['#settings']        = $settings;
-
-    foreach (['media', 'wrapper'] as $key) {
-      if (!empty($settings[$key . '_attributes'])) {
-        $element["#$key" . '_attributes'] = $settings[$key . '_attributes'];
-      }
-    }
-
-    if (!empty($settings['media_switch'])) {
-      if ($settings['media_switch'] == 'content' && !empty($settings['content_url'])) {
-        $element['#url'] = $settings['content_url'];
-      }
-      elseif (!empty($settings['lightbox'])) {
-        BlazyLightbox::build($element);
-      }
+    elseif ($blazies->get('lightbox.name')) {
+      Lightbox::build($element);
     }
 
     return $element;
   }
 
   /**
-   * Build captions for both old image, or media entity.
-   */
-  public function buildCaption(array $captions, array $settings) {
-    $content = [];
-    foreach ($captions as $key => $caption_content) {
-      if ($caption_content) {
-        $content[$key]['content'] = $caption_content;
-        $content[$key]['tag'] = strpos($key, 'title') !== FALSE ? 'h2' : 'div';
-        $class = $key == 'alt' ? 'description' : str_replace('field_', '', $key);
-        $content[$key]['attributes'] = new Attribute();
-        $content[$key]['attributes']->addClass($settings['item_id'] . '__caption--' . str_replace('_', '-', $class));
-      }
-    }
-
-    return $content ? ['inline' => $content] : [];
-  }
-
-  /**
    * Returns the contents using theme_field(), or theme_item_list().
+   *
+   * Blazy outputs can be formatted using either flat list via theme_field(), or
+   * a grid of Field items or Views rows via theme_item_list().
    *
    * @param array $build
    *   The array containing: settings, children elements, or optional items.
@@ -258,22 +112,33 @@ class BlazyManager extends BlazyManagerBase {
    *   The alterable and renderable array of contents.
    */
   public function build(array $build = []) {
-    $settings = $build['settings'];
-    $settings['_grid'] = isset($settings['_grid']) ? $settings['_grid'] : (!empty($settings['style']) && !empty($settings['grid']));
+    $settings = &$build['settings'];
+    Blazy::verify($settings);
 
-    // If not a grid, pass the items as regular index children to theme_field().
-    // @todo #pre_render doesn't work if called from Views results.
-    if (empty($settings['_grid'])) {
-      $settings = $this->prepareBuild($build);
-      $build['#blazy'] = $settings;
-      $build['#attached'] = $this->attach($settings);
-    }
-    else {
-      $build = [
+    $blazies = $settings['blazies'];
+
+    // This #pre_render doesn't work if called from Views results, hence the
+    // output is split either as theme_field() or theme_item_list().
+    if ($blazies->is('grid')) {
+      // Take over theme_field() with a theme_item_list(), if so configured.
+      // The reason: this is not only fed by field items, but also Views rows.
+      $content = [
         '#build'      => $build,
-        '#settings'   => $settings,
         '#pre_render' => [[$this, 'preRenderBuild']],
       ];
+
+      // Yet allows theme_field(), if so required, such as for linked_field.
+      $build = $blazies->get('use.theme_field') ? [$content] : $content;
+    }
+    else {
+      // If not a grid, pass items as regular index children to theme_field().
+      $settings = $this->getSettings($build);
+      Blazy::verify($settings);
+
+      // Runs after ::getSettings.
+      $this->toElementChildren($build);
+      $build['#blazy'] = $settings;
+      $this->setAttachments($build, $settings);
     }
 
     $this->moduleHandler->alter('blazy_build', $build, $settings);
@@ -283,57 +148,247 @@ class BlazyManager extends BlazyManagerBase {
   /**
    * Builds the Blazy outputs as a structured array ready for ::renderer().
    */
-  public function preRenderBuild(array $element) {
+  public function preRenderBuild(array $element): array {
     $build = $element['#build'];
     unset($element['#build']);
 
-    // @todo $settings nullified when having Views field within grid.
-    $settings = $this->prepareBuild($build);
-    $element = BlazyGrid::build($build, $settings);
-    $element['#attached'] = $this->attach($settings);
+    // Checks if we got some signaled attributes.
+    $attributes = $element['#theme_wrappers']['container']['#attributes'] ?? $element['#attributes'] ?? [];
+    $settings   = $this->getSettings($build);
+
+    // Runs after ::getSettings.
+    $this->toElementChildren($build);
+
+    // Take over elements for a grid display as this is all we need, learned
+    // from the issues such as: #2945524, or product variations.
+    // We'll selectively pass or work out $attributes not so far below.
+    $element = $this->toGrid($build, $settings);
+    $this->setAttachments($element, $settings);
+
+    if ($attributes) {
+      // Signals other modules if they want to use it.
+      // Cannot merge it into BlazyGrid (wrapper_)attributes, done as grid.
+      // Use case: Product variations, best served by ElevateZoom Plus.
+      if (isset($element['#ajax_replace_class'])) {
+        $element['#container_attributes'] = $attributes;
+      }
+      else {
+        // Use case: VIS, can be blended with UL element safely down here.
+        // The $attributes is merged with self::toGrid() ones here.
+        $element['#attributes'] = NestedArray::mergeDeep($element['#attributes'], $attributes);
+      }
+    }
+
     return $element;
   }
 
   /**
-   * Prepares Blazy outputs, extract items, and return updated $settings.
+   * Build captions for both old image, or media entity.
    */
-  public function prepareBuild(array &$build) {
-    // If children are stored within items, reset.
-    $settings = isset($build['settings']) ? $build['settings'] : [];
-    $build = isset($build['items']) ? $build['items'] : $build;
+  protected function buildCaption(array $captions, array $settings, $id = 'blazy') {
+    $blazies = $settings['blazies'];
+    $content = [];
 
-    // Supports Blazy multi-breakpoint images if provided, updates $settings.
-    // Blazy formatters have #build and Views fields none.
-    if (isset($build[0])) {
-      $item = !empty($build[0]['#build']) ? $build[0]['#build'] : $build[0];
-      $this->isBlazy($settings, $item);
+    foreach ($captions as $key => $caption_content) {
+      if ($caption_content) {
+        $content[$key]['content'] = $caption_content;
+        $content[$key]['tag'] = strpos($key, 'title') !== FALSE ? 'h2' : 'div';
+        $class = $key == 'alt' ? 'description' : str_replace('field_', '', $key);
+
+        $attrs = new Attribute();
+        $attrs->addClass($id . '__caption--' . str_replace('_', '-', $class));
+        $content[$key]['attributes'] = $attrs;
+      }
     }
 
-    unset($build['items'], $build['settings']);
+    // Figcaption is more relevant for core filter captions under Figure.
+    $tag = $blazies->is('figcaption') ? 'figcaption' : 'div';
+
+    return $content ? ['inline' => $content, 'tag' => $tag] : [];
+  }
+
+  /**
+   * Build out (rich media) content.
+   */
+  private function buildContent(array &$element, array &$build) {
+    $settings = &$build['settings'];
+    $blazies = $settings['blazies'];
+
+    if (empty($build['content'])) {
+      return;
+    }
+
+    // Prevents complication for now, such as lightbox for Facebook, etc.
+    // Either makes no sense, or not currently supported without extra legs.
+    // Original formatter settings can still be accessed via content variable.
+    $blazies->set('placeholder', [])
+      ->set('is.bg', FALSE)
+      ->set('use.loader', FALSE);
+
+    // $settings = array_merge($settings, BlazyDefault::richSettings());
+    // Supports HTML content for lightboxes as long as having image trigger.
+    // Type rich to not conflict with Image rendered by its formatter option.
+    $supported = $blazies->is('richbox') ?: $settings['_richbox'] ?? FALSE;
+    $rich = $blazies->get('media.type') == 'rich' && $supported;
+    $litebox = $blazies->is('lightbox');
+    $blazy = ($build['content'][0]['#settings'] ?? NULL);
+
+    if ($rich && $litebox && is_object($blazy)) {
+      if ($blazies->is('hires', !empty($settings['image']))) {
+        // Overrides the overriden settings with original formatter settings.
+        $settings = array_merge($settings, $blazy->storage());
+        $element['#lightbox_html'] = $build['content'];
+        $build['content'] = [];
+      }
+    }
+  }
+
+  /**
+   * Build out (Responsive) image.
+   *
+   * Since 2.9, many were moved into BlazyTheme to support custom work better.
+   */
+  private function buildMedia(array &$element, array &$build): void {
+    $item = $build['item'];
+    $settings = &$build['settings'];
+    $blazies = $settings['blazies'];
+
+    // (Responsive) image with item attributes, might be RDF.
+    $item_attributes = empty($build['item_attributes'])
+      ? []
+      : BlazyAttribute::sanitize($build['item_attributes']);
+
+    // Extract field item attributes for the theme function, and unset them
+    // from the $item so that the field template does not re-render them.
+    if ($item && isset($item->_attributes)) {
+      $item_attributes += $item->_attributes;
+      unset($item->_attributes);
+    }
+
+    // Responsive image integration, with/o CSS background so to work with.
+    $resimage = $blazies->get('resimage');
+    if ($resimage && $caches = $resimage['caches'] ?? []) {
+      $element['#cache']['tags'] = $caches;
+    }
+
+    // Provides caches for regular image, with/o CSS background.
+    if (!$blazies->get('resimage.id')) {
+      if ($caches = BlazyCache::file($settings)) {
+        $element['#cache']['max-age'] = -1;
+        foreach ($caches as $key => $cache) {
+          $element['#cache'][$key] = $cache;
+        }
+      }
+    }
+
+    // Pass non-rich-media elements to theme_blazy().
+    $element['#item_attributes'] = $item_attributes;
+  }
+
+  /**
+   * Prepares Blazy settings.
+   *
+   * Supports galeries if provided, updates $settings.
+   * Cases: Blazy within Views gallery, or references without direct image.
+   * Views may flatten out the array, bail out.
+   * What we do here is extract the formatter settings from the first found
+   * image and pass its settings to this container so that Blazy Grid which
+   * lacks of settings may know if it should load/ display a lightbox, etc.
+   * Lightbox should work without `Use field template` checked.
+   */
+  private function getSettings(array &$build) {
+    $settings = $build['settings'] ?? [];
+    $blazies = $settings['blazies'] ?? NULL;
+
+    if ($blazies && $data = $blazies->get('first.data')) {
+      if (is_array($data)) {
+        $this->isBlazy($settings, $data);
+      }
+    }
+
     return $settings;
   }
 
   /**
-   * Returns the entity view, if available.
+   * Prepares the Blazy output as a structured array ready for ::renderer().
    *
-   * @deprecated to remove for BlazyEntity::getEntityView().
+   * @param array $element
+   *   The renderable array being modified.
+   * @param array $build
+   *   The array of information containing the required Image or File item
+   *   object, settings, optional container attributes.
    */
-  public function getEntityView($entity, array $settings = [], $fallback = '') {
-    return FALSE;
+  private function prepareBlazy(array &$element, array $build) {
+    $item     = $build['item'] ?? NULL;
+    $settings = &$build['settings'];
+    $blazies  = $settings['blazies'];
+
+    foreach (BlazyDefault::themeAttributes() as $key) {
+      $key = $key . '_attributes';
+      $build[$key] = $build[$key] ?? [];
+    }
+
+    // Blazy has these 3 attributes, yet provides optional ones far below.
+    // Sanitize potential user-defined attributes such as from BlazyFilter.
+    // Skip attributes via $item, or by module, as they are not user-defined.
+    $attributes = &$build['attributes'];
+
+    // Initial feature checks, URI, delta, media features, etc.
+    Blazy::prepare($settings, $item);
+
+    // Build thumbnail and optional placeholder based on thumbnail.
+    // Prepare image URL and its dimensions, including for rich-media content,
+    // such as for local video poster image if a poster URI is provided.
+    Blazy::prepared($attributes, $settings, $item);
+
+    // Only process (Responsive) image/ video if no rich-media are provided.
+    $this->buildContent($element, $build);
+    if (empty($build['content'])) {
+      $this->buildMedia($element, $build);
+    }
+
+    // Provides extra attributes as needed, excluding url, item, done above.
+    // Was planned to replace sub-module item markups if similarity is found for
+    // theme_gridstack_box(), theme_slick_slide(), etc. Likely for Blazy 3.x+.
+    foreach (['caption', 'media', 'wrapper'] as $key) {
+      $element["#$key" . '_attributes'] = empty($build[$key . '_attributes'])
+        ? [] : BlazyAttribute::sanitize($build[$key . '_attributes']);
+    }
+
+    // Provides captions, if so configured.
+    $id = $blazies->get('item.id', 'blazy');
+    $content = $build['captions'] ?? '';
+    if ($content && ($captions = $this->buildCaption($content, $settings, $id))) {
+      $element['#captions'] = $captions;
+      $element['#caption_attributes']['class'][] = $id . '__caption';
+    }
+
+    // Pass common elements to theme_blazy().
+    $element['#attributes']     = $attributes;
+    $element['#settings']       = $settings;
+    $element['#url_attributes'] = $build['url_attributes'];
+
+    // Preparing Blazy to replace other blazy-related content/ item markups.
+    // Composing or layering is crucial for mixed media (icon over CTA or text
+    // or lightbox links or iframe over image or CSS background over noscript
+    // which cannot be simply dumped as array without elaborate arrangements).
+    foreach (['content', 'icon', 'overlay', 'preface', 'postscript'] as $key) {
+      $element["#$key"] = empty($element["#$key"]) ? $build[$key] : NestedArray::mergeDeep($element["#$key"], $build[$key]);
+    }
   }
 
   /**
-   * Returns the enforced content, or image using theme_blazy().
+   * Prepares Blazy outputs, extract items as indices.
    *
-   * @deprecated to remove post 2.x for self::getBlazy() for clarity.
-   * FYI, most Blazy codes were originally Slick's, PHP, CSS and JS.
-   * It was poorly named self::getImage() while Blazy may also contain Media
-   * video with iframe element. Probably getMedia() is cool, but let's stick to
-   * self::getBlazy() as Blazy also works without Image nor Media video, such as
-   * with just a DIV element for CSS background.
+   * If children are grouped within items property, reset to indexed keys.
+   * Blazy comes late to the party after sub-modules decided what they want
+   * where items may be stored as direct indices, or put into items property.
+   * Actually the same issue happens at core where contents may be indexed or
+   * grouped. Meaning not a problem at all, only a problem for consistency.
    */
-  public function getImage(array $build = []) {
-    return $this->getBlazy($build);
+  private function toElementChildren(array &$build): void {
+    $build = $build['items'] ?? $build;
+    unset($build['items'], $build['settings']);
   }
 
 }

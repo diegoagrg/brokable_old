@@ -2,8 +2,9 @@
 
 namespace Drupal\Tests\blazy\Traits;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\blazy\BlazyDefault;
+use Drupal\blazy\BlazyEntity;
+use Drupal\blazy\Traits\PluginScopesTrait;
 
 /**
  * A Trait common for Blazy Unit tests.
@@ -11,6 +12,7 @@ use Drupal\blazy\BlazyDefault;
 trait BlazyUnitTestTrait {
 
   use BlazyPropertiesTestTrait;
+  use PluginScopesTrait;
 
   /**
    * The formatter settings.
@@ -18,48 +20,6 @@ trait BlazyUnitTestTrait {
    * @var array
    */
   protected $formatterSettings = [];
-
-  /**
-   * Add empty data for breakpoints.
-   *
-   * @return array
-   *   The dummy breakpoints.
-   */
-  protected function getEmptyBreakpoints() {
-    $build = [];
-
-    foreach (BlazyDefault::getConstantBreakpoints() as $breakpoint) {
-      $build[$breakpoint]['image_style'] = '';
-      $build[$breakpoint]['width'] = '';
-    }
-
-    return $build;
-  }
-
-  /**
-   * Add partially empty data for breakpoints.
-   *
-   * @param string $clean
-   *   The flag for clean breakpoints.
-   *
-   * @return array
-   *   The dummy breakpoints.
-   */
-  protected function getDataBreakpoints($clean = FALSE) {
-    $build  = [];
-    $widths = ['xs' => 210, 'sm' => 1024, 'md' => 1900];
-    $styles = ['xs' => 'blazy_crop', 'sm' => 'blazy_crop', 'md' => 'blazy_crop'];
-
-    foreach (BlazyDefault::getConstantBreakpoints() as $breakpoint) {
-      if ($clean && (!isset($styles[$breakpoint]) || !isset($widths[$breakpoint]))) {
-        continue;
-      }
-      $build[$breakpoint]['image_style'] = isset($styles[$breakpoint]) ? $styles[$breakpoint] : '';
-      $build[$breakpoint]['width'] = isset($widths[$breakpoint]) ? $widths[$breakpoint] : '';
-    }
-
-    return $build;
-  }
 
   /**
    * Returns sensible formatter settings for testing purposes.
@@ -71,7 +31,6 @@ trait BlazyUnitTestTrait {
     $defaults = [
       'box_caption'     => 'custom',
       'box_style'       => 'large',
-      'breakpoints'     => $this->getDataBreakpoints(),
       'cache'           => 0,
       'image_style'     => 'blazy_crop',
       'media_switch'    => 'blazy_test',
@@ -79,7 +38,11 @@ trait BlazyUnitTestTrait {
       'ratio'           => 'fluid',
       'caption'         => ['alt' => 'alt', 'title' => 'title'],
       'sizes'           => '100w',
-    ] + BlazyDefault::extendedSettings();
+    ] + BlazyDefault::extendedSettings()
+      + BlazyDefault::itemSettings()
+      + $this->getDefaultFieldDefinition();
+
+    BlazyEntity::settings($defaults, $this->entity);
 
     return empty($this->formatterSettings) ? $defaults : array_merge($defaults, $this->formatterSettings);
   }
@@ -115,30 +78,54 @@ trait BlazyUnitTestTrait {
   }
 
   /**
+   * Returns the default field definition.
+   *
+   * @return array
+   *   The default field definition.
+   */
+  protected function getDefaultFieldDefinition() {
+    return [
+      'bundle'      => $this->bundle ?? 'bundle_test',
+      'entity_type' => $this->entityType,
+      'field_name'  => $this->testFieldName,
+      'field_type'  => 'image',
+    ];
+  }
+
+  /**
    * Returns the default field formatter definition.
    *
    * @return array
    *   The default field formatter settings.
    */
-  protected function getDefaultFormatterDefinition() {
-    // @deprecated: Will be replaced by `form` array below.
-    $deprecated = [
-      'grid_form'         => TRUE,
-      'image_style_form'  => TRUE,
-      'fieldable_form'    => TRUE,
-      'media_switch_form' => TRUE,
-    ];
+  public function getCommonScopedFormElements() {
+    return ['settings' => $this->getFormatterSettings()]
+      + $this->getDefaultFieldDefinition();
+  }
 
+  /**
+   * Defines the scope for the form elements.
+   *
+   * Since 2.10 sub-modules can forget this, and use self::getPluginScopes().
+   */
+  public function getScopedFormElements() {
+    $scopes = $this->getPluginScopes();
+
+    // @todo remove `$scopes +` at Blazy 3.x.
+    $definitions = $scopes + $this->getCommonScopedFormElements();
+    $definitions['scopes'] = $this->toPluginScopes($scopes);
+    return $definitions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getPluginScopes(): array {
     return [
       'background'        => TRUE,
       'box_captions'      => TRUE,
-      'breakpoints'       => BlazyDefault::getConstantBreakpoints(),
       'captions'          => ['alt' => 'Alt', 'title' => 'Title'],
       'classes'           => ['field_class' => 'Classes'],
-      'current_view_mode' => 'default',
-      'entity_type'       => $this->entityType,
-      'field_name'        => $this->testFieldName,
-      'field_type'        => 'image',
       'multimedia'        => TRUE,
       'images'            => [$this->testFieldName => $this->testFieldName],
       'layouts'           => ['top' => 'Top'],
@@ -151,14 +138,11 @@ trait BlazyUnitTestTrait {
       'target_type'       => 'file',
       'titles'            => ['field_text' => 'Text'],
       'view_mode'         => 'default',
-      'settings'          => $this->getFormatterSettings(),
-      'form'              => [
-        'fieldable',
-        'grid',
-        'image_style',
-        'media_switch',
-      ],
-    ] + $deprecated;
+      'grid_form'         => TRUE,
+      'image_style_form'  => TRUE,
+      'fieldable_form'    => TRUE,
+      'media_switch_form' => TRUE,
+    ];
   }
 
   /**
@@ -189,8 +173,10 @@ trait BlazyUnitTestTrait {
    *   The field formatter settings.
    */
   protected function getFormatterDefinition() {
-    $defaults = $this->getDefaultFormatterDefinition();
-    return empty($this->formatterDefinition) ? $defaults : array_merge($defaults, $this->formatterDefinition);
+    $defaults = $this->getScopedFormElements();
+
+    return empty($this->formatterDefinition)
+      ? $defaults : array_merge($defaults, $this->formatterDefinition);
   }
 
   /**
@@ -210,28 +196,6 @@ trait BlazyUnitTestTrait {
   }
 
   /**
-   * Return dummy cache metadata.
-   */
-  protected function getCacheMetaData() {
-    $build = [];
-    $suffixes[] = 3;
-    foreach (['contexts', 'keys', 'tags'] as $key) {
-      if ($key == 'contexts') {
-        $cache = ['languages'];
-      }
-      elseif ($key == 'keys') {
-        $cache = ['blazy_image'];
-      }
-      elseif ($key == 'tags') {
-        $cache = Cache::buildTags('file:123', $suffixes, '.');
-      }
-
-      $build['cache_' . $key] = $cache;
-    }
-    return $build;
-  }
-
-  /**
    * Pre render Blazy image.
    *
    * @param array $build
@@ -241,11 +205,14 @@ trait BlazyUnitTestTrait {
    *   The pre_render element.
    */
   protected function doPreRenderImage(array $build = []) {
+    $settings = &$build['settings'];
+    $this->blazyManager->postSettings($settings);
+
     $image = $this->blazyManager->getBlazy($build);
 
-    $image['#build']['settings'] = array_merge($this->getCacheMetaData(), $build['settings']);
-    $image['#build']['item'] = $build['item'];
-    return $this->blazyManager->preRenderImage($image);
+    $image['#build']['item'] = empty($image['#build']['item'])
+      ? $build['item'] : $image['#build']['item'];
+    return $this->blazyManager->preRenderBlazy($image);
   }
 
   /**
@@ -287,7 +254,7 @@ trait BlazyUnitTestTrait {
     $this->testFieldType = 'image';
     $this->testPluginId  = 'blazy';
     $this->maxItems      = 3;
-    $this->maxParagraphs = 20;
+    $this->maxParagraphs = 30;
   }
 
   /**
@@ -316,7 +283,7 @@ trait BlazyUnitTestTrait {
    * Setup the unit images.
    */
   protected function setUpMockImage() {
-    $entity = $this->getMock('\Drupal\Core\Entity\ContentEntityInterface');
+    $entity = $this->createMock('\Drupal\Core\Entity\ContentEntityInterface');
     $entity->expects($this->any())
       ->method('label')
       ->willReturn($this->randomMachineName());
@@ -324,7 +291,7 @@ trait BlazyUnitTestTrait {
       ->method('getEntityTypeId')
       ->will($this->returnValue('node'));
 
-    $item = $this->getMock('\Drupal\Core\Field\FieldItemListInterface');
+    $item = $this->createMock('\Drupal\Core\Field\FieldItemListInterface');
     $item->expects($this->any())
       ->method('getEntity')
       ->willReturn($entity);
@@ -351,23 +318,12 @@ if (!function_exists('blazy_alterable_settings')) {
 
 }
 
-if (!function_exists('file_create_url')) {
+if (!function_exists('blazy')) {
 
   /**
    * Dummy function.
    */
-  function file_create_url() {
-    // Empty block to satisfy coder.
-  }
-
-}
-
-if (!function_exists('file_url_transform_relative')) {
-
-  /**
-   * Dummy function.
-   */
-  function file_url_transform_relative() {
+  function blazy() {
     // Empty block to satisfy coder.
   }
 

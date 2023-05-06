@@ -23,9 +23,8 @@
         var $tabs = $form.find('.webform-tabs');
 
         // Get only the main details elements and ignore all nested details.
-        var selector = ($tabs.length) ? '.webform-tab' : '.js-webform-details-toggle';
+        var selector = ($tabs.length) ? '.webform-tab' : '.js-webform-details-toggle, .webform-elements';
         var $details = $form.find('details').filter(function () {
-          // @todo Figure out how to optimize the below code.
           var $parents = $(this).parentsUntil(selector);
           return ($parents.find('details').length === 0);
         });
@@ -43,21 +42,26 @@
         var $toggle = $(options.button)
           .attr('title', Drupal.t('Toggle details widget state.'))
           .on('click', function (e) {
+            // Get details that are not vertical tabs pane.
+            var $details = $form.find('details:not(.vertical-tabs__pane)');
             var open;
-            if (isFormDetailsOpen($form)) {
-              $form.find('details').removeAttr('open');
+            if (Drupal.webform.detailsToggle.isFormDetailsOpen($form)) {
+              $details.removeAttr('open');
               open = 0;
             }
             else {
-              $form.find('details').attr('open', 'open');
+              $details.attr('open', 'open');
               open = 1;
             }
-            setDetailsToggleLabel($form);
+            Drupal.webform.detailsToggle.setDetailsToggleLabel($form);
 
             // Set the saved states for all the details elements.
             // @see webform.element.details.save.js
-            if (!Drupal.webformDetailsSaveGetName) {
-              $form.find('details').each(function () {
+            if (Drupal.webformDetailsSaveGetName) {
+              $details.each(function () {
+                // Note: Drupal.webformDetailsSaveGetName checks if localStorage
+                // exists and is enabled.
+                // @see webform.element.details.save.js
                 var name = Drupal.webformDetailsSaveGetName($(this));
                 if (name) {
                   localStorage.setItem(name, open);
@@ -70,14 +74,14 @@
 
         if ($tabs.length) {
           // Add toggle state before the tabs.
-          $tabs.find('.item-list:first-child').before($toggle);
+          $tabs.find('.item-list:first-child').eq(0).before($toggle);
         }
         else {
           // Add toggle state link to first details element.
           $details.eq(0).before($toggle);
         }
 
-        setDetailsToggleLabel($form);
+        Drupal.webform.detailsToggle.setDetailsToggleLabel($form);
       });
     }
   };
@@ -91,9 +95,9 @@
    * @return {boolean}
    *   TRUE if a webform's details are all opened.
    */
-  function isFormDetailsOpen($form) {
+  Drupal.webform.detailsToggle.isFormDetailsOpen = function ($form) {
     return ($form.find('details[open]').length === $form.find('details').length);
-  }
+  };
 
   /**
    * Set a webform's details toggle state widget label.
@@ -101,14 +105,14 @@
    * @param {jQuery} $form
    *   A webform.
    */
-  function setDetailsToggleLabel($form) {
-    var isOpen = isFormDetailsOpen($form);
+  Drupal.webform.detailsToggle.setDetailsToggleLabel = function ($form) {
+    var isOpen = Drupal.webform.detailsToggle.isFormDetailsOpen($form);
 
     var label = (isOpen) ? Drupal.t('Collapse all') : Drupal.t('Expand all');
     $form.find('.webform-details-toggle-state').html(label);
 
     var text = (isOpen) ? Drupal.t('All details have been expanded.') : Drupal.t('All details have been collapsed.');
     Drupal.announce(text);
-  }
+  };
 
 })(jQuery, Drupal);

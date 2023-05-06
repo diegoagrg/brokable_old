@@ -75,7 +75,7 @@ Drupal.WeMegaMenu = Drupal.WeMegaMenu || {};
             $(li).closest('ul').find('li').removeClass('open');
             $(li).closest('.we-mega-menu-row').find('li').removeClass('open');
             $(li).closest('ul').find('li').removeClass('open');
-            $(li).addClass('open');
+            li.addClass('open');
           }
 
           break;
@@ -861,6 +861,7 @@ Drupal.WeMegaMenu = Drupal.WeMegaMenu || {};
                   var element = {};
                   element['mlid'] = typeof $(e).attr('data-id') != 'undefined' ? $(e).attr('data-id') : '';
                   element['type'] = typeof $(e).attr('data-element-type') != 'undefined' ? $(e).attr('data-element-type') : '';
+                  element['title'] = typeof $(e).attr('description') != 'undefined' ? $(e).attr('description') : '';
                   element['item_config'] = {};
 
                   if ($.inArray(element['mlid'], mlid_list) == -1) {

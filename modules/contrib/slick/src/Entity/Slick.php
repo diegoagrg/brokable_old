@@ -2,8 +2,7 @@
 
 namespace Drupal\slick\Entity;
 
-use Drupal\Component\Utility\Html;
-use Drupal\slick\SlickDefault;
+use Drupal\blazy\Blazy;
 
 /**
  * Defines the Slick configuration entity.
@@ -22,9 +21,8 @@ use Drupal\slick\SlickDefault;
  *   config_export = {
  *     "id",
  *     "name",
- *     "label",
- *     "status",
  *     "weight",
+ *     "label",
  *     "group",
  *     "skin",
  *     "breakpoints",
@@ -62,13 +60,6 @@ class Slick extends SlickBase implements SlickInterface {
    * @var bool
    */
   protected $optimized = FALSE;
-
-  /**
-   * The slick HTML ID.
-   *
-   * @var int
-   */
-  private static $slickId;
 
   /**
    * {@inheritdoc}
@@ -221,9 +212,17 @@ class Slick extends SlickBase implements SlickInterface {
   public static function getDependentOptions() {
     $down_arrow = ['downArrowTarget', 'downArrowOffset'];
     return [
-      'arrows'     => ['prevArrow', 'nextArrow', 'downArrow'] + $down_arrow,
+      'arrows'     => ['arrowsPlacement', 'prevArrow', 'nextArrow', 'downArrow'] + $down_arrow,
       'downArrow'  => $down_arrow,
-      'autoplay'   => ['pauseOnHover', 'pauseOnDotsHover', 'autoplaySpeed'],
+      'autoplay'   => [
+        'pauseOnHover',
+        'pauseOnDotsHover',
+        'pauseOnFocus',
+        'autoplaySpeed',
+        'useAutoplayToggleButton',
+        'pauseIcon',
+        'playIcon',
+      ],
       'centerMode' => ['centerPadding'],
       'dots'       => ['dotsClass', 'appendDots'],
       'swipe'      => ['swipeToSlide'],
@@ -233,41 +232,48 @@ class Slick extends SlickBase implements SlickInterface {
   }
 
   /**
-   * Returns the trusted HTML ID of a single slick instance.
-   *
-   * @return string
-   *   The html ID.
-   *
-   * @todo: Consider Blazy::getHtmlId() instead.
+   * Checks which lazyload to use.
    */
-  public static function getHtmlId($string = 'slick', $id = '') {
-    if (!isset(static::$slickId)) {
-      static::$slickId = 0;
+  public function whichLazy(array &$settings) {
+    $lazy = $this->getSetting('lazyLoad');
+
+    $settings['_lazy'] = TRUE;
+
+    // @todo remove check post Blazy 2.10 to follow up Blazy improvements:
+    // `Loading` priority, `No JavaScript: lazy`, etc.
+    if (method_exists(Blazy::class, 'which')) {
+      Blazy::which($settings, $lazy, 'lazy', 'lazy');
     }
+    else {
+      // @todo remove these post Blazy 2.10.
+      $use_blazy = $lazy == 'blazy'
+        || !empty($settings['blazy'])
+        || !empty($settings['background'])
+        || !empty($settings['responsive_image_style']);
 
-    // Do not use dynamic Html::getUniqueId, otherwise broken asnavfors.
-    return empty($id) ? Html::getId($string . '-' . ++static::$slickId) : strip_tags($id);
+      $lazy = $use_blazy ? 'blazy' : $lazy;
+
+      // Allows Blazy to take over for advanced features like Responsive image,
+      // CSS background, video, etc.
+      if (!$use_blazy && $lazy) {
+        $settings['lazy_class'] = $settings['lazy_attribute'] = 'lazy';
+      }
+
+      // Disable anything lazy-related settings if in preview mode.
+      $settings['blazy'] = $use_blazy;
+      $settings['lazy'] = empty($settings['is_preview']) ? $lazy : '';
+    }
   }
 
   /**
-   * Returns HTML or layout related settings to shut up notices.
-   *
-   * @return array
-   *   The default settings.
-   *
-   * @deprecated to be removed for SlickDefault::htmlSettings()
+   * If optionset does not exist, create one.
    */
-  public static function htmlSettings() {
-    return SlickDefault::htmlSettings();
-  }
-
-  /**
-   * Defines JS options required by theme_slick(), used with optimized option.
-   *
-   * @deprecated to be removed for SlickDefault::htmlSettings()
-   */
-  public static function jsSettings() {
-    return SlickDefault::jsSettings();
+  public static function verifyOptionset(array &$build, $name) {
+    if (empty($build['optionset'])) {
+      $build['optionset'] = self::loadWithFallback($name);
+    }
+    // Also returns it for convenient.
+    return $build['optionset'];
   }
 
 }

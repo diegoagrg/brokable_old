@@ -1,3 +1,0 @@
-commerce_inventory_order_item:
-  label: Order Adjustment Status
-  entity_type: commerce_order_item

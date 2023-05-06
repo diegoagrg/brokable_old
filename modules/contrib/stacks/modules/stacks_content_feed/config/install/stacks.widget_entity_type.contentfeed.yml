@@ -1,6 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: contentfeed
-label: 'Content Feed'
-plugin: content_feed

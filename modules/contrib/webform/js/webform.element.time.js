@@ -31,7 +31,7 @@
 
         // Skip if time inputs are supported by the browser and input is not a text field.
         // @see \Drupal\webform\Element\WebformDatetime
-        if (window.Modernizr && Modernizr.inputtypes.time === true && $input.attr('type') !== 'text') {
+        if (window.Modernizr && Modernizr.inputtypes && Modernizr.inputtypes.time === true && $input.attr('type') !== 'text') {
           return;
         }
 
@@ -56,6 +56,11 @@
         else {
           options.step = 1;
         }
+
+        // Set step to 'any' to prevent clientside validation issues.
+        // @see \Drupal\clientside_validation\Plugin\CvValidator\Step
+        // @see https://www.drupal.org/project/clientside_validation/issues/2941434
+        $input.attr('step', 'any');
 
         options = $.extend(options, Drupal.webform.timePicker.options);
 

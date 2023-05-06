@@ -2,7 +2,7 @@
 
 namespace Drupal\webform\Element;
 
-use Drupal\webform\Twig\TwigExtension;
+use Drupal\webform\Twig\WebformTwigExtension;
 use Drupal\webform\WebformSubmissionInterface;
 
 /**
@@ -38,14 +38,24 @@ class WebformComputedTwig extends WebformComputedBase {
   /**
    * {@inheritdoc}
    */
-  public static function processValue(array $element, WebformSubmissionInterface $webform_submission) {
+  public static function computeValue(array $element, WebformSubmissionInterface $webform_submission) {
+    /** @var \Drupal\webform\WebformThemeManagerInterface $theme_manager */
+    $theme_manager = \Drupal::service('webform.theme_manager');
+    // Do not compute value via Twig if there is no active theme,
+    // except for CLI.
+    // Rendering a Twig template before the theme is activated can cause
+    // unexpected behaviors.
+    if (!$theme_manager->hasActiveTheme() && PHP_SAPI !== 'cli') {
+      return '';
+    }
+
     $whitespace = (!empty($element['#whitespace'])) ? $element['#whitespace'] : '';
 
-    $template = ($whitespace === static::WHITESPACE_SPACELESS) ? '{% spaceless %}' . $element['#value'] . '{% endspaceless %}' : $element['#value'];
+    $template = ($whitespace === static::WHITESPACE_SPACELESS) ? '{% spaceless %}' . $element['#template'] . '{% endspaceless %}' : $element['#template'];
 
-    $options = ['html' => (static::getMode($element) === static::MODE_HTML)];
+    $options = ['html' => (static::getMode($element) === WebformComputedInterface::MODE_HTML)];
 
-    $value = TwigExtension::renderTwigTemplate($webform_submission, $template, $options);
+    $value = WebformTwigExtension::renderTwigTemplate($webform_submission, $template, $options);
 
     return ($whitespace === static::WHITESPACE_TRIM) ? trim($value) : $value;
   }
