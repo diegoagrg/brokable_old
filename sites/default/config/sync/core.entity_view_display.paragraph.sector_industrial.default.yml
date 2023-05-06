@@ -17,44 +17,48 @@ bundle: sector_industrial
 mode: default
 content:
   field_descripcion:
-    weight: 2
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 2
     region: content
   field_icono:
-    weight: 0
+    type: image
     label: hidden
     settings:
-      image_style: imagen_mediana
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_mediana
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 0
     region: content
   field_imagen:
-    weight: 3
+    type: image
     label: hidden
     settings:
-      svg_attributes:
-        width: ''
-        height: ''
-      svg_render_as_image: true
-      image_style: ''
       image_link: ''
+      image_style: ''
+      svg_attributes:
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 3
     region: content
   field_titulo:
-    weight: 1
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 1
     region: content
 hidden: {  }

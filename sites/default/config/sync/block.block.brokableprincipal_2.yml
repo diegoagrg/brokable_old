@@ -15,6 +15,6 @@ plugin: 'we_megamenu_block:brokable-principal'
 settings:
   id: 'we_megamenu_block:brokable-principal'
   label: 'Brokable principal'
-  provider: we_megamenu
   label_display: '0'
+  provider: we_megamenu
 visibility: {  }

@@ -20,51 +20,55 @@ bundle: ambiente
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 101
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 101
     region: content
   field_gama_de_cables_2:
     type: entity_reference_revisions_entity_view
-    weight: 104
     label: above
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 104
     region: content
   field_icono_tipo:
-    weight: 102
+    type: image
     label: hidden
     settings:
-      image_style: imagen_chica
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_chica
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 102
     region: content
   field_imagen_tipo:
-    weight: 103
+    type: image
     label: hidden
     settings:
-      image_style: imagen_mediana
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_mediana
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 103
     region: content
   links:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
 hidden:
   langcode: true

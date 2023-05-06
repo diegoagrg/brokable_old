@@ -21,19 +21,19 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       banner: banner
+    negate: 0
     target_bundles_drag_drop:
       accesorio:
         weight: 16
         enabled: false
+      banner:
+        weight: 18
+        enabled: true
       caso_de_exito:
         weight: 17
         enabled: false
-      banner:
-        enabled: true
-        weight: 18
       columnas:
         weight: 18
         enabled: false
@@ -58,11 +58,11 @@ settings:
       sector_industrial:
         weight: 25
         enabled: false
-      tabla_de_iconos_contenido:
-        weight: 26
-        enabled: false
       tab_de_icono:
         weight: 27
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 26
         enabled: false
       testimonio:
         weight: 28

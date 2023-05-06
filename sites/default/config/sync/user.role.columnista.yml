@@ -1,7 +1,26 @@
 uuid: 3ef6b84c-41c6-426f-9647-fe8850c2c7de
 langcode: es
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.full_html
+    - node.type.acerca_de_
+    - node.type.ambiente
+    - node.type.articulo
+    - node.type.casos_de_exito
+    - node.type.contacto
+    - node.type.home
+    - node.type.normativas
+    - node.type.noticias_y_opinion
+    - node.type.sectores
+    - node.type.testimonios
+    - node.type.tipo_de_cable
+    - node.type.webform
+  module:
+    - filter
+    - node
+    - system
+    - toolbar
 id: columnista
 label: Columnista
 weight: 3
@@ -12,7 +31,6 @@ permissions:
   - 'create acerca_de_ content'
   - 'create ambiente content'
   - 'create articulo content'
-  - 'create cable content'
   - 'create casos_de_exito content'
   - 'create contacto content'
   - 'create home content'
@@ -27,7 +45,6 @@ permissions:
   - 'delete any acerca_de_ content'
   - 'delete any ambiente content'
   - 'delete any articulo content'
-  - 'delete any cable content'
   - 'delete any casos_de_exito content'
   - 'delete any contacto content'
   - 'delete any home content'
@@ -38,7 +55,6 @@ permissions:
   - 'delete any tipo_de_cable content'
   - 'delete any webform content'
   - 'delete articulo revisions'
-  - 'delete cable revisions'
   - 'delete casos_de_exito revisions'
   - 'delete contacto revisions'
   - 'delete home revisions'
@@ -47,7 +63,6 @@ permissions:
   - 'delete own acerca_de_ content'
   - 'delete own ambiente content'
   - 'delete own articulo content'
-  - 'delete own cable content'
   - 'delete own casos_de_exito content'
   - 'delete own contacto content'
   - 'delete own home content'
@@ -64,7 +79,6 @@ permissions:
   - 'edit any acerca_de_ content'
   - 'edit any ambiente content'
   - 'edit any articulo content'
-  - 'edit any cable content'
   - 'edit any casos_de_exito content'
   - 'edit any contacto content'
   - 'edit any home content'
@@ -77,7 +91,6 @@ permissions:
   - 'edit own acerca_de_ content'
   - 'edit own ambiente content'
   - 'edit own articulo content'
-  - 'edit own cable content'
   - 'edit own casos_de_exito content'
   - 'edit own contacto content'
   - 'edit own home content'
@@ -90,7 +103,6 @@ permissions:
   - 'revert acerca_de_ revisions'
   - 'revert ambiente revisions'
   - 'revert articulo revisions'
-  - 'revert cable revisions'
   - 'revert casos_de_exito revisions'
   - 'revert contacto revisions'
   - 'revert home revisions'
@@ -104,7 +116,6 @@ permissions:
   - 'view acerca_de_ revisions'
   - 'view ambiente revisions'
   - 'view articulo revisions'
-  - 'view cable revisions'
   - 'view casos_de_exito revisions'
   - 'view contacto revisions'
   - 'view home revisions'

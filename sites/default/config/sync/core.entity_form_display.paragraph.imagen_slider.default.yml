@@ -15,10 +15,11 @@ bundle: imagen_slider
 mode: default
 content:
   field_imagen_slide:
+    type: image_widget_crop
     weight: 101
+    region: content
     settings:
-      show_default_crop: true
-      warn_multiple_usages: true
+      progress_indicator: throbber
       preview_image_style: thumbnail
       crop_preview_image_style: crop_thumbnail
       crop_list:
@@ -26,14 +27,13 @@ content:
         - '4_1'
         - '5_4'
         - '8'
-      progress_indicator: throbber
       crop_types_required: {  }
+      warn_multiple_usages: true
       show_crop_area: false
+      show_default_crop: true
     third_party_settings:
       imce:
         enabled: true
-    type: image_widget_crop
-    region: content
 hidden:
   created: true
   status: true

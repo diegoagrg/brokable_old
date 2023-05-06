@@ -19,47 +19,49 @@ bundle: caso_de_exito
 mode: default
 content:
   field_categoria:
-    weight: 0
+    type: entity_reference_label
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 0
     region: content
   field_detalle:
-    weight: 3
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 3
     region: content
   field_imagen:
-    weight: 4
+    type: image
     label: hidden
     settings:
-      image_style: imagen_mediana
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_mediana
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 4
     region: content
   field_titulo:
-    weight: 1
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 1
     region: content
   field_ubicacion:
-    weight: 2
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 2
     region: content
 hidden: {  }

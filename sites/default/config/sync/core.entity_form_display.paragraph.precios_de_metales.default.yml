@@ -30,210 +30,210 @@ third_party_settings:
         - group_aluminio
         - group_oro
         - group_plata
+      label: Metales
+      region: content
       parent_name: ''
       weight: 20
       format_type: tabs
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         direction: vertical
-      label: Metales
-      region: content
     group_cobre:
       children:
         - field_cobre_bool
         - field_etiqueta_cobre
         - field_prefijo_cobre
         - field_valor_cobre
+      label: Cobre
+      region: content
       parent_name: group_metales
       weight: 20
       format_type: tab
       format_settings:
         label: Cobre
+        classes: ''
+        id: ''
         formatter: closed
         description: 'Historical Futures Prices: Copper Futures, Continuous Contract #1. Non-adjusted price based on spot-month continuous contract calculations. Raw data from CME. '
         required_fields: true
-        id: ''
-        classes: ''
-      label: Cobre
-      region: content
     group_aluminio:
       children:
         - field_aluminio_bool
         - field_etiqueta_aluminio
         - field_prefijo_aluminio
         - field_valor_aluminio
+      label: Aluminio
+      region: content
       parent_name: group_metales
       weight: 21
       format_type: tab
       format_settings:
         label: Aluminio
+        classes: ''
+        id: ''
         formatter: closed
         description: 'Aluminum; 99.5% minimum purity; LME spot price; CIF UK ports; US$ per metric ton'
         required_fields: true
-        id: ''
-        classes: ''
-      label: Aluminio
-      region: content
     group_oro:
       children:
         - field_oro_bool
         - field_etiqueta_oro
         - field_prefijo_oro
         - field_valor_oro
+      label: Oro
+      region: content
       parent_name: group_metales
       weight: 22
       format_type: tab
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         formatter: closed
         description: 'Historical Futures Prices: Gold Futures, Continuous Contract #1. Non-adjusted price based on spot-month continuous contract calculations. Raw data from CME. '
         required_fields: true
-      label: Oro
-      region: content
     group_plata:
       children:
         - field_plata_bool
         - field_etiqueta_plata
         - field_prefijo_plata
         - field_valor_plata
+      label: Plata
+      region: content
       parent_name: group_metales
       weight: 23
       format_type: tab
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         formatter: closed
         description: 'Historical Futures Prices: Silver Futures, Continuous Contract #1. Non-adjusted price based on spot-month continuous contract calculations. Raw data from CME.'
         required_fields: true
-      label: Plata
-      region: content
 id: paragraph.precios_de_metales.default
 targetEntityType: paragraph
 bundle: precios_de_metales
 mode: default
 content:
   field_aluminio_bool:
+    type: boolean_checkbox
     weight: 24
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_cobre_bool:
+    type: boolean_checkbox
     weight: 0
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_etiqueta_aluminio:
+    type: string_textfield
     weight: 25
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_etiqueta_cobre:
+    type: string_textfield
     weight: 1
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_etiqueta_oro:
+    type: string_textfield
     weight: 23
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_etiqueta_plata:
+    type: string_textfield
     weight: 23
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_oro_bool:
+    type: boolean_checkbox
     weight: 22
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_plata_bool:
+    type: boolean_checkbox
     weight: 22
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_prefijo_aluminio:
+    type: string_textfield
     weight: 26
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_prefijo_cobre:
+    type: string_textfield
     weight: 2
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_prefijo_oro:
+    type: string_textfield
     weight: 24
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_prefijo_plata:
+    type: string_textfield
     weight: 24
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_valor_aluminio:
+    type: number
     weight: 27
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_valor_cobre:
+    type: number
     weight: 3
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_valor_oro:
+    type: number
     weight: 25
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_valor_plata:
+    type: number
     weight: 25
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
 hidden:
   created: true
   status: true

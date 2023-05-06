@@ -21,13 +21,13 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       icono_titulo_descripcion: icono_titulo_descripcion
+    negate: 0
     target_bundles_drag_drop:
       icono_titulo_descripcion:
-        enabled: true
         weight: 4
+        enabled: true
       tab_de_icono:
         weight: 5
         enabled: false

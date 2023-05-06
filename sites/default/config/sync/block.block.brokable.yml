@@ -18,18 +18,18 @@ plugin: 'system_menu_block:brokable'
 settings:
   id: 'system_menu_block:brokable'
   label: Brokable
-  provider: system
   label_display: visible
+  provider: system
   level: 1
   depth: 1
   expand_all_items: false
 visibility:
-  node_type:
-    id: node_type
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
     bundles:
       acerca_de_: acerca_de_
       casos_de_exito: casos_de_exito
       testimonios: testimonios
-    negate: false
-    context_mapping:
-      node: '@node.node_route_context:node'

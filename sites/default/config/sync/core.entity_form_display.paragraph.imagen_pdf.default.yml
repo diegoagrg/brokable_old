@@ -19,30 +19,30 @@ bundle: imagen_pdf
 mode: default
 content:
   field_ambiente:
+    type: options_select
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_archivo_pdf:
-    weight: 1
-    settings:
-      progress_indicator: throbber
-    third_party_settings:
-      imce:
-        enabled: true
     type: file_generic
+    weight: 1
     region: content
-  field_imagen_del_cable:
-    weight: 0
     settings:
-      preview_image_style: thumbnail
       progress_indicator: throbber
     third_party_settings:
       imce:
         enabled: true
+  field_imagen_del_cable:
     type: image_image
+    weight: 0
     region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings:
+      imce:
+        enabled: true
   field_normativa:
     type: options_select
     weight: 2
@@ -51,9 +51,9 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   created: true
   status: true

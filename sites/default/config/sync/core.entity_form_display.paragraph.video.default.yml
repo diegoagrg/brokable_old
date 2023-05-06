@@ -13,11 +13,11 @@ bundle: video
 mode: default
 content:
   field_video:
+    type: youtube
     weight: 101
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: youtube
-    region: content
 hidden:
   created: true
   status: true

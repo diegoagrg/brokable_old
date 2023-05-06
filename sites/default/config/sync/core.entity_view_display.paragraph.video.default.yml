@@ -13,7 +13,7 @@ bundle: video
 mode: default
 content:
   field_video:
-    weight: 0
+    type: youtube_video
     label: hidden
     settings:
       youtube_size: responsive
@@ -21,11 +21,11 @@ content:
       youtube_height: ''
       youtube_autoplay: true
       youtube_loop: true
-      youtube_showinfo: true
       youtube_controls: true
-      youtube_iv_load_policy: true
       youtube_autohide: false
+      youtube_iv_load_policy: true
+      youtube_showinfo: true
     third_party_settings: {  }
-    type: youtube_video
+    weight: 0
     region: content
 hidden: {  }

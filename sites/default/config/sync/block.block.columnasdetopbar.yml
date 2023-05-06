@@ -17,8 +17,8 @@ plugin: 'block_content:424c0d8d-cc75-475b-a1ae-8ae39387a082'
 settings:
   id: 'block_content:424c0d8d-cc75-475b-a1ae-8ae39387a082'
   label: 'Columnas de top-bar'
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full

@@ -11,14 +11,14 @@ dependencies:
 id: parcheparacarga
 theme: bootstrap
 region: top_bar
-weight: -13
+weight: -12
 provider: null
 plugin: 'block_content:7d1dade3-a56c-402d-b9b5-0673e501ff56'
 settings:
   id: 'block_content:7d1dade3-a56c-402d-b9b5-0673e501ff56'
   label: 'Parche para carga'
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full

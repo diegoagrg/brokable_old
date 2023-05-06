@@ -21,19 +21,19 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       sector_industrial: sector_industrial
+    negate: 0
     target_bundles_drag_drop:
-      sector_industrial:
-        enabled: true
-        weight: 7
       caso_de_exito:
         weight: 8
         enabled: false
       icono_titulo_descripcion:
         weight: 9
         enabled: false
+      sector_industrial:
+        weight: 7
+        enabled: true
       tab_de_icono:
         weight: 10
         enabled: false

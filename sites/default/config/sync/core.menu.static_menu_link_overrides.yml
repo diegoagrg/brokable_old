@@ -1,34 +1,34 @@
-definitions:
-  contact__site_page:
-    enabled: false
-    menu_name: footer
-    parent: ''
-    expanded: true
-    weight: 0
-  admin_toolbar_tools__add_content:
-    weight: 1
-    menu_name: admin
-    parent: system.admin_content
-    enabled: true
-    expanded: false
-  admin_toolbar_tools__view__files:
-    weight: 3
-    menu_name: admin
-    parent: system.admin_content
-    expanded: false
-    enabled: true
-  admin_toolbar_tools__add_media:
-    weight: 4
-    menu_name: admin
-    parent: system.admin_content
-    expanded: false
-    enabled: true
-  comment__admin:
-    weight: 5
-    menu_name: admin
-    parent: system.admin_content
-    expanded: false
-    enabled: true
 _core:
   default_config_hash: jdY7AU0tU-QsjmiOw3W8vwpYMb-By--_MSFgbqKUTYM
 langcode: es
+definitions:
+  contact__site_page:
+    menu_name: footer
+    parent: ''
+    weight: 0
+    expanded: true
+    enabled: false
+  admin_toolbar_tools__add_content:
+    menu_name: admin
+    parent: system.admin_content
+    weight: 1
+    expanded: false
+    enabled: true
+  admin_toolbar_tools__view__files:
+    menu_name: admin
+    parent: system.admin_content
+    weight: 3
+    expanded: false
+    enabled: true
+  admin_toolbar_tools__add_media:
+    menu_name: admin
+    parent: system.admin_content
+    weight: 4
+    expanded: false
+    enabled: true
+  comment__admin:
+    menu_name: admin
+    parent: system.admin_content
+    weight: 5
+    expanded: false
+    enabled: true

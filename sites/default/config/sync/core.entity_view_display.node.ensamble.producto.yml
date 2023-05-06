@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.ensamble.field_clasificaciones
     - field.field.node.ensamble.field_descripcion
     - field.field.node.ensamble.field_ficha_tecnica
+    - field.field.node.ensamble.field_ficha_tecnica_texto
     - field.field.node.ensamble.field_imagen
     - field.field.node.ensamble.field_numeros_de_parte
     - field.field.node.ensamble.field_recursos
@@ -28,30 +29,32 @@ mode: producto
 content:
   field_categoria_tax:
     type: entity_reference_label
-    weight: 2
-    region: content
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_imagen:
-    weight: 1
+    type: image
     label: hidden
     settings:
-      image_style: thumbnail
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: thumbnail
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 1
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   field_ambientes: true
   field_aplicaciones: true
@@ -59,6 +62,7 @@ hidden:
   field_clasificaciones: true
   field_descripcion: true
   field_ficha_tecnica: true
+  field_ficha_tecnica_texto: true
   field_numeros_de_parte: true
   field_recursos: true
   field_texto_complementario: true

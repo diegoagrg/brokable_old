@@ -14,12 +14,12 @@ bundle: imagen_slider
 mode: default
 content:
   field_imagen_slide:
-    weight: 0
+    type: responsive_image
     label: hidden
     settings:
       responsive_image_style: slider
       image_link: ''
     third_party_settings: {  }
-    type: responsive_image
+    weight: 0
     region: content
 hidden: {  }

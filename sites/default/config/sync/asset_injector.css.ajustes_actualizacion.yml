@@ -1,0 +1,31 @@
+uuid: 45cd65d2-62ae-4a8b-a61a-2e07aa209416
+langcode: es
+status: true
+dependencies:
+  module:
+    - system
+id: ajustes_actualizacion
+label: 'Ajustes actualización'
+code: |-
+  section#block-botonestiendas img {
+      height: 20px;
+      float: right;
+      margin-left: 16px;
+      width: auto;
+  }
+
+  li.we-mega-menu-li.dropdown-menu.brokable-principal,
+  li.we-mega-menu-li.dropdown-menu.brokable-principal > a {
+      background: transparent;
+      font-size: 1em !important;
+      color: #fafafa;
+  }
+media: all
+preprocess: true
+conditions:
+  current_theme:
+    id: current_theme
+    negate: false
+    theme: bootstrap
+contexts: {  }
+conditions_require_all: true

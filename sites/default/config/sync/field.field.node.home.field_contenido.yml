@@ -22,19 +22,25 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       trajeta: trajeta
       banner: banner
+    negate: 0
     target_bundles_drag_drop:
-      trajeta:
+      accesorio:
+        weight: 18
+        enabled: false
+      banner:
+        weight: 17
         enabled: true
-        weight: 11
       caso_de_exito:
         weight: 12
         enabled: false
       columnas:
         weight: 13
+        enabled: false
+      formulario:
+        weight: 21
         enabled: false
       icono_titulo_descripcion:
         weight: 14
@@ -42,17 +48,17 @@ settings:
       imagen_pdf:
         weight: 15
         enabled: false
+      imagen_slider:
+        weight: 24
+        enabled: false
       normativas_homologaciones:
         weight: 16
         enabled: false
-      banner:
-        enabled: true
-        weight: 17
+      precios_de_metales:
+        weight: 26
+        enabled: false
       sector_industrial:
         weight: 17
-        enabled: false
-      accesorio:
-        weight: 18
         enabled: false
       tab_de_icono:
         weight: 18
@@ -63,15 +69,9 @@ settings:
       testimonio:
         weight: 20
         enabled: false
-      formulario:
-        weight: 21
-        enabled: false
-      imagen_slider:
-        weight: 24
-        enabled: false
-      precios_de_metales:
-        weight: 26
-        enabled: false
+      trajeta:
+        weight: 11
+        enabled: true
       video:
         weight: 32
         enabled: false

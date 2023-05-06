@@ -18,14 +18,17 @@ plugin: 'block_content:59203e3f-a4cf-4b89-bae0-cd78904efa21'
 settings:
   id: 'block_content:59203e3f-a4cf-4b89-bae0-cd78904efa21'
   label: 'Sidebar de contacto'
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
-  node_type:
-    id: node_type
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
     bundles:
       accesorios: accesorios
       acerca_de_: acerca_de_
@@ -33,6 +36,3 @@ visibility:
       basic_page: basic_page
       ensamble: ensamble
       tipo_de_cable: tipo_de_cable
-    negate: false
-    context_mapping:
-      node: '@node.node_route_context:node'

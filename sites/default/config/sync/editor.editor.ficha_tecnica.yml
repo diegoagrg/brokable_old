@@ -38,15 +38,9 @@ settings:
             - Source
             - Templates
   plugins:
-    language:
-      language_list: un
-    stylescombo:
-      styles: ''
     templates:
       template_path: /libraries/templates/templates/default.js
       replace_content: 0
-    colorbutton:
-      colors: ''
 image_upload:
   status: false
   scheme: public

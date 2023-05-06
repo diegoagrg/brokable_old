@@ -21,13 +21,10 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       normativas_homologaciones: normativas_homologaciones
+    negate: 0
     target_bundles_drag_drop:
-      normativas_homologaciones:
-        enabled: true
-        weight: 9
       caso_de_exito:
         weight: 10
         enabled: false
@@ -37,6 +34,9 @@ settings:
       imagen_pdf:
         weight: 12
         enabled: false
+      normativas_homologaciones:
+        weight: 9
+        enabled: true
       sector_industrial:
         weight: 13
         enabled: false

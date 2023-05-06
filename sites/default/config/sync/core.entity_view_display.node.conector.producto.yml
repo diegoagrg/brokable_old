@@ -29,39 +29,41 @@ bundle: conector
 mode: producto
 content:
   field_categoria_tax:
-    weight: 2
+    type: entity_reference_label
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 2
     region: content
   field_imagen_req:
-    weight: 1
+    type: image
     label: hidden
     settings:
-      image_style: medium
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: medium
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 1
     region: content
   field_numero_parte:
-    weight: 3
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 3
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   field_caracteristicas_tecnicas: true
   field_descripcion: true

@@ -15,24 +15,26 @@ bundle: categorias
 mode: default
 content:
   description:
-    label: hidden
     type: text_default
-    weight: 0
-    region: content
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_categoria_imagen:
-    weight: 1
+    type: image
     label: hidden
     settings:
-      image_style: thumbnail
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: thumbnail
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 1
     region: content
 hidden:
   langcode: true

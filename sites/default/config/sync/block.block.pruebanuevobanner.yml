@@ -18,14 +18,14 @@ plugin: 'block_content:094593d3-5033-4684-8867-960baab742ba'
 settings:
   id: 'block_content:094593d3-5033-4684-8867-960baab742ba'
   label: 'Prueba nuevo banner'
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
   request_path:
     id: request_path
-    pages: /prueba-banner
     negate: false
     context_mapping: {  }
+    pages: /prueba-banner

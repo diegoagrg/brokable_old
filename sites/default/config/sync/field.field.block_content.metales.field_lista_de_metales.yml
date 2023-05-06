@@ -21,9 +21,9 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       precios_de_metales: precios_de_metales
+    negate: 0
     target_bundles_drag_drop:
       accesorio:
         weight: 14
@@ -47,16 +47,16 @@ settings:
         weight: 20
         enabled: false
       precios_de_metales:
-        enabled: true
         weight: 21
+        enabled: true
       sector_industrial:
         weight: 22
         enabled: false
-      tabla_de_iconos_contenido:
-        weight: 23
-        enabled: false
       tab_de_icono:
         weight: 24
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 23
         enabled: false
       testimonio:
         weight: 25

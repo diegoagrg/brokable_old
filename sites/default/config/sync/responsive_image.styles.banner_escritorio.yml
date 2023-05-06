@@ -12,24 +12,24 @@ id: banner_escritorio
 label: 'Banner escritorio'
 image_style_mappings:
   -
+    image_mapping_type: image_style
+    image_mapping: banner_escritorio
     breakpoint_id: bootstrap.screen-md-min
     multiplier: 1x
+  -
     image_mapping_type: image_style
     image_mapping: banner_escritorio
-  -
     breakpoint_id: bootstrap.screen-sm-max
     multiplier: 1x
-    image_mapping_type: image_style
-    image_mapping: banner_escritorio
   -
-    breakpoint_id: bootstrap.screen-sm-min
-    multiplier: 1x
     image_mapping_type: image_style
     image_mapping: banner_tabe
-  -
-    breakpoint_id: bootstrap.screen-xs-max
+    breakpoint_id: bootstrap.screen-sm-min
     multiplier: 1x
+  -
     image_mapping_type: image_style
     image_mapping: banner_celular
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
 breakpoint_group: bootstrap
 fallback_image_style: banner_escritorio

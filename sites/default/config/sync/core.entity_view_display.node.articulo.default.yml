@@ -19,36 +19,38 @@ bundle: articulo
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 101
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 101
     region: content
   field_categoria:
-    weight: 103
+    type: list_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 103
     region: content
   field_imagen_principal:
-    weight: 102
+    type: image
     label: hidden
     settings:
-      image_style: imagen_grande
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_grande
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 102
     region: content
   links:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
 hidden:
   langcode: true

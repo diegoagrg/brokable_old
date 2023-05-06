@@ -24,13 +24,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_categoria_imagen:
+    type: image_image
     weight: 31
+    region: content
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
-    type: image_image
-    region: content
   langcode:
     type: language_select
     weight: 2

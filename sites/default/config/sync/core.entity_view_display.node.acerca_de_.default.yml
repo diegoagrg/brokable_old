@@ -20,39 +20,41 @@ bundle: acerca_de_
 mode: default
 content:
   field_imagen:
-    weight: 2
+    type: image
     label: hidden
     settings:
-      image_style: imagen_grande
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_grande
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 2
     region: content
   field_tabla_de_iconos_contenido:
     type: entity_reference_revisions_entity_view
-    weight: 3
     label: hidden
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 3
     region: content
   field_texto:
-    weight: 1
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 1
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   field_slider: true
   langcode: true

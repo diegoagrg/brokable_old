@@ -17,27 +17,27 @@ bundle: accesorio
 mode: default
 content:
   field_archivo_pdf:
+    type: file_generic
     weight: 0
+    region: content
     settings:
       progress_indicator: throbber
     third_party_settings:
       imce:
         enabled: true
-    type: file_generic
-    region: content
   field_imagen:
+    type: image_image
     weight: 1
+    region: content
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
-    type: image_image
-    region: content
   translation:
     weight: 10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   created: true
   status: true

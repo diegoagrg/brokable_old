@@ -17,28 +17,28 @@ mode: default
 content:
   field_contenido:
     type: entity_reference_revisions_entity_view
-    weight: 1
     label: hidden
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 1
     region: content
   field_mostrar_noticias:
-    weight: 2
+    type: boolean
     label: above
     settings:
       format: default
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    type: boolean
+    weight: 2
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   field_slider: true
   langcode: true

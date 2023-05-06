@@ -18,14 +18,14 @@ plugin: 'block_content:1bf33ac7-767b-49b8-bc29-63d4bdc19dc4'
 settings:
   id: 'block_content:1bf33ac7-767b-49b8-bc29-63d4bdc19dc4'
   label: 'Slider de tipos de cable'
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
   request_path:
     id: request_path
-    pages: /prueba-banner
     negate: true
     context_mapping: {  }
+    pages: /prueba-banner

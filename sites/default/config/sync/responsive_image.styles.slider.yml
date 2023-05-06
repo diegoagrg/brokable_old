@@ -13,24 +13,24 @@ id: slider
 label: Slider
 image_style_mappings:
   -
-    breakpoint_id: bootstrap.screen-md-min
-    multiplier: 1x
     image_mapping_type: image_style
     image_mapping: slider_xl
-  -
-    breakpoint_id: bootstrap.screen-sm-max
+    breakpoint_id: bootstrap.screen-md-min
     multiplier: 1x
+  -
     image_mapping_type: image_style
     image_mapping: slider_lg
-  -
-    breakpoint_id: bootstrap.screen-sm-min
+    breakpoint_id: bootstrap.screen-sm-max
     multiplier: 1x
+  -
     image_mapping_type: image_style
     image_mapping: slider_md
-  -
-    breakpoint_id: bootstrap.screen-xs-max
+    breakpoint_id: bootstrap.screen-sm-min
     multiplier: 1x
+  -
     image_mapping_type: image_style
     image_mapping: slider_sm
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
 breakpoint_group: bootstrap
 fallback_image_style: '_original image_'

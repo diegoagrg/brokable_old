@@ -21,13 +21,13 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       caso_de_exito: caso_de_exito
+    negate: 0
     target_bundles_drag_drop:
       caso_de_exito:
-        enabled: true
         weight: 6
+        enabled: true
       icono_titulo_descripcion:
         weight: 7
         enabled: false

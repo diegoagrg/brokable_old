@@ -16,11 +16,11 @@ bundle: categorias_ensambles
 mode: fichas_tecnicas
 content:
   field_fichas_tecnicas:
-    weight: 0
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 0
     region: content
 hidden:
   description: true

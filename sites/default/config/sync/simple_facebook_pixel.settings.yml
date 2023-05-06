@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: EaIMOK_O6ocZHnk-Nt8Dieb0lZikpffL3AQv7IeCPQQ
+langcode: es
 pixel_enabled: true
 pixel_id: '664304231636585'
 exclude_admin_pages: true
@@ -35,6 +38,3 @@ add_to_cart_enabled: false
 add_to_wishlist_enabled: false
 add_to_wishlist_flag_enabled: false
 add_to_wishlist_flag_list: {  }
-_core:
-  default_config_hash: EaIMOK_O6ocZHnk-Nt8Dieb0lZikpffL3AQv7IeCPQQ
-langcode: es

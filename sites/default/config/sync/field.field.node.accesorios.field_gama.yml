@@ -21,16 +21,16 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       accesorio: accesorio
+    negate: 0
     target_bundles_drag_drop:
+      accesorio:
+        weight: 13
+        enabled: true
       caso_de_exito:
         weight: 12
         enabled: false
-      accesorio:
-        enabled: true
-        weight: 13
       columnas:
         weight: 13
         enabled: false

@@ -21,19 +21,19 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       imagen_pdf: imagen_pdf
+    negate: 0
     target_bundles_drag_drop:
-      imagen_pdf:
-        enabled: true
-        weight: 8
       caso_de_exito:
         weight: 9
         enabled: false
       icono_titulo_descripcion:
         weight: 10
         enabled: false
+      imagen_pdf:
+        weight: 8
+        enabled: true
       sector_industrial:
         weight: 11
         enabled: false

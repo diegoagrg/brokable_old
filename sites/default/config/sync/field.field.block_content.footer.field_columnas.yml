@@ -21,16 +21,16 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       columnas: columnas
+    negate: 0
     target_bundles_drag_drop:
-      columnas:
-        enabled: true
-        weight: 10
       caso_de_exito:
         weight: 11
         enabled: false
+      columnas:
+        weight: 10
+        enabled: true
       icono_titulo_descripcion:
         weight: 12
         enabled: false

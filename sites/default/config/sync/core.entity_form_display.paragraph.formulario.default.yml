@@ -13,17 +13,17 @@ bundle: formulario
 mode: default
 content:
   field_seleccionar_formulario:
+    type: webform_entity_reference_select
     weight: 0
+    region: content
     settings:
       default_data: true
     third_party_settings: {  }
-    type: webform_entity_reference_select
-    region: content
   translation:
     weight: 10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   created: true
   status: true

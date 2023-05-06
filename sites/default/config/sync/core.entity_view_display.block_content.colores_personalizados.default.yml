@@ -14,21 +14,21 @@ bundle: colores_personalizados
 mode: default
 content:
   field_color_1:
-    weight: 0
+    type: color_field_formatter_text
     label: above
     settings:
       format: hex
-      opacity: '1'
+      opacity: true
     third_party_settings: {  }
-    type: color_field_formatter_text
+    weight: 0
     region: content
   field_color_2:
-    weight: 1
+    type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 1
     region: content
 hidden:
   langcode: true

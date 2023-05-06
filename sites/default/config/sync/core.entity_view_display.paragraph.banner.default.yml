@@ -25,61 +25,63 @@ bundle: banner
 mode: default
 content:
   field_alineacion_horizontal:
-    weight: 7
+    type: list_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 7
     region: content
   field_alineacion_vertical:
-    weight: 6
+    type: list_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 6
     region: content
   field_gif:
-    weight: 8
+    type: image
     label: hidden
     settings:
-      svg_attributes:
-        width: ''
-        height: ''
-      svg_render_as_image: true
-      image_style: ''
       image_link: ''
+      image_style: ''
+      svg_attributes:
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 8
     region: content
   field_imagen_para_escritorio:
-    weight: 0
+    type: responsive_image
     label: hidden
     settings:
       responsive_image_style: banner_escritorio
       image_link: ''
     third_party_settings: {  }
-    type: responsive_image
+    weight: 0
     region: content
   field_imagen_para_mobile:
-    weight: 2
+    type: responsive_image
     label: hidden
     settings:
       responsive_image_style: banner_celular
       image_link: ''
     third_party_settings: {  }
-    type: responsive_image
+    weight: 2
     region: content
   field_imagen_para_tablets:
-    weight: 1
+    type: responsive_image
     label: hidden
     settings:
       responsive_image_style: banner_tablet
       image_link: ''
     third_party_settings: {  }
-    type: responsive_image
+    weight: 1
     region: content
   field_link:
-    weight: 5
+    type: link
     label: hidden
     settings:
       trim_length: 80
@@ -88,22 +90,22 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 5
     region: content
   field_texto:
-    weight: 4
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 4
     region: content
   field_titulo:
-    weight: 3
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 3
     region: content
 hidden: {  }

@@ -21,9 +21,9 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       imagen_pdf: imagen_pdf
+    negate: 0
     target_bundles_drag_drop:
       caso_de_exito:
         weight: 12
@@ -38,19 +38,19 @@ settings:
         weight: 15
         enabled: false
       imagen_pdf:
-        enabled: true
         weight: 16
+        enabled: true
       normativas_homologaciones:
         weight: 17
         enabled: false
       sector_industrial:
         weight: 18
         enabled: false
-      tabla_de_iconos_contenido:
-        weight: 19
-        enabled: false
       tab_de_icono:
         weight: 20
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 19
         enabled: false
       testimonio:
         weight: 21

@@ -23,16 +23,16 @@ third_party_settings:
         - title
         - field_texto
         - field_imagen
+      label: Descripción
+      region: content
       parent_name: ''
       weight: 0
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
         required_fields: true
-      label: Descripción
-      region: content
 id: node.acerca_de_.default
 targetEntityType: node
 bundle: acerca_de_
@@ -45,18 +45,19 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_imagen:
+    type: image_image
     weight: -3
+    region: content
     settings:
-      preview_image_style: thumbnail
       progress_indicator: throbber
+      preview_image_style: thumbnail
     third_party_settings:
       imce:
         enabled: true
-    type: image_image
-    region: content
   field_tabla_de_iconos_contenido:
     type: entity_reference_paragraphs
     weight: 1
+    region: content
     settings:
       title: Párrafo
       title_plural: Parráfos
@@ -65,15 +66,14 @@ content:
       form_display_mode: default
       default_paragraph_type: tab_de_icono
     third_party_settings: {  }
-    region: content
   field_texto:
+    type: text_textarea
     weight: -4
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   langcode:
     type: language_select
     weight: 2
@@ -89,24 +89,24 @@ content:
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 5
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 8
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 6
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -118,18 +118,18 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   uid:
     type: entity_reference_autocomplete
     weight: 3
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
 hidden:
   field_slider: true

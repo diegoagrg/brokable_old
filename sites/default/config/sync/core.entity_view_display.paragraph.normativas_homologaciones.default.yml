@@ -17,30 +17,32 @@ bundle: normativas_homologaciones
 mode: default
 content:
   field_cables:
-    weight: 0
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 0
     region: content
   field_imagenes:
-    weight: 2
+    type: image
     label: hidden
     settings:
-      image_style: imagen_chica
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_chica
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 2
     region: content
   field_normativas:
-    weight: 1
+    type: basic_string
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 1
     region: content
 hidden: {  }

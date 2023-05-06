@@ -18,14 +18,14 @@ bundle: trajeta
 mode: default
 content:
   field_ancho:
-    weight: 2
+    type: list_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 2
     region: content
   field_enlace:
-    weight: 1
+    type: link
     label: hidden
     settings:
       trim_length: 80
@@ -34,19 +34,21 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 1
     region: content
   field_imagen:
-    weight: 0
+    type: image
     label: hidden
     settings:
-      image_style: imagen_grande
       image_link: ''
-      svg_render_as_image: '1'
+      image_style: imagen_grande
       svg_attributes:
-        width: ''
-        height: ''
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
-    type: image
+    weight: 0
     region: content
 hidden: {  }

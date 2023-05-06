@@ -19,60 +19,21 @@ base_table: node_field_data
 base_field: nid
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: perm
-        options:
-          perm: 'access content'
-      cache:
-        type: tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          disable_sql_rewrite: false
-          distinct: false
-          replica: false
-          query_comment: ''
-          query_tags: {  }
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Apply
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: some
-        options:
-          items_per_page: 15
-          offset: 0
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: ensambles_menu
-          default_row_class: true
-      row:
-        type: fields
+      title: Ensambles
       fields:
         title:
           id: title
           table: node_field_data
           field: title
-          settings:
-            link_to_entity: true
-          plugin_id: field
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -116,6 +77,8 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
+          settings:
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -126,54 +89,92 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-      filters:
-        status:
-          value: '1'
-          table: node_field_data
-          field: status
-          plugin_id: boolean
-          entity_type: node
-          entity_field: status
-          id: status
-          expose:
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          group: 1
-        type:
-          id: type
-          table: node_field_data
-          field: type
-          value:
-            ensamble: ensamble
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
-          expose:
-            operator_limit_selection: false
-            operator_list: {  }
+      pager:
+        type: some
+        options:
+          offset: 0
+          items_per_page: 15
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Apply
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      empty: {  }
       sorts:
         created:
           id: created
           table: node_field_data
           field: created
-          order: DESC
-          entity_type: node
-          entity_field: created
-          plugin_id: date
           relationship: none
           group_type: group
           admin_label: ''
-          exposed: false
+          entity_type: node
+          entity_field: created
+          plugin_id: date
+          order: DESC
           expose:
             label: ''
+            field_identifier: created
+          exposed: false
           granularity: second
-      title: Ensambles
+      arguments: {  }
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+          expose:
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+          value:
+            ensamble: ensamble
+          expose:
+            operator_limit_selection: false
+            operator_list: {  }
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: ensambles_menu
+          default_row_class: true
+      row:
+        type: fields
+      query:
+        type: views_query
+        options:
+          query_comment: ''
+          disable_sql_rewrite: false
+          distinct: false
+          replica: false
+          query_tags: {  }
+      relationships: {  }
       header: {  }
       footer: {  }
-      empty: {  }
-      relationships: {  }
-      arguments: {  }
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -184,9 +185,9 @@ display:
         - user.permissions
       tags: {  }
   block_1:
-    display_plugin: block
     id: block_1
     display_title: Block
+    display_plugin: block
     position: 1
     display_options:
       display_extenders: {  }
@@ -199,32 +200,11 @@ display:
         - user.permissions
       tags: {  }
   page_1:
-    display_plugin: page
     id: page_1
     display_title: Page
+    display_plugin: page
     position: 2
     display_options:
-      display_extenders: {  }
-      style:
-        type: grid
-        options:
-          grouping: {  }
-          columns: 4
-          automatic_width: false
-          alignment: horizontal
-          col_class_default: true
-          col_class_custom: 'col-md-3 ensamble_link'
-          row_class_default: true
-          row_class_custom: row
-      defaults:
-        style: false
-        row: false
-        fields: false
-        filters: false
-        filter_groups: false
-      row:
-        type: fields
-        options: {  }
       fields:
         field_imagen:
           id: field_imagen
@@ -233,6 +213,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -277,12 +258,14 @@ display:
           click_sort_column: target_id
           type: image
           settings:
-            image_style: imagen_mediana
             image_link: content
-            svg_render_as_image: 0
+            image_style: imagen_mediana
             svg_attributes:
-              width: ''
-              height: ''
+              width: null
+              height: null
+            svg_render_as_image: false
+            image_loading:
+              attribute: lazy
           group_column: ''
           group_columns: {  }
           group_rows: true
@@ -293,17 +276,14 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         title:
           id: title
           table: node_field_data
           field: title
-          settings:
-            link_to_entity: true
-          plugin_id: field
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -347,6 +327,8 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
+          settings:
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -357,30 +339,29 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-      path: ensambles
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
           field: type
-          value:
-            ensamble: ensamble
           entity_type: node
           entity_field: type
           plugin_id: bundle
+          value:
+            ensamble: ensamble
           group: 1
           expose:
             operator_limit_selection: false
@@ -389,6 +370,28 @@ display:
         operator: AND
         groups:
           1: AND
+      style:
+        type: grid
+        options:
+          grouping: {  }
+          columns: 4
+          automatic_width: false
+          alignment: horizontal
+          row_class_custom: row
+          row_class_default: true
+          col_class_custom: 'col-md-3 ensamble_link'
+          col_class_default: true
+      row:
+        type: fields
+        options: {  }
+      defaults:
+        style: false
+        row: false
+        fields: false
+        filters: false
+        filter_groups: false
+      display_extenders: {  }
+      path: ensambles
     cache_metadata:
       max-age: -1
       contexts:

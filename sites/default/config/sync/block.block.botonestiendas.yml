@@ -17,8 +17,8 @@ plugin: 'block_content:4dac4012-9b18-495e-a4db-978af5bc5955'
 settings:
   id: 'block_content:4dac4012-9b18-495e-a4db-978af5bc5955'
   label: 'Botones tiendas'
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full

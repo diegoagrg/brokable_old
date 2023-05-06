@@ -15,7 +15,9 @@ bundle: colores_personalizados
 mode: default
 content:
   field_color_1:
+    type: color_field_widget_grid
     weight: 101
+    region: content
     settings:
       cell_width: '10'
       cell_height: '10'
@@ -24,10 +26,10 @@ content:
       box_height: '20'
       columns: '16'
     third_party_settings: {  }
-    type: color_field_widget_grid
-    region: content
   field_color_2:
+    type: jquery_minicolors_widget
     weight: 102
+    region: content
     settings:
       size: '60'
       placeholder: ''
@@ -46,8 +48,6 @@ content:
       keywords: ''
       inline: 0
     third_party_settings: {  }
-    type: jquery_minicolors_widget
-    region: content
   info:
     type: string_textfield
     weight: -5
