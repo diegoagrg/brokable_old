@@ -1,0 +1,21 @@
+uuid: 699aa6ba-043e-4c98-a2c9-52ae230c426e
+langcode: es
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_prefijo_cobre
+field_name: field_prefijo_cobre
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

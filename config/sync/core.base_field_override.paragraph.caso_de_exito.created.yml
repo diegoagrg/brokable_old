@@ -1,0 +1,18 @@
+uuid: 737a2e16-7c13-46a0-a168-12c01cbc8dc2
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.caso_de_exito
+id: paragraph.caso_de_exito.created
+field_name: created
+entity_type: paragraph
+bundle: caso_de_exito
+label: Fecha
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

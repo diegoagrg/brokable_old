@@ -1,0 +1,130 @@
+uuid: bbcd4ae9-2f28-4888-815c-3adccff80f90
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.noticias_y_opinion.field_medios
+    - field.field.node.noticias_y_opinion.field_noticias
+    - field.field.node.noticias_y_opinion.field_opinion
+    - field.field.node.noticias_y_opinion.field_slider
+    - field.field.node.noticias_y_opinion.field_videos
+    - node.type.noticias_y_opinion
+  module:
+    - field_group
+    - path
+third_party_settings:
+  field_group:
+    group_categorias_a_mostrar:
+      children:
+        - field_noticias
+        - field_opinion
+        - field_medios
+        - field_videos
+      label: 'Categorías a mostrar'
+      region: content
+      parent_name: ''
+      weight: 6
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: ''
+        required_fields: true
+id: node.noticias_y_opinion.default
+targetEntityType: node
+bundle: noticias_y_opinion
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_medios:
+    type: boolean_checkbox
+    weight: 125
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_noticias:
+    type: boolean_checkbox
+    weight: 123
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_opinion:
+    type: boolean_checkbox
+    weight: 124
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_videos:
+    type: boolean_checkbox
+    weight: 126
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 1
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 2
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  field_slider: true

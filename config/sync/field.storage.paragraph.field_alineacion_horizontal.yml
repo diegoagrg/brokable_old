@@ -1,0 +1,30 @@
+uuid: ae29674f-695c-424e-88a0-b6c695616944
+langcode: es
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+id: paragraph.field_alineacion_horizontal
+field_name: field_alineacion_horizontal
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: izquierda
+      label: Izquierda
+    -
+      value: derecha
+      label: Derecha
+    -
+      value: centro
+      label: 'Al centro'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

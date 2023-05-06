@@ -1,0 +1,45 @@
+uuid: e0862b9c-8db6-46d2-b596-28a92fa7c41d
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_slider
+    - node.type.testimonios
+  module:
+    - content_translation
+    - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      file: file
+      alt: '0'
+      title: '0'
+id: node.testimonios.field_slider
+field_name: field_slider
+entity_type: node
+bundle: testimonios
+label: Slider
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

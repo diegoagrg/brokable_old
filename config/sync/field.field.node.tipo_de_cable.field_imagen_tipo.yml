@@ -1,0 +1,45 @@
+uuid: 790dff44-855c-44e0-a124-95acbd18f777
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_imagen_tipo
+    - node.type.tipo_de_cable
+  module:
+    - content_translation
+    - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      alt: alt
+      title: title
+      file: '0'
+id: node.tipo_de_cable.field_imagen_tipo
+field_name: field_imagen_tipo
+entity_type: node
+bundle: tipo_de_cable
+label: 'Imagen del tipo'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

@@ -1,0 +1,21 @@
+uuid: 134f986d-49dc-44b7-bd8d-855e63829311
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.acerca_de_
+  module:
+    - user
+id: node.acerca_de_.teaser
+targetEntityType: node
+bundle: acerca_de_
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

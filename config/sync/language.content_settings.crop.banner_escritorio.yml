@@ -1,0 +1,11 @@
+uuid: c8155515-ebeb-410b-9ca0-7eab11981e79
+langcode: es
+status: true
+dependencies:
+  config:
+    - crop.type.banner_escritorio
+id: crop.banner_escritorio
+target_entity_type_id: crop
+target_bundle: banner_escritorio
+default_langcode: site_default
+language_alterable: false

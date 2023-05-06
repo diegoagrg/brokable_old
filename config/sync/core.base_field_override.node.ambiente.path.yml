@@ -1,0 +1,20 @@
+uuid: 7a5c7a5d-a872-4bda-8b18-011e091afa96
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.ambiente
+  module:
+    - path
+id: node.ambiente.path
+field_name: path
+entity_type: node
+bundle: ambiente
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

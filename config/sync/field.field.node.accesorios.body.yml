@@ -1,0 +1,23 @@
+uuid: 5cedd7d4-20a1-4709-b77d-b622a1c8f735
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.accesorios
+  module:
+    - text
+id: node.accesorios.body
+field_name: body
+entity_type: node
+bundle: accesorios
+label: Descripción
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

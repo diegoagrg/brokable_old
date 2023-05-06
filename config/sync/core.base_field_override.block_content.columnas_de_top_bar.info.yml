@@ -1,0 +1,18 @@
+uuid: b0c8b615-497e-41ac-8a09-9e453bba735c
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+id: block_content.columnas_de_top_bar.info
+field_name: info
+entity_type: block_content
+bundle: columnas_de_top_bar
+label: 'Block description'
+description: 'A brief description of your block.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

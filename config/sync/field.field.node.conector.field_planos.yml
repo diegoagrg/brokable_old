@@ -1,0 +1,27 @@
+uuid: bd554344-4b1d-4cfa-a758-9e7a890f4de5
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_planos
+    - node.type.conector
+  module:
+    - file
+id: node.conector.field_planos
+field_name: field_planos
+entity_type: node
+bundle: conector
+label: Planos
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'txt pdf xls'
+  max_filesize: ''
+  description_field: false
+field_type: file

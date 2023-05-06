@@ -1,0 +1,47 @@
+uuid: 2ec3f9b5-ee14-4cbe-bde6-6b3f77c1235d
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.sidebar_contacto
+    - field.field.block_content.sidebar_contacto.field_contacto
+  module:
+    - paragraphs
+id: block_content.sidebar_contacto.default
+targetEntityType: block_content
+bundle: sidebar_contacto
+mode: default
+content:
+  field_contacto:
+    type: entity_reference_paragraphs
+    weight: 27
+    region: content
+    settings:
+      title: Párrafo
+      title_plural: Parráfos
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

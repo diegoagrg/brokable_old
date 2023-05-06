@@ -1,9 +1,0 @@
-uuid: 959750e7-bcbf-4ecb-8569-aea56c868023
-langcode: es
-status: true
-dependencies: {  }
-id: tab_de_icono
-label: 'Tab de ícono'
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

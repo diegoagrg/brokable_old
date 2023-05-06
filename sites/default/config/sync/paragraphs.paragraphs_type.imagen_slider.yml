@@ -1,9 +1,0 @@
-uuid: 770a5732-cf34-4eb8-88ce-2fecd4e823f0
-langcode: es
-status: true
-dependencies: {  }
-id: imagen_slider
-label: 'Slide imagen'
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

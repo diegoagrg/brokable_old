@@ -1,0 +1,9 @@
+uuid: ac64a31c-8c7a-40fb-903c-0e2379ed8de8
+langcode: es
+status: true
+dependencies: {  }
+id: columnas
+label: Columnas
+icon_uuid: null
+description: ''
+behavior_plugins: {  }

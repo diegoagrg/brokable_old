@@ -1,0 +1,22 @@
+uuid: f459a3ef-6844-4942-87c7-cf646e3ab801
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.articulo
+id: node.articulo.promote
+field_name: promote
+entity_type: node
+bundle: articulo
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

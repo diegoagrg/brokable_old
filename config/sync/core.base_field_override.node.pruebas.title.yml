@@ -1,0 +1,18 @@
+uuid: 61570f37-f979-452a-97a5-a13e9cd5acc9
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.pruebas
+id: node.pruebas.title
+field_name: title
+entity_type: node
+bundle: pruebas
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

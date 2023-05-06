@@ -1,0 +1,38 @@
+uuid: e502bf52-6fc8-4263-a653-b7022ea1d97c
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_imagen_req
+    - node.type.conector
+  module:
+    - image
+id: node.conector.field_imagen_req
+field_name: field_imagen_req
+entity_type: node
+bundle: conector
+label: 'Imagen principal'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: '256 KB'
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

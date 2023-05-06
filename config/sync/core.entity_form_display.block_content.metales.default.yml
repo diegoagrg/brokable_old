@@ -1,0 +1,47 @@
+uuid: ebe1b5b0-4b6e-48a5-884b-463e44ec4434
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.metales
+    - field.field.block_content.metales.field_lista_de_metales
+  module:
+    - paragraphs
+id: block_content.metales.default
+targetEntityType: block_content
+bundle: metales
+mode: default
+content:
+  field_lista_de_metales:
+    type: entity_reference_paragraphs
+    weight: 26
+    region: content
+    settings:
+      title: Párrafo
+      title_plural: Parráfos
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

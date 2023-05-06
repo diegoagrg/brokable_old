@@ -1,0 +1,60 @@
+uuid: 3b00fb7a-8a16-458d-aa3a-ad9b7066454a
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.acerca_de_.field_imagen
+    - field.field.node.acerca_de_.field_slider
+    - field.field.node.acerca_de_.field_tabla_de_iconos_contenido
+    - field.field.node.acerca_de_.field_texto
+    - image.style.imagen_grande
+    - node.type.acerca_de_
+  module:
+    - entity_reference_revisions
+    - svg_image
+    - text
+    - user
+id: node.acerca_de_.default
+targetEntityType: node
+bundle: acerca_de_
+mode: default
+content:
+  field_imagen:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: imagen_grande
+      svg_attributes:
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_tabla_de_iconos_contenido:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_texto:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_slider: true
+  langcode: true

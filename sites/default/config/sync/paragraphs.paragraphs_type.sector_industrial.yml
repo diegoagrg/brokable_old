@@ -1,9 +1,0 @@
-uuid: 1cc84eb1-c75a-424e-9961-a25c26418f1f
-langcode: es
-status: true
-dependencies: {  }
-id: sector_industrial
-label: 'Sector industrial'
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

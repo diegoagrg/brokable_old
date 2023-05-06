@@ -1,0 +1,22 @@
+uuid: f8e3b7d7-791f-45a8-a3cd-8a0616395e61
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.ambiente
+id: node.ambiente.status
+field_name: status
+entity_type: node
+bundle: ambiente
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

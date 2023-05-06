@@ -1,8 +1,0 @@
-uuid: 2b57244e-8c93-4801-8160-184d026eed5f
-langcode: es
-status: true
-dependencies: {  }
-id: sidebar_contacto
-label: 'Sidebar contacto'
-revision: 0
-description: ''

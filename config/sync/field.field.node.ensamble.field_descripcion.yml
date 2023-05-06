@@ -1,0 +1,21 @@
+uuid: b8e94c6b-cc39-491b-83c9-f5c198d99906
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_descripcion
+    - node.type.ensamble
+  module:
+    - text
+id: node.ensamble.field_descripcion
+field_name: field_descripcion
+entity_type: node
+bundle: ensamble
+label: Descripción
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

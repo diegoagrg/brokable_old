@@ -1,9 +1,0 @@
-uuid: 1849eb2d-7eb1-4535-9f23-609e8dd0bf20
-langcode: es
-status: true
-dependencies: {  }
-id: ccp__cables
-label: 'CCP - Cables'
-category: ''
-likert: false
-options: "Termopar: Termopar\r\nAlta temperatura: Alta temperatura\r\nAluminio: Aluminio\r\nArmado: Armado\r\nBus: Bus\r\nCoaxial: Coaxial\r\nControl: Control\r\nFerroviario: Ferroviario\r\nFibra optica: Fibra optica\r\nFelxible: Felxible\r\nGoma: Goma\r\nInstrumetación: Instrumetación\r\nLAN: LAN\r\nLSZH: LSZH\r\nMedia tensión: Media tensión\r\nMineria: Mineria\r\nPortaelectrodo: Portaelectrodo\r\nServomotor: Servomotor\r\nSolar/fotovoltaico: Solar/fotovoltaico\r\nSumergibles: Sumergibles\r\nVDF: VDF\r\nSumergibles: Sumergibles\r\nVDF: VDF"

@@ -1,0 +1,22 @@
+uuid: cce6c2fe-d107-4911-8c87-2bf177688d6f
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.ambiente
+id: node.ambiente.promote
+field_name: promote
+entity_type: node
+bundle: ambiente
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

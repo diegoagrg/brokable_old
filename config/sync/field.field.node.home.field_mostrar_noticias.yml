@@ -1,0 +1,23 @@
+uuid: 6a5072df-5950-4a2b-a502-0365fa6b71fa
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_mostrar_noticias
+    - node.type.home
+id: node.home.field_mostrar_noticias
+field_name: field_mostrar_noticias
+entity_type: node
+bundle: home
+label: 'Mostrar noticias'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

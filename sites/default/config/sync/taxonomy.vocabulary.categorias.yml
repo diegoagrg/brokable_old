@@ -1,8 +1,0 @@
-uuid: fc59586f-eb25-456b-a360-d29759306f1d
-langcode: es
-status: true
-dependencies: {  }
-name: 'Categorías conectores'
-vid: categorias
-description: ''
-weight: 0

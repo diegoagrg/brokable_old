@@ -1,0 +1,20 @@
+uuid: 8308b1c7-11fb-4977-a15f-34a3715136ef
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.tipo_de_cable
+  module:
+    - path
+id: node.tipo_de_cable.path
+field_name: path
+entity_type: node
+bundle: tipo_de_cable
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

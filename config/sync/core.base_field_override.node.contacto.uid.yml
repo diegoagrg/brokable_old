@@ -1,0 +1,20 @@
+uuid: 6f82e998-24a8-410e-8339-89ead02da286
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.contacto
+id: node.contacto.uid
+field_name: uid
+entity_type: node
+bundle: contacto
+label: 'Escrito por'
+description: 'The username of the content author.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getDefaultEntityOwner'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

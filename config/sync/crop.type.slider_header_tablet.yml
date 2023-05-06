@@ -1,0 +1,12 @@
+uuid: b86f44dd-20da-4561-a15a-9b5fcc1b7733
+langcode: es
+status: true
+dependencies: {  }
+label: 'Slider header tablet'
+id: slider_header_tablet
+description: ''
+aspect_ratio: '768:280'
+soft_limit_width: 768
+soft_limit_height: 280
+hard_limit_width: null
+hard_limit_height: null

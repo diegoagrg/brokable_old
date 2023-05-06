@@ -1,9 +1,0 @@
-uuid: c93b5189-2af3-40de-8cff-0e0548ef4af1
-langcode: es
-status: true
-dependencies: {  }
-id: accesorio
-label: Accesorio
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

@@ -1,0 +1,12 @@
+uuid: 544fe9b8-f56c-4485-bc73-b152074aa608
+langcode: es
+status: true
+dependencies: {  }
+label: 'Slider de header desktop'
+id: slider_de_header
+description: ''
+aspect_ratio: '75:14'
+soft_limit_width: 1500
+soft_limit_height: 280
+hard_limit_width: null
+hard_limit_height: null

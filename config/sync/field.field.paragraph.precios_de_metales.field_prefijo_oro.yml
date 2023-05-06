@@ -1,0 +1,19 @@
+uuid: 478e54ec-7906-4ab5-aea4-db333bdf290b
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_prefijo_oro
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.field_prefijo_oro
+field_name: field_prefijo_oro
+entity_type: paragraph
+bundle: precios_de_metales
+label: Prefijo
+description: 'Defina una cadena que debe ser prefijada al valor, como ''$'' o ''€''. Deje en blanco para ninguno.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

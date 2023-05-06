@@ -1,0 +1,28 @@
+uuid: 397e7812-252c-47ae-ae52-4cf47c60f073
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_ambiente
+    - node.type.ambiente
+    - paragraphs.paragraphs_type.imagen_pdf
+id: paragraph.imagen_pdf.field_ambiente
+field_name: field_ambiente
+entity_type: paragraph
+bundle: imagen_pdf
+label: Ambiente
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      ambiente: ambiente
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -1,6 +1,2 @@
 # Excludes for installed Drupal site
 sites/*/files/
-sites/default/settings.php
-sites/default/services.yml
-sites/default/default.*
-.htaccess

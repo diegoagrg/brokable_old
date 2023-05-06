@@ -1,0 +1,30 @@
+uuid: b5c68b13-f8cb-4a25-a337-857e67ceafc0
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.formulario.field_seleccionar_formulario
+    - paragraphs.paragraphs_type.formulario
+  module:
+    - webform
+id: paragraph.formulario.default
+targetEntityType: paragraph
+bundle: formulario
+mode: default
+content:
+  field_seleccionar_formulario:
+    type: webform_entity_reference_select
+    weight: 0
+    region: content
+    settings:
+      default_data: true
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

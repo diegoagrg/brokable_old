@@ -1,8 +1,0 @@
-uuid: 6a35f374-a937-433b-9163-de35e0c18461
-langcode: es
-status: true
-dependencies: {  }
-_core:
-  default_config_hash: U5VlGjd_SfV0Qm_EfnaynOfc549cNscFAx48JfYoMRI
-id: default
-label: Master

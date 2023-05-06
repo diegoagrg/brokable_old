@@ -1,0 +1,20 @@
+uuid: deadc242-b5b6-489e-a58f-217486453ca0
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.tipo_de_cable
+id: node.tipo_de_cable.menu_link
+field_name: menu_link
+entity_type: node
+bundle: tipo_de_cable
+label: 'Enlace del menu'
+description: 'Enlace de menú calculado para el nodo (solo disponible durante el guardado del nodo).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

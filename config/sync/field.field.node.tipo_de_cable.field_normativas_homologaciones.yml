@@ -1,0 +1,52 @@
+uuid: 67a9110a-b1a0-4ea6-90b5-0196b503a5bf
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_normativas_homologaciones
+    - node.type.tipo_de_cable
+    - paragraphs.paragraphs_type.normativas_homologaciones
+  module:
+    - entity_reference_revisions
+id: node.tipo_de_cable.field_normativas_homologaciones
+field_name: field_normativas_homologaciones
+entity_type: node
+bundle: tipo_de_cable
+label: 'Normativas y homologaciones'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      normativas_homologaciones: normativas_homologaciones
+    negate: 0
+    target_bundles_drag_drop:
+      caso_de_exito:
+        weight: 10
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 11
+        enabled: false
+      imagen_pdf:
+        weight: 12
+        enabled: false
+      normativas_homologaciones:
+        weight: 9
+        enabled: true
+      sector_industrial:
+        weight: 13
+        enabled: false
+      tab_de_icono:
+        weight: 14
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 15
+        enabled: false
+      testimonio:
+        weight: 16
+        enabled: false
+field_type: entity_reference_revisions

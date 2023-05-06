@@ -1,0 +1,46 @@
+uuid: 19c9cb4d-501b-44d3-a2f3-39ea36cf799f
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sectores
+    - node.type.sectores
+    - paragraphs.paragraphs_type.sector_industrial
+  module:
+    - entity_reference_revisions
+id: node.sectores.field_sectores
+field_name: field_sectores
+entity_type: node
+bundle: sectores
+label: Sectores
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      sector_industrial: sector_industrial
+    negate: 0
+    target_bundles_drag_drop:
+      caso_de_exito:
+        weight: 8
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 9
+        enabled: false
+      sector_industrial:
+        weight: 7
+        enabled: true
+      tab_de_icono:
+        weight: 10
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 11
+        enabled: false
+      testimonio:
+        weight: 12
+        enabled: false
+field_type: entity_reference_revisions

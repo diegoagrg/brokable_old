@@ -1,0 +1,18 @@
+uuid: f6284ca0-34df-44b4-ab06-cf9d1acda89a
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.tipo_de_cable
+id: node.tipo_de_cable.title
+field_name: title
+entity_type: node
+bundle: tipo_de_cable
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

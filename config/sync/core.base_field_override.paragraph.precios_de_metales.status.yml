@@ -1,0 +1,22 @@
+uuid: 78a98506-facf-4568-ad19-9ee3db30997e
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.status
+field_name: status
+entity_type: paragraph
+bundle: precios_de_metales
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

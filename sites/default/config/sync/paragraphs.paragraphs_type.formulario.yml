@@ -1,9 +1,0 @@
-uuid: dae51030-13d9-434e-9bfa-a32d34e2bf96
-langcode: es
-status: true
-dependencies: {  }
-id: formulario
-label: Formulario
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

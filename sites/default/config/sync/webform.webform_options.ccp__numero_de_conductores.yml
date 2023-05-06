@@ -1,9 +1,0 @@
-uuid: e555ccdd-d10b-4fc9-a3be-b42572df7272
-langcode: es
-status: true
-dependencies: {  }
-id: ccp__numero_de_conductores
-label: 'CCP - Número de conductores'
-category: ''
-likert: false
-options: "1: '1'\r\n2: '2'\r\n3: '3'\r\n4: '4'\r\n5: '5'\r\n6: '6'\r\n7: '7'\r\n8: '8'\r\n9: '9'\r\n10: '10'\r\n11: '11'\r\n12: '12'\r\n13: '13'\r\n14: '14'\r\n15: '15'\r\n16: '16'\r\n17: '17'\r\n18: '18'\r\n19: '19'\r\n20: '20'\r\n21: '21'\r\n22: '22'\r\n23: '23'\r\n24: '24'\r\n25: '25'\r\n26: '26'\r\n27: '27'\r\n28: '28'\r\n29: '29'\r\n30: '30'\r\n31: '31'\r\n32: '32'\r\n33: '33'\r\n34: '34'\r\n35: '35'\r\n36: '36'\r\n37: '37'\r\n38: '38'\r\n39: '39'\r\n40: '40'\r\n41: '41'\r\n42: '42'\r\n43: '43'\r\n44: '44'\r\n45: '45'\r\n46: '46'\r\n47: '47'\r\n48: '48'\r\n49: '49'\r\n50: '50'\r\n"

@@ -1,0 +1,22 @@
+uuid: 5648fd0f-549b-4d3f-9790-c56732366c4a
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.ensamble
+id: node.ensamble.status
+field_name: status
+entity_type: node
+bundle: ensamble
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

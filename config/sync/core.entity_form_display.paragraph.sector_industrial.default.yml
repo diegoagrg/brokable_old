@@ -1,0 +1,65 @@
+uuid: 3ad1a01f-ea34-4467-9f97-bc6927e9451f
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.sector_industrial.field_descripcion
+    - field.field.paragraph.sector_industrial.field_icono
+    - field.field.paragraph.sector_industrial.field_imagen
+    - field.field.paragraph.sector_industrial.field_titulo
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.sector_industrial
+  module:
+    - imce
+    - svg_image
+    - text
+id: paragraph.sector_industrial.default
+targetEntityType: paragraph
+bundle: sector_industrial
+mode: default
+content:
+  field_descripcion:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_icono:
+    type: image_image
+    weight: 0
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings:
+      imce:
+        enabled: true
+  field_imagen:
+    type: image_image
+    weight: 3
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings:
+      imce:
+        enabled: true
+  field_titulo:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

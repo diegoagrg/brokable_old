@@ -1,0 +1,22 @@
+uuid: e9f414c6-5803-4843-97c5-5be71ab5bbe8
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.noticias_y_opinion
+id: node.noticias_y_opinion.status
+field_name: status
+entity_type: node
+bundle: noticias_y_opinion
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

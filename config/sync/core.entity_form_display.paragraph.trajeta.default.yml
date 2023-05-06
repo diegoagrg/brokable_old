@@ -1,0 +1,49 @@
+uuid: 642d5820-b29e-4f08-997e-0961db73754a
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.trajeta.field_ancho
+    - field.field.paragraph.trajeta.field_enlace
+    - field.field.paragraph.trajeta.field_imagen
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.trajeta
+  module:
+    - link
+    - svg_image
+id: paragraph.trajeta.default
+targetEntityType: paragraph
+bundle: trajeta
+mode: default
+content:
+  field_ancho:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_enlace:
+    type: link_default
+    weight: 1
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_imagen:
+    type: image_image
+    weight: 0
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

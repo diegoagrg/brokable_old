@@ -1,0 +1,18 @@
+uuid: 0e71519c-ed3f-465b-9c4d-7bb1a65fa920
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.acerca_de_
+id: node.acerca_de_.title
+field_name: title
+entity_type: node
+bundle: acerca_de_
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,31 @@
+uuid: 388d7851-4875-45a0-ab39-d6e92a50652b
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.accesorios.body
+    - node.type.accesorios
+  module:
+    - text
+    - user
+id: node.accesorios.teaser
+targetEntityType: node
+bundle: accesorios
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

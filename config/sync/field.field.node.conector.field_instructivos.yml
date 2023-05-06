@@ -1,0 +1,27 @@
+uuid: a6ca7971-2ee8-41c0-88ea-bc742ee52990
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_instructivos
+    - node.type.conector
+  module:
+    - file
+id: node.conector.field_instructivos
+field_name: field_instructivos
+entity_type: node
+bundle: conector
+label: Instructivos
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'txt pdf xls'
+  max_filesize: ''
+  description_field: false
+field_type: file

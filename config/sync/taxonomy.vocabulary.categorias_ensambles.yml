@@ -1,0 +1,8 @@
+uuid: ffe5c319-fb77-47cd-910b-f4eeeff7ddb3
+langcode: es
+status: true
+dependencies: {  }
+name: 'Categorias ensambles'
+vid: categorias_ensambles
+description: ''
+weight: 0

@@ -1,0 +1,11 @@
+uuid: 8004705e-c956-4ed9-96ad-cb822280f4d9
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.categorias_ensambles
+id: taxonomy_term.categorias_ensambles
+target_entity_type_id: taxonomy_term
+target_bundle: categorias_ensambles
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,36 @@
+uuid: 6f1f09f8-91d5-4f38-b933-c28acf5e4054
+langcode: es
+status: true
+dependencies:
+  config:
+    - image.style.slider
+    - image.style.slider_
+    - image.style.slider_header_desktop
+    - image.style.slider_header_laptop
+  theme:
+    - bootstrap
+id: slider_header
+label: 'Slider header'
+image_style_mappings:
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_header_laptop
+    breakpoint_id: bootstrap.screen-md-min
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_
+    breakpoint_id: bootstrap.screen-sm-max
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_
+    breakpoint_id: bootstrap.screen-sm-min
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
+breakpoint_group: bootstrap
+fallback_image_style: slider_header_desktop

@@ -1,0 +1,36 @@
+uuid: d355e154-a19a-48ad-ba23-d4d9bb3d91c6
+langcode: es
+status: true
+dependencies:
+  config:
+    - image.style.slider_lg
+    - image.style.slider_md
+    - image.style.slider_sm
+    - image.style.slider_xl
+  theme:
+    - bootstrap
+id: slider
+label: Slider
+image_style_mappings:
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_xl
+    breakpoint_id: bootstrap.screen-md-min
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_lg
+    breakpoint_id: bootstrap.screen-sm-max
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_md
+    breakpoint_id: bootstrap.screen-sm-min
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: slider_sm
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
+breakpoint_group: bootstrap
+fallback_image_style: '_original image_'

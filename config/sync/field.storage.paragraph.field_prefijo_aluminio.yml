@@ -1,0 +1,21 @@
+uuid: 014f89a1-6403-4dab-82ff-97c30d7d2bdb
+langcode: es
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_prefijo_aluminio
+field_name: field_prefijo_aluminio
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

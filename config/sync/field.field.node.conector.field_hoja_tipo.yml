@@ -1,0 +1,27 @@
+uuid: b1ab6ab1-cbba-4f44-823c-ddb396030ff1
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hoja_tipo
+    - node.type.conector
+  module:
+    - file
+id: node.conector.field_hoja_tipo
+field_name: field_hoja_tipo
+entity_type: node
+bundle: conector
+label: 'Hoja de tipo'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'txt pdf xls'
+  max_filesize: ''
+  description_field: false
+field_type: file

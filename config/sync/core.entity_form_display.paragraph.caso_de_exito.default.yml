@@ -1,0 +1,74 @@
+uuid: 80948a13-e924-4f48-8bd9-de5608142823
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.caso_de_exito.field_categoria
+    - field.field.paragraph.caso_de_exito.field_detalle
+    - field.field.paragraph.caso_de_exito.field_imagen
+    - field.field.paragraph.caso_de_exito.field_titulo
+    - field.field.paragraph.caso_de_exito.field_ubicacion
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.caso_de_exito
+  module:
+    - imce
+    - svg_image
+    - text
+id: paragraph.caso_de_exito.default
+targetEntityType: paragraph
+bundle: caso_de_exito
+mode: default
+content:
+  field_categoria:
+    type: entity_reference_autocomplete
+    weight: 0
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_detalle:
+    type: text_textarea
+    weight: 3
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_imagen:
+    type: image_image
+    weight: 4
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings:
+      imce:
+        enabled: true
+  field_titulo:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_ubicacion:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

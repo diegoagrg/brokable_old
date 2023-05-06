@@ -1,0 +1,8 @@
+uuid: 7a381ecf-7717-4168-a929-9957fe3b209b
+langcode: es
+status: true
+dependencies: {  }
+id: columnas_de_top_bar
+label: 'Columnas de top bar'
+revision: 0
+description: ''

@@ -1,0 +1,30 @@
+uuid: 9bedb126-5b04-4865-9c90-da47fdd32425
+langcode: es
+status: true
+dependencies:
+  config:
+    - views.view.busqueda_en_categorias
+  module:
+    - system
+    - views
+  theme:
+    - bootstrap
+id: views_block__busqueda_en_categorias_bus_cat_ensambles
+theme: bootstrap
+region: content
+weight: -14
+provider: null
+plugin: 'views_block:busqueda_en_categorias-bus_cat_ensambles'
+settings:
+  id: 'views_block:busqueda_en_categorias-bus_cat_ensambles'
+  label: ''
+  label_display: '0'
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: /search/node

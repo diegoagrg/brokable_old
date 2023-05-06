@@ -1,0 +1,21 @@
+uuid: fbe9878a-397b-407c-8f5a-fccada56e9eb
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_texto
+    - node.type.sectores
+  module:
+    - text
+id: node.sectores.field_texto
+field_name: field_texto
+entity_type: node
+bundle: sectores
+label: Texto
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

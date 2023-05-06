@@ -1,0 +1,21 @@
+uuid: 0d4ad8bc-428f-4a71-907c-ade9bc515b5d
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.ensamble
+  module:
+    - user
+id: node.ensamble.teaser
+targetEntityType: node
+bundle: ensamble
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

@@ -1,0 +1,58 @@
+uuid: 2fb0e34e-5cec-4ec0-b219-abc662a60463
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.categorias_ensambles.field_archivo_pdf
+    - field.field.taxonomy_term.categorias_ensambles.field_categoria_imagen
+    - field.field.taxonomy_term.categorias_ensambles.field_fichas_tecnicas
+    - image.style.thumbnail
+    - taxonomy.vocabulary.categorias_ensambles
+  module:
+    - file
+    - svg_image
+    - text
+id: taxonomy_term.categorias_ensambles.default
+targetEntityType: taxonomy_term
+bundle: categorias_ensambles
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_archivo_pdf:
+    type: file_default
+    label: above
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_categoria_imagen:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: thumbnail
+      svg_attributes:
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_fichas_tecnicas:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  langcode: true

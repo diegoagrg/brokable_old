@@ -1,0 +1,21 @@
+uuid: 7cf0344c-99af-45d4-8044-fc402c64c7a7
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.testimonios
+  module:
+    - user
+id: node.testimonios.teaser
+targetEntityType: node
+bundle: testimonios
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

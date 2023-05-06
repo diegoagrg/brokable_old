@@ -1,0 +1,25 @@
+uuid: 82c08491-b5e2-4887-a383-95714333fa6b
+langcode: es
+status: false
+dependencies:
+  content:
+    - 'block_content:metales:5d8446ac-eb2c-4c35-8f7b-c387d53e3d30'
+  module:
+    - block_content
+  theme:
+    - bootstrap
+id: preciodemetales
+theme: bootstrap
+region: top_bar
+weight: -11
+provider: null
+plugin: 'block_content:5d8446ac-eb2c-4c35-8f7b-c387d53e3d30'
+settings:
+  id: 'block_content:5d8446ac-eb2c-4c35-8f7b-c387d53e3d30'
+  label: 'Precio de metales'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

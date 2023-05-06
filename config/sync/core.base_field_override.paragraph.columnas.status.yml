@@ -1,0 +1,22 @@
+uuid: a0b1953e-4664-4cd8-9837-6865fbc4be51
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.columnas
+id: paragraph.columnas.status
+field_name: status
+entity_type: paragraph
+bundle: columnas
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,21 @@
+uuid: 9a1f2a23-4538-432e-9864-eb770f1688a3
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.noticias_y_opinion
+  module:
+    - user
+id: node.noticias_y_opinion.teaser
+targetEntityType: node
+bundle: noticias_y_opinion
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

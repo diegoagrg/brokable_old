@@ -1,0 +1,208 @@
+uuid: 80ad02a7-4a46-4999-bdbb-a0655e5f7777
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.conector.field_caracteristicas_tecnicas
+    - field.field.node.conector.field_categoria_tax
+    - field.field.node.conector.field_descripcion
+    - field.field.node.conector.field_especificaciones
+    - field.field.node.conector.field_ficha_multiple
+    - field.field.node.conector.field_hoja_tipo
+    - field.field.node.conector.field_identificacion
+    - field.field.node.conector.field_imagen_req
+    - field.field.node.conector.field_informacion_comercial
+    - field.field.node.conector.field_instructivos
+    - field.field.node.conector.field_numero_parte
+    - field.field.node.conector.field_planos
+    - field.field.node.conector.field_propiedades_material
+    - field.field.node.conector.field_version
+    - image.style.thumbnail
+    - node.type.conector
+  module:
+    - field_group
+    - file
+    - svg_image
+    - text
+third_party_settings:
+  field_group:
+    group_informacion_general:
+      children:
+        - field_descripcion
+        - field_identificacion
+        - field_version
+        - field_caracteristicas_tecnicas
+        - field_propiedades_material
+        - field_especificaciones
+        - field_informacion_comercial
+      label: 'Información general'
+      region: content
+      parent_name: ''
+      weight: 5
+      format_type: details
+      format_settings:
+        classes: ''
+        id: ''
+        open: false
+        required_fields: true
+    group_archivos:
+      children:
+        - field_ficha_multiple
+        - field_instructivos
+        - field_planos
+        - field_hoja_tipo
+      label: Archivos
+      region: content
+      parent_name: ''
+      weight: 6
+      format_type: details
+      format_settings:
+        classes: ''
+        id: ''
+        open: false
+        required_fields: true
+id: node.conector.default
+targetEntityType: node
+bundle: conector
+mode: default
+content:
+  field_caracteristicas_tecnicas:
+    type: text_textarea
+    weight: 9
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_categoria_tax:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_descripcion:
+    type: text_textarea
+    weight: 6
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_especificaciones:
+    type: text_textarea
+    weight: 11
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_ficha_multiple:
+    type: file_generic
+    weight: 7
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_hoja_tipo:
+    type: file_generic
+    weight: 10
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_identificacion:
+    type: text_textarea
+    weight: 7
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_imagen_req:
+    type: image_image
+    weight: 2
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_informacion_comercial:
+    type: text_textarea
+    weight: 12
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_instructivos:
+    type: file_generic
+    weight: 8
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_numero_parte:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_planos:
+    type: file_generic
+    weight: 9
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_propiedades_material:
+    type: text_textarea
+    weight: 10
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_version:
+    type: text_textarea
+    weight: 8
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 0
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  moderation_state: true
+  path: true
+  promote: true
+  sticky: true
+  uid: true

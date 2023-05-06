@@ -1,0 +1,22 @@
+uuid: db7e9bc5-7348-42e0-9aeb-55e0a814d58f
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.sidebar_contacto
+id: block_content.sidebar_contacto.status
+field_name: status
+entity_type: block_content
+bundle: sidebar_contacto
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

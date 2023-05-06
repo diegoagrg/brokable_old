@@ -1,0 +1,14 @@
+_core:
+  default_config_hash: JTiHOl3PIo9Nyv7j53xwY5OwbwJWwCItksgv_X-NcbE
+langcode: es
+settings:
+  library_url: ''
+  css_url: ''
+  crop_preview_image_style: slider_header_desktop
+  crop_list: {  }
+  crop_types_required: {  }
+  warn_multiple_usages: false
+  show_default_crop: true
+  show_crop_area: false
+  notify_apply: false
+  notify_update: true

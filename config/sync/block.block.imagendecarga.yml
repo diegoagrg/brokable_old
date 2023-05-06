@@ -1,0 +1,25 @@
+uuid: 43454967-a7d4-42ab-8d91-c40048f45ba2
+langcode: es
+status: true
+dependencies:
+  content:
+    - 'block_content:imagen_de_carga:7a2892ad-a726-44b3-af0d-c915db90883e'
+  module:
+    - block_content
+  theme:
+    - bootstrap
+id: imagendecarga
+theme: bootstrap
+region: navigation
+weight: -14
+provider: null
+plugin: 'block_content:7a2892ad-a726-44b3-af0d-c915db90883e'
+settings:
+  id: 'block_content:7a2892ad-a726-44b3-af0d-c915db90883e'
+  label: 'Imagen de carga'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

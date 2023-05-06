@@ -1,0 +1,18 @@
+uuid: ddd83517-ce8c-4b91-a28b-6f24ea11f6cc
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.acerca_de_
+id: node.acerca_de_.changed
+field_name: changed
+entity_type: node
+bundle: acerca_de_
+label: Modificado
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

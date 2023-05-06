@@ -1,9 +1,0 @@
-uuid: 1d19fc16-95b7-4dc2-9bcf-5bbccaf67dbb
-langcode: es
-status: true
-dependencies: {  }
-id: caso_de_exito
-label: 'Caso de éxito'
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

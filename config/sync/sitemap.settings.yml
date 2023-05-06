@@ -1,0 +1,108 @@
+_core:
+  default_config_hash: f4sH8CGbEMFQXKFoGeaHbmIP_f6cOTi02EeFhHSbYyo
+langcode: es
+page_title: 'Mapa del sitio'
+message:
+  value: ''
+  format: restricted_html
+plugins:
+  frontpage:
+    enabled: false
+    weight: -50
+    settings:
+      title: 'Front page'
+      rss: /rss.xml
+  'menu:brokable':
+    enabled: true
+    weight: -46
+    settings:
+      title: Conectores
+      show_disabled: false
+  'menu:brokable-principal':
+    enabled: true
+    weight: -49
+    settings:
+      title: 'Menú principal'
+      show_disabled: false
+  'menu:account':
+    enabled: false
+    weight: -48
+    settings:
+      title: 'User account menu'
+      show_disabled: false
+  'menu:admin':
+    enabled: false
+    weight: -47
+    settings:
+      title: Administración
+      show_disabled: false
+  'menu:devel':
+    enabled: false
+    weight: -45
+    settings:
+      title: Development
+      show_disabled: false
+  'menu:footer':
+    enabled: false
+    weight: -44
+    settings:
+      title: Footer
+      show_disabled: false
+  'menu:main':
+    enabled: false
+    weight: -43
+    settings:
+      title: 'Main navigation'
+      show_disabled: false
+  'menu:tools':
+    enabled: false
+    weight: -42
+    settings:
+      title: Herramientas
+      show_disabled: false
+  'vocabulary:casos_de_exito':
+    enabled: false
+    weight: -41
+    settings:
+      title: 'Casos de éxito'
+      show_description: true
+      show_count: true
+      term_depth: 9
+      term_count_threshold: 0
+      customize_link: false
+      term_link: entity.taxonomy_term.canonical|taxonomy_term
+      always_link: false
+      enable_rss: true
+      rss_link: view.taxonomy_term.feed_1|arg_0
+      rss_depth: 9
+  'vocabulary:normativas':
+    enabled: false
+    weight: -40
+    settings:
+      title: Normativas
+      show_description: true
+      show_count: true
+      term_depth: 9
+      term_count_threshold: 0
+      customize_link: false
+      term_link: entity.taxonomy_term.canonical|taxonomy_term
+      always_link: false
+      enable_rss: true
+      rss_link: view.taxonomy_term.feed_1|arg_0
+      rss_depth: 9
+  'vocabulary:tags':
+    enabled: false
+    weight: -39
+    settings:
+      title: Etiquetas
+      show_description: true
+      show_count: true
+      term_depth: 9
+      term_count_threshold: 0
+      customize_link: false
+      term_link: entity.taxonomy_term.canonical|taxonomy_term
+      always_link: false
+      enable_rss: true
+      rss_link: view.taxonomy_term.feed_1|arg_0
+      rss_depth: 9
+include_css: true

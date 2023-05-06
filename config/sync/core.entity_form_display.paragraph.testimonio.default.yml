@@ -1,0 +1,54 @@
+uuid: 8a58c350-2b64-4996-b2cf-18cf40ef6d92
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.testimonio.field_descripcion
+    - field.field.paragraph.testimonio.field_icono
+    - field.field.paragraph.testimonio.field_titulo
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.testimonio
+  module:
+    - imce
+    - svg_image
+    - text
+id: paragraph.testimonio.default
+targetEntityType: paragraph
+bundle: testimonio
+mode: default
+content:
+  field_descripcion:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_icono:
+    type: image_image
+    weight: 0
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings:
+      imce:
+        enabled: true
+  field_titulo:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

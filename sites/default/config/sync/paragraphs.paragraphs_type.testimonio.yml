@@ -1,9 +1,0 @@
-uuid: 460f59e4-ef05-40c1-863e-c73746069f87
-langcode: es
-status: true
-dependencies: {  }
-id: testimonio
-label: Testimonio
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

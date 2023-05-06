@@ -1,0 +1,43 @@
+uuid: 2dc93e71-a1d8-4146-8058-53c216feac32
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_casos_de_exito
+    - node.type.casos_de_exito
+    - paragraphs.paragraphs_type.caso_de_exito
+  module:
+    - entity_reference_revisions
+id: node.casos_de_exito.field_casos_de_exito
+field_name: field_casos_de_exito
+entity_type: node
+bundle: casos_de_exito
+label: 'Casos de éxito'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      caso_de_exito: caso_de_exito
+    negate: 0
+    target_bundles_drag_drop:
+      caso_de_exito:
+        weight: 6
+        enabled: true
+      icono_titulo_descripcion:
+        weight: 7
+        enabled: false
+      tab_de_icono:
+        weight: 8
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 9
+        enabled: false
+      testimonio:
+        weight: 10
+        enabled: false
+field_type: entity_reference_revisions

@@ -1,0 +1,45 @@
+uuid: 7ff164a9-136c-439f-a2e6-356e668c170d
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_imagen
+    - node.type.accesorios
+  module:
+    - content_translation
+    - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      file: file
+      alt: '0'
+      title: '0'
+id: node.accesorios.field_imagen
+field_name: field_imagen
+entity_type: node
+bundle: accesorios
+label: Imagen
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: false
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

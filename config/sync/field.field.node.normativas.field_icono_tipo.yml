@@ -1,0 +1,45 @@
+uuid: 47f62d5a-8904-4377-922e-181b00d0d80d
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_icono_tipo
+    - node.type.normativas
+  module:
+    - content_translation
+    - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      file: file
+      alt: '0'
+      title: '0'
+id: node.normativas.field_icono_tipo
+field_name: field_icono_tipo
+entity_type: node
+bundle: normativas
+label: Icono
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: false
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

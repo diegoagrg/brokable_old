@@ -1,0 +1,337 @@
+uuid: 3702131c-16f1-42e9-a204-ca0541397ef6
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.ensamble.field_ambientes
+    - field.field.node.ensamble.field_aplicaciones
+    - field.field.node.ensamble.field_caracteristicas
+    - field.field.node.ensamble.field_categoria_tax
+    - field.field.node.ensamble.field_clasificaciones
+    - field.field.node.ensamble.field_descripcion
+    - field.field.node.ensamble.field_ficha_tecnica
+    - field.field.node.ensamble.field_ficha_tecnica_texto
+    - field.field.node.ensamble.field_imagen
+    - field.field.node.ensamble.field_numeros_de_parte
+    - field.field.node.ensamble.field_recursos
+    - field.field.node.ensamble.field_texto_complementario
+    - field.field.node.ensamble.field_video
+    - image.style.thumbnail
+    - node.type.ensamble
+  module:
+    - dynamic_entity_reference
+    - field_group
+    - file
+    - path
+    - svg_image
+    - text
+    - video_embed_field
+third_party_settings:
+  field_group:
+    group_informacion_basica:
+      children:
+        - group_informacion
+        - group_clasificaciones
+        - group_propiedades
+        - group_aplicaciones
+        - group_ambientes
+        - group_multimedia
+        - group_numeros_de_parte
+        - group_ficha_tecnica
+      label: 'Información básica'
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: tabs
+      format_settings:
+        label: 'Información básica'
+        classes: ''
+        id: ''
+        direction: vertical
+    group_informacion:
+      children:
+        - field_categoria_tax
+        - field_descripcion
+        - field_texto_complementario
+      label: 'Información básica'
+      region: content
+      parent_name: group_informacion_basica
+      weight: 10
+      format_type: tab
+      format_settings:
+        label: 'Información básica'
+        classes: ''
+        id: ''
+        formatter: open
+        description: ''
+        required_fields: true
+    group_clasificaciones:
+      children:
+        - field_clasificaciones
+      label: Clasificaciones
+      region: content
+      parent_name: group_informacion_basica
+      weight: 11
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_propiedades:
+      children:
+        - field_caracteristicas
+      label: Propiedades
+      region: content
+      parent_name: group_informacion_basica
+      weight: 12
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_aplicaciones:
+      children:
+        - field_aplicaciones
+      label: Aplicaciones
+      region: content
+      parent_name: group_informacion_basica
+      weight: 13
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_ambientes:
+      children:
+        - field_ambientes
+      label: Ambientes
+      region: content
+      parent_name: group_informacion_basica
+      weight: 14
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_multimedia:
+      children:
+        - field_imagen
+        - field_ficha_tecnica
+        - field_video
+        - field_recursos
+      label: Multimedia
+      region: content
+      parent_name: group_informacion_basica
+      weight: 15
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_numeros_de_parte:
+      children:
+        - field_numeros_de_parte
+      label: 'Números de parte'
+      region: content
+      parent_name: group_informacion_basica
+      weight: 16
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_ficha_tecnica:
+      children:
+        - field_ficha_tecnica_texto
+      label: 'Ficha técnica'
+      region: content
+      parent_name: group_informacion_basica
+      weight: 17
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+id: node.ensamble.default
+targetEntityType: node
+bundle: ensamble
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_ambientes:
+    type: dynamic_entity_reference_options_buttons
+    weight: 11
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_aplicaciones:
+    type: text_textarea
+    weight: 10
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_caracteristicas:
+    type: text_textarea
+    weight: 9
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_categoria_tax:
+    type: options_select
+    weight: 11
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_clasificaciones:
+    type: text_textarea_with_summary
+    weight: 10
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  field_descripcion:
+    type: text_textarea
+    weight: 12
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_ficha_tecnica:
+    type: file_generic
+    weight: 12
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_ficha_tecnica_texto:
+    type: text_textarea
+    weight: 26
+    region: content
+    settings:
+      rows: 20
+      placeholder: ''
+    third_party_settings: {  }
+  field_imagen:
+    type: image_image
+    weight: 11
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_numeros_de_parte:
+    type: text_textarea_with_summary
+    weight: 15
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  field_recursos:
+    type: file_generic
+    weight: 14
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_texto_complementario:
+    type: text_textarea
+    weight: 13
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_video:
+    type: video_embed_field_textfield
+    weight: 13
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 6
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 9
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 7
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 4
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden: {  }

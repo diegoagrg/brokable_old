@@ -1,0 +1,79 @@
+uuid: 8c1b48aa-0f17-406f-aa9b-b8d19685bc8e
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.producto
+    - field.field.node.conector.field_caracteristicas_tecnicas
+    - field.field.node.conector.field_categoria_tax
+    - field.field.node.conector.field_descripcion
+    - field.field.node.conector.field_especificaciones
+    - field.field.node.conector.field_ficha_multiple
+    - field.field.node.conector.field_hoja_tipo
+    - field.field.node.conector.field_identificacion
+    - field.field.node.conector.field_imagen_req
+    - field.field.node.conector.field_informacion_comercial
+    - field.field.node.conector.field_instructivos
+    - field.field.node.conector.field_numero_parte
+    - field.field.node.conector.field_planos
+    - field.field.node.conector.field_propiedades_material
+    - field.field.node.conector.field_version
+    - image.style.medium
+    - node.type.conector
+  module:
+    - svg_image
+    - user
+id: node.conector.producto
+targetEntityType: node
+bundle: conector
+mode: producto
+content:
+  field_categoria_tax:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_imagen_req:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: medium
+      svg_attributes:
+        width: null
+        height: null
+      svg_render_as_image: true
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_numero_parte:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_caracteristicas_tecnicas: true
+  field_descripcion: true
+  field_especificaciones: true
+  field_ficha_multiple: true
+  field_hoja_tipo: true
+  field_identificacion: true
+  field_informacion_comercial: true
+  field_instructivos: true
+  field_planos: true
+  field_propiedades_material: true
+  field_version: true
+  langcode: true

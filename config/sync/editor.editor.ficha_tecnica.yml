@@ -1,0 +1,51 @@
+uuid: 556db946-5fea-43b4-b261-e7437433f057
+langcode: es
+status: true
+dependencies:
+  config:
+    - filter.format.ficha_tecnica
+  module:
+    - ckeditor
+format: ficha_tecnica
+editor: ckeditor
+settings:
+  toolbar:
+    rows:
+      -
+        -
+          name: Formatting
+          items:
+            - Bold
+            - Italic
+        -
+          name: Enlaces
+          items:
+            - DrupalLink
+            - DrupalUnlink
+        -
+          name: Lists
+          items:
+            - BulletedList
+            - NumberedList
+        -
+          name: Multimedia
+          items:
+            - Blockquote
+            - DrupalImage
+        -
+          name: Herramientas
+          items:
+            - Source
+            - Templates
+  plugins:
+    templates:
+      template_path: /libraries/templates/templates/default.js
+      replace_content: 0
+image_upload:
+  status: false
+  scheme: public
+  directory: inline-images
+  max_size: ''
+  max_dimensions:
+    width: null
+    height: null
