@@ -1,0 +1,46 @@
+uuid: 990c1b35-de42-4f9c-b670-fa1da1bcdfe4
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.normativas_homologaciones.field_cables
+    - field.field.paragraph.normativas_homologaciones.field_imagenes
+    - field.field.paragraph.normativas_homologaciones.field_normativas
+    - image.style.imagen_chica
+    - paragraphs.paragraphs_type.normativas_homologaciones
+  module:
+    - svg_image
+    - text
+id: paragraph.normativas_homologaciones.default
+targetEntityType: paragraph
+bundle: normativas_homologaciones
+mode: default
+content:
+  field_cables:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_imagenes:
+    weight: 2
+    label: hidden
+    settings:
+      image_style: imagen_chica
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_normativas:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+hidden: {  }

@@ -1,0 +1,55 @@
+uuid: 61bf27e7-f580-47b3-9c80-7e97a88f6970
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.categorias.field_categoria_imagen
+    - image.style.thumbnail
+    - taxonomy.vocabulary.categorias
+  module:
+    - path
+    - svg_image
+    - text
+id: taxonomy_term.categorias.default
+targetEntityType: taxonomy_term
+bundle: categorias
+mode: default
+content:
+  description:
+    type: text_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_categoria_imagen:
+    weight: 31
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+    type: image_image
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

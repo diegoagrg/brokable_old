@@ -1,0 +1,56 @@
+uuid: e556d6db-7c51-4a4d-91f2-ae07c8bdebe4
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.accesorios.body
+    - field.field.node.accesorios.field_gama
+    - field.field.node.accesorios.field_imagen
+    - image.style.imagen_mediana
+    - node.type.accesorios
+  module:
+    - entity_reference_revisions
+    - svg_image
+    - text
+    - user
+id: node.accesorios.default
+targetEntityType: node
+bundle: accesorios
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_gama:
+    type: entity_reference_revisions_entity_view
+    weight: 103
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_imagen:
+    weight: 102
+    label: hidden
+    settings:
+      image_style: imagen_mediana
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

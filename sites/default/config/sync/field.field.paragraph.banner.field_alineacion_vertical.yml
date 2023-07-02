@@ -1,0 +1,23 @@
+uuid: d23d180c-9d8b-4306-9636-db93c130e0a8
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_alineacion_vertical
+    - paragraphs.paragraphs_type.banner
+  module:
+    - options
+id: paragraph.banner.field_alineacion_vertical
+field_name: field_alineacion_vertical
+entity_type: paragraph
+bundle: banner
+label: 'Alineación vertical'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: abajo
+default_value_callback: ''
+settings: {  }
+field_type: list_string

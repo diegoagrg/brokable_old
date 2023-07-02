@@ -1,0 +1,27 @@
+uuid: 9e616eb3-4c76-4454-baac-4b4d1a120778
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_recursos
+    - node.type.ensamble
+  module:
+    - file
+id: node.ensamble.field_recursos
+field_name: field_recursos
+entity_type: node
+bundle: ensamble
+label: Recursos
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'txt pdf'
+  max_filesize: ''
+  description_field: true
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

@@ -1,0 +1,64 @@
+uuid: 6011e15a-8e78-49f0-b0dc-05fc166cd1b4
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+    - field.storage.block_content.field_columnas2
+    - paragraphs.paragraphs_type.columnas
+  module:
+    - entity_reference_revisions
+id: block_content.columnas_de_top_bar.field_columnas2
+field_name: field_columnas2
+entity_type: block_content
+bundle: columnas_de_top_bar
+label: Columnas
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      columnas: columnas
+    target_bundles_drag_drop:
+      accesorio:
+        weight: 13
+        enabled: false
+      caso_de_exito:
+        weight: 14
+        enabled: false
+      columnas:
+        enabled: true
+        weight: 15
+      formulario:
+        weight: 16
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 17
+        enabled: false
+      imagen_pdf:
+        weight: 18
+        enabled: false
+      normativas_homologaciones:
+        weight: 19
+        enabled: false
+      sector_industrial:
+        weight: 20
+        enabled: false
+      tab_de_icono:
+        weight: 21
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 22
+        enabled: false
+      testimonio:
+        weight: 23
+        enabled: false
+      trajeta:
+        weight: 24
+        enabled: false
+field_type: entity_reference_revisions

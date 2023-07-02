@@ -1,0 +1,21 @@
+uuid: d261858f-faef-4417-b0e8-4e2e393d6e49
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_texto
+    - node.type.contacto
+  module:
+    - text
+id: node.contacto.field_texto
+field_name: field_texto
+entity_type: node
+bundle: contacto
+label: Texto
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

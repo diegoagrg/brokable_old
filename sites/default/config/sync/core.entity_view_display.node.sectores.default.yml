@@ -1,0 +1,42 @@
+uuid: 2e43e8fd-d70c-4210-93c1-219a7f2e57ef
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.sectores.field_sectores
+    - field.field.node.sectores.field_slider
+    - field.field.node.sectores.field_texto
+    - node.type.sectores
+  module:
+    - entity_reference_revisions
+    - text
+    - user
+id: node.sectores.default
+targetEntityType: node
+bundle: sectores
+mode: default
+content:
+  field_sectores:
+    type: entity_reference_revisions_entity_view
+    weight: 2
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_texto:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_slider: true
+  langcode: true

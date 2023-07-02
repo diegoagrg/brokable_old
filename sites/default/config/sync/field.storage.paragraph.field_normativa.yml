@@ -1,0 +1,20 @@
+uuid: f320f13d-6a0b-425e-9ffe-1c520811be81
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+    - paragraphs
+id: paragraph.field_normativa
+field_name: field_normativa
+entity_type: paragraph
+type: entity_reference
+settings:
+  target_type: node
+module: core
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

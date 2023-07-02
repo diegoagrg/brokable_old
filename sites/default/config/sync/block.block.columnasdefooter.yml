@@ -1,0 +1,25 @@
+uuid: 6d70ad30-5afc-4169-a216-a18b4336e855
+langcode: es
+status: true
+dependencies:
+  content:
+    - 'block_content:footer:23e55c25-cac3-45f6-98ff-5acb0ba9d012'
+  module:
+    - block_content
+  theme:
+    - bootstrap
+id: columnasdefooter
+theme: bootstrap
+region: footer
+weight: 0
+provider: null
+plugin: 'block_content:23e55c25-cac3-45f6-98ff-5acb0ba9d012'
+settings:
+  id: 'block_content:23e55c25-cac3-45f6-98ff-5acb0ba9d012'
+  label: 'Columnas de footer'
+  provider: block_content
+  label_display: '0'
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

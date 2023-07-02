@@ -1,0 +1,12 @@
+uuid: e7ddaf47-95aa-47cc-926c-9e25369856b3
+langcode: es
+status: true
+dependencies: {  }
+label: 'Slider header laptop'
+id: slider_header_laptop
+description: ''
+aspect_ratio: '2024:280'
+soft_limit_width: 1024
+soft_limit_height: 280
+hard_limit_width: null
+hard_limit_height: null

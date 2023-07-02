@@ -1,0 +1,20 @@
+uuid: ed6edff5-926d-4a1d-b754-5f2112ae9e17
+langcode: es
+status: true
+dependencies:
+  module:
+    - we_megamenu
+  theme:
+    - bootstrap
+id: brokableprincipal_2
+theme: bootstrap
+region: navigation
+weight: -14
+provider: null
+plugin: 'we_megamenu_block:brokable-principal'
+settings:
+  id: 'we_megamenu_block:brokable-principal'
+  label: 'Brokable principal'
+  provider: we_megamenu
+  label_display: '0'
+visibility: {  }

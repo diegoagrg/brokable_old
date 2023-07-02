@@ -1,0 +1,23 @@
+uuid: 2940a0f4-18c6-407a-8651-0e493208c548
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_enlace
+    - paragraphs.paragraphs_type.trajeta
+  module:
+    - link
+id: paragraph.trajeta.field_enlace
+field_name: field_enlace
+entity_type: paragraph
+bundle: trajeta
+label: Enlace
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 17
+  title: 1
+field_type: link

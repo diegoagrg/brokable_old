@@ -1,0 +1,34 @@
+uuid: e9295dee-23b9-4714-a873-1e074bc25c49
+langcode: es
+status: true
+dependencies:
+  config:
+    - image.style.banner_tabe
+    - image.style.imagen_diminuta
+  theme:
+    - bootstrap
+id: banner_tablet
+label: 'Banner tablet'
+image_style_mappings:
+  -
+    breakpoint_id: bootstrap.screen-md-min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: imagen_diminuta
+  -
+    breakpoint_id: bootstrap.screen-sm-max
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: imagen_diminuta
+  -
+    breakpoint_id: bootstrap.screen-sm-min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: banner_tabe
+  -
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: imagen_diminuta
+breakpoint_group: bootstrap
+fallback_image_style: banner_tabe

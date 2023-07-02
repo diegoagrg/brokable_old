@@ -1,0 +1,22 @@
+uuid: 5f20db42-cfae-41b9-b8b1-84db9d89e957
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.casos_de_exito
+id: node.casos_de_exito.status
+field_name: status
+entity_type: node
+bundle: casos_de_exito
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

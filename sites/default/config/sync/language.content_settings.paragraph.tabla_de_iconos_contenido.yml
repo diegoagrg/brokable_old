@@ -1,0 +1,18 @@
+uuid: 528a4463-3717-4ee9-8ea8-cf38e404fbb0
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.tabla_de_iconos_contenido
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.tabla_de_iconos_contenido
+target_entity_type_id: paragraph
+target_bundle: tabla_de_iconos_contenido
+default_langcode: site_default
+language_alterable: true

@@ -1,0 +1,18 @@
+uuid: 26389651-d908-4a26-8e9b-78b07f070708
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.accesorios
+id: node.accesorios.changed
+field_name: changed
+entity_type: node
+bundle: accesorios
+label: Modificado
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

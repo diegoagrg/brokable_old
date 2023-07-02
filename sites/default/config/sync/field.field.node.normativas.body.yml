@@ -1,0 +1,23 @@
+uuid: ba91b018-e99b-4c20-8b0f-768fb296142a
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.normativas
+  module:
+    - text
+id: node.normativas.body
+field_name: body
+entity_type: node
+bundle: normativas
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

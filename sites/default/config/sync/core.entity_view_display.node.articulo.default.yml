@@ -1,0 +1,54 @@
+uuid: bf4b7d56-6acc-4715-8232-c96a070575c9
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.articulo.body
+    - field.field.node.articulo.field_categoria
+    - field.field.node.articulo.field_imagen_principal
+    - image.style.imagen_grande
+    - node.type.articulo
+  module:
+    - options
+    - svg_image
+    - text
+    - user
+id: node.articulo.default
+targetEntityType: node
+bundle: articulo
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_categoria:
+    weight: 103
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_imagen_principal:
+    weight: 102
+    label: hidden
+    settings:
+      image_style: imagen_grande
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

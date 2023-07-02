@@ -1,0 +1,23 @@
+uuid: b7256e2e-97ff-45f2-814e-0a655a8443ef
+langcode: es
+status: true
+dependencies: {  }
+name: imagen_diminuta
+label: 'Imagen diminuta'
+effects:
+  1d4c1a26-2d06-4192-aa2b-1b207a55f40e:
+    uuid: 1d4c1a26-2d06-4192-aa2b-1b207a55f40e
+    id: image_scale
+    weight: 1
+    data:
+      width: 1
+      height: 1
+      upscale: false
+  78b9164d-9f0e-4350-b2c5-ed1dce48ae97:
+    uuid: 78b9164d-9f0e-4350-b2c5-ed1dce48ae97
+    id: image_scale_and_crop
+    weight: 2
+    data:
+      width: 1
+      height: 1
+      anchor: center-center

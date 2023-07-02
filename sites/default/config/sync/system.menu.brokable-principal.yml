@@ -1,0 +1,11 @@
+uuid: a4b9b229-f32f-49ba-96e2-26fdff1f57c3
+langcode: es
+status: true
+dependencies:
+  module:
+    - sitemap
+third_party_settings: {  }
+id: brokable-principal
+label: 'Brokable principal'
+description: Conectividad
+locked: false

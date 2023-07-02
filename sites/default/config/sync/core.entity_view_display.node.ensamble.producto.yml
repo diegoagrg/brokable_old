@@ -1,0 +1,66 @@
+uuid: 43f43264-404f-4467-ac63-e6ae17240b7c
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.producto
+    - field.field.node.ensamble.field_ambientes
+    - field.field.node.ensamble.field_aplicaciones
+    - field.field.node.ensamble.field_caracteristicas
+    - field.field.node.ensamble.field_categoria_tax
+    - field.field.node.ensamble.field_clasificaciones
+    - field.field.node.ensamble.field_descripcion
+    - field.field.node.ensamble.field_ficha_tecnica
+    - field.field.node.ensamble.field_imagen
+    - field.field.node.ensamble.field_numeros_de_parte
+    - field.field.node.ensamble.field_recursos
+    - field.field.node.ensamble.field_texto_complementario
+    - field.field.node.ensamble.field_video
+    - image.style.thumbnail
+    - node.type.ensamble
+  module:
+    - svg_image
+    - user
+id: node.ensamble.producto
+targetEntityType: node
+bundle: ensamble
+mode: producto
+content:
+  field_categoria_tax:
+    type: entity_reference_label
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_imagen:
+    weight: 1
+    label: hidden
+    settings:
+      image_style: thumbnail
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_ambientes: true
+  field_aplicaciones: true
+  field_caracteristicas: true
+  field_clasificaciones: true
+  field_descripcion: true
+  field_ficha_tecnica: true
+  field_numeros_de_parte: true
+  field_recursos: true
+  field_texto_complementario: true
+  field_video: true
+  langcode: true

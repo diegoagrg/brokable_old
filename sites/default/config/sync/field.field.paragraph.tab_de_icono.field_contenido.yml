@@ -1,0 +1,37 @@
+uuid: 2f9e9c8d-b950-423a-a8ad-bc950eccbb18
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_contenido
+    - paragraphs.paragraphs_type.icono_titulo_descripcion
+    - paragraphs.paragraphs_type.tab_de_icono
+  module:
+    - entity_reference_revisions
+id: paragraph.tab_de_icono.field_contenido
+field_name: field_contenido
+entity_type: paragraph
+bundle: tab_de_icono
+label: Contenido
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      icono_titulo_descripcion: icono_titulo_descripcion
+    target_bundles_drag_drop:
+      tab_de_icono:
+        weight: 4
+        enabled: false
+      icono_titulo_descripcion:
+        enabled: true
+        weight: 5
+      tabla_de_iconos_contenido:
+        weight: 6
+        enabled: false
+field_type: entity_reference_revisions

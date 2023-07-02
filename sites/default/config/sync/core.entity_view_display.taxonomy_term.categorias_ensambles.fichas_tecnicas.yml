@@ -1,0 +1,29 @@
+uuid: f012721c-95ed-4a4e-96be-87dbb9025564
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.taxonomy_term.fichas_tecnicas
+    - field.field.taxonomy_term.categorias_ensambles.field_archivo_pdf
+    - field.field.taxonomy_term.categorias_ensambles.field_categoria_imagen
+    - field.field.taxonomy_term.categorias_ensambles.field_fichas_tecnicas
+    - taxonomy.vocabulary.categorias_ensambles
+  module:
+    - text
+id: taxonomy_term.categorias_ensambles.fichas_tecnicas
+targetEntityType: taxonomy_term
+bundle: categorias_ensambles
+mode: fichas_tecnicas
+content:
+  field_fichas_tecnicas:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  description: true
+  field_archivo_pdf: true
+  field_categoria_imagen: true
+  langcode: true

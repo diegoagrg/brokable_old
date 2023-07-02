@@ -1,0 +1,21 @@
+uuid: f569b0ad-9b34-4d4f-b8eb-9ee8c453f90b
+langcode: es
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.casos_de_exito
+  module:
+    - user
+id: node.casos_de_exito.teaser
+targetEntityType: node
+bundle: casos_de_exito
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

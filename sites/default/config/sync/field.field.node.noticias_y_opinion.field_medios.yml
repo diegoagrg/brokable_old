@@ -1,0 +1,23 @@
+uuid: af1b68e4-eeee-4f06-b509-4261e4b86d7f
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_medios
+    - node.type.noticias_y_opinion
+id: node.noticias_y_opinion.field_medios
+field_name: field_medios
+entity_type: node
+bundle: noticias_y_opinion
+label: Medios
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

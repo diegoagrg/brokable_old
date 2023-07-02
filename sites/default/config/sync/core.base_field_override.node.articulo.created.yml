@@ -1,0 +1,18 @@
+uuid: 438b5417-a51d-4530-949b-0129c8608456
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.articulo
+id: node.articulo.created
+field_name: created
+entity_type: node
+bundle: articulo
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

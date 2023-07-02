@@ -1,0 +1,11 @@
+uuid: a36820c2-c2d2-41fc-816b-e983e6bba67d
+langcode: es
+status: true
+dependencies:
+  config:
+    - crop.type.slider_header_tablet
+id: crop.slider_header_tablet
+target_entity_type_id: crop
+target_bundle: slider_header_tablet
+default_langcode: site_default
+language_alterable: false

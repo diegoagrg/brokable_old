@@ -1,0 +1,22 @@
+uuid: af87fb90-c05c-4d87-949a-b461444d3cc6
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.normativas
+id: taxonomy_term.normativas.status
+field_name: status
+entity_type: taxonomy_term
+bundle: normativas
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

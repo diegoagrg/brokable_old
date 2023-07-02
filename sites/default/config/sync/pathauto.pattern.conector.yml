@@ -1,0 +1,24 @@
+uuid: 25620d28-cb6b-4d54-8bff-d09d5f5cecae
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+id: conector
+label: Conector
+type: 'canonical_entities:node'
+pattern: 'conectores/[node:field_categoria_tax:0:target_id]/[node:title]'
+selection_criteria:
+  eea70d57-2582-4ac6-8df1-8d6ae67d66d9:
+    id: 'entity_bundle:node'
+    bundles:
+      conector: conector
+    negate: false
+    context_mapping:
+      node: node
+    uuid: eea70d57-2582-4ac6-8df1-8d6ae67d66d9
+selection_logic: and
+weight: -5
+relationships:
+  'node:langcode:language':
+    label: Language

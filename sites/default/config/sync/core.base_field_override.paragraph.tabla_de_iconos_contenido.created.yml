@@ -1,0 +1,18 @@
+uuid: 9c844b30-9926-4d21-8e96-ee751c4cc0d7
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.tabla_de_iconos_contenido
+id: paragraph.tabla_de_iconos_contenido.created
+field_name: created
+entity_type: paragraph
+bundle: tabla_de_iconos_contenido
+label: Fecha
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

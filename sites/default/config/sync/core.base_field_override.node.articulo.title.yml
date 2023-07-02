@@ -1,0 +1,18 @@
+uuid: e35f56a6-0353-4e19-a2ea-ebd8dd2f0230
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.articulo
+id: node.articulo.title
+field_name: title
+entity_type: node
+bundle: articulo
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

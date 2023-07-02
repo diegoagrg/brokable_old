@@ -1,0 +1,19 @@
+uuid: f1ae19ff-ec7e-403a-95c9-8cd60c00bd6a
+langcode: es
+status: true
+dependencies:
+  module:
+    - node
+    - text
+id: node.field_aplicaciones
+field_name: field_aplicaciones
+entity_type: node
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

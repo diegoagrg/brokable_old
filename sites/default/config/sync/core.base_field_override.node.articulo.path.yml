@@ -1,0 +1,20 @@
+uuid: 50a4fff0-1693-4b23-a74e-f22fe9781d2f
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.articulo
+  module:
+    - path
+id: node.articulo.path
+field_name: path
+entity_type: node
+bundle: articulo
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

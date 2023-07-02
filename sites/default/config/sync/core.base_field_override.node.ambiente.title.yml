@@ -1,0 +1,18 @@
+uuid: fbcbb596-e09d-401b-8162-1964e537e4a3
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.ambiente
+id: node.ambiente.title
+field_name: title
+entity_type: node
+bundle: ambiente
+label: Título
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

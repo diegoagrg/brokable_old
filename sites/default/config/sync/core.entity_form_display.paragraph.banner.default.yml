@@ -1,0 +1,211 @@
+uuid: 54d6d155-7a4e-4a6d-b4ba-fc13d98601f8
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.banner.field_alineacion_horizontal
+    - field.field.paragraph.banner.field_alineacion_vertical
+    - field.field.paragraph.banner.field_gif
+    - field.field.paragraph.banner.field_imagen_para_escritorio
+    - field.field.paragraph.banner.field_imagen_para_mobile
+    - field.field.paragraph.banner.field_imagen_para_tablets
+    - field.field.paragraph.banner.field_link
+    - field.field.paragraph.banner.field_texto
+    - field.field.paragraph.banner.field_titulo
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.banner
+  module:
+    - field_group
+    - image_widget_crop
+    - imce
+    - link
+    - svg_image
+third_party_settings:
+  field_group:
+    group_banner:
+      children:
+        - group_imagen_escritorio
+        - group_imagen_para_tablet
+        - group_imagen_para_celular
+        - group_informaci
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        id: ''
+        classes: ''
+        direction: horizontal
+      label: Banner
+      region: content
+    group_imagen_escritorio:
+      children:
+        - field_imagen_para_escritorio
+        - field_gif
+      parent_name: group_banner
+      weight: 0
+      format_type: tab
+      format_settings:
+        id: ''
+        classes: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+      label: 'Imágen Escritorio'
+      region: content
+    group_imagen_para_tablet:
+      children:
+        - field_imagen_para_tablets
+      parent_name: group_banner
+      weight: 1
+      format_type: tab
+      format_settings:
+        id: ''
+        classes: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+      label: 'Imagen para tablet'
+      region: content
+    group_imagen_para_celular:
+      children:
+        - field_imagen_para_mobile
+      parent_name: group_banner
+      weight: 2
+      format_type: tab
+      format_settings:
+        id: ''
+        classes: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+      label: 'Imagen para celular'
+      region: content
+    group_informaci:
+      children:
+        - field_titulo
+        - field_texto
+        - field_link
+        - field_alineacion_vertical
+        - field_alineacion_horizontal
+      parent_name: group_banner
+      weight: 3
+      format_type: tab
+      format_settings:
+        id: ''
+        classes: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+      label: Información
+      region: content
+id: paragraph.banner.default
+targetEntityType: paragraph
+bundle: banner
+mode: default
+content:
+  field_alineacion_horizontal:
+    weight: 9
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_alineacion_vertical:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_gif:
+    weight: 5
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+    type: image_image
+    region: content
+  field_imagen_para_escritorio:
+    weight: 4
+    settings:
+      show_default_crop: true
+      warn_multiple_usages: true
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - banner_celular
+        - banner_escritorio
+        - banner_tablet
+      progress_indicator: throbber
+      crop_types_required: {  }
+      show_crop_area: false
+    third_party_settings:
+      imce:
+        enabled: false
+    type: image_widget_crop
+    region: content
+  field_imagen_para_mobile:
+    weight: 6
+    settings:
+      show_default_crop: true
+      warn_multiple_usages: true
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - banner_celular
+      progress_indicator: throbber
+      crop_types_required: {  }
+      show_crop_area: false
+    third_party_settings:
+      imce:
+        enabled: false
+    type: image_widget_crop
+    region: content
+  field_imagen_para_tablets:
+    weight: 5
+    settings:
+      show_default_crop: true
+      warn_multiple_usages: true
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - banner_tablet
+      progress_indicator: throbber
+      crop_types_required: {  }
+      show_crop_area: false
+    third_party_settings:
+      imce:
+        enabled: false
+    type: image_widget_crop
+    region: content
+  field_link:
+    weight: 6
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+    type: link_default
+    region: content
+  field_texto:
+    weight: 5
+    settings:
+      size: 170
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_titulo:
+    weight: 4
+    settings:
+      size: 65
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  translation:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

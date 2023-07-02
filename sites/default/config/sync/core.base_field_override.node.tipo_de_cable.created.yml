@@ -1,0 +1,18 @@
+uuid: bfc6d11d-a7c2-435f-8308-9831e10e2937
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.tipo_de_cable
+id: node.tipo_de_cable.created
+field_name: created
+entity_type: node
+bundle: tipo_de_cable
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

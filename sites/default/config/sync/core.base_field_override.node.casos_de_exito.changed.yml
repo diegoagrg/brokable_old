@@ -1,0 +1,18 @@
+uuid: a1643a33-4c3c-4fbb-a3f6-a339a8f594ce
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.casos_de_exito
+id: node.casos_de_exito.changed
+field_name: changed
+entity_type: node
+bundle: casos_de_exito
+label: Modificado
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

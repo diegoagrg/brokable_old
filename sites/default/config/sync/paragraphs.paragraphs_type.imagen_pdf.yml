@@ -1,0 +1,11 @@
+uuid: 065fb1a5-dbf0-440d-8c8f-e4b243fe34a9
+langcode: es
+status: true
+dependencies:
+  content:
+    - 'file:file:2990dcee-0abb-4202-a124-cc0af7e193f6'
+id: imagen_pdf
+label: 'Ficha técnica'
+icon_uuid: 2990dcee-0abb-4202-a124-cc0af7e193f6
+description: ''
+behavior_plugins: {  }

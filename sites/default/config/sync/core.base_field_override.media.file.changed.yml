@@ -1,0 +1,18 @@
+uuid: df5390ae-d5d0-47be-be18-593f16de3d88
+langcode: es
+status: true
+dependencies:
+  config:
+    - media.type.file
+id: media.file.changed
+field_name: changed
+entity_type: media
+bundle: file
+label: Modificado
+description: 'The time the media item was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

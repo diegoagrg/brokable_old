@@ -1,0 +1,12 @@
+uuid: e07f38ee-4f16-4d0b-ab28-21e552f8ad5b
+langcode: es
+status: true
+dependencies: {  }
+label: 'Banner escritorio'
+id: banner_escritorio
+description: ''
+aspect_ratio: '4:1'
+soft_limit_width: 1440
+soft_limit_height: 360
+hard_limit_width: null
+hard_limit_height: null

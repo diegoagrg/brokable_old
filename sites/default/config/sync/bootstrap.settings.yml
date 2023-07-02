@@ -1,0 +1,33 @@
+schemas:
+  bootstrap: 8000
+_core:
+  default_config_hash: 1uFogeFphl0Hg6oVCacZZ8mM_0wMZ7PS_RrmLbK5tf0
+favicon:
+  mimetype: image/png
+  path: 'public://LogoPNG.png'
+  url: 'http://brokable.com/sites/default/files/6381y.png'
+  use_default: false
+table_responsive: '-1'
+table: ''
+fluid_container: 1
+region_wells:
+  top_bar: ''
+  navigation: ''
+  navigation_collapsible: ''
+  header: ''
+  highlighted: ''
+  help: ''
+  content: ''
+  sidebar_first: ''
+  sidebar_second: ''
+  footer: ''
+logo:
+  path: 'public://LogoPNG.png'
+  url: ''
+  use_default: false
+features:
+  comment_user_picture: true
+  comment_user_verification: true
+  favicon: true
+  node_user_picture: true
+langcode: es

@@ -1,0 +1,18 @@
+uuid: 5af2e9ae-5ff5-429a-8662-a032d82df867
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.noticias_y_opinion
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: node.noticias_y_opinion
+target_entity_type_id: node
+target_bundle: noticias_y_opinion
+default_langcode: site_default
+language_alterable: true

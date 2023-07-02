@@ -1,0 +1,20 @@
+uuid: e70a0a97-6a01-4a2a-93cd-5b2eb2e7dc3c
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.casos_de_exito
+  module:
+    - path
+id: node.casos_de_exito.path
+field_name: path
+entity_type: node
+bundle: casos_de_exito
+label: 'Alias de URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

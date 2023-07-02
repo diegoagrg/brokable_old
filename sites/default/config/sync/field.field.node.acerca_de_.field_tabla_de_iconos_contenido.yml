@@ -1,0 +1,37 @@
+uuid: ef49d248-87a9-495b-8cc2-54d37b5f1d5e
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_tabla_de_iconos_contenido
+    - node.type.acerca_de_
+    - paragraphs.paragraphs_type.tabla_de_iconos_contenido
+  module:
+    - entity_reference_revisions
+id: node.acerca_de_.field_tabla_de_iconos_contenido
+field_name: field_tabla_de_iconos_contenido
+entity_type: node
+bundle: acerca_de_
+label: 'Tabla de iconos contenido'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      tabla_de_iconos_contenido: tabla_de_iconos_contenido
+    target_bundles_drag_drop:
+      tab_de_icono:
+        weight: 4
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 5
+        enabled: false
+      tabla_de_iconos_contenido:
+        enabled: true
+        weight: 6
+field_type: entity_reference_revisions

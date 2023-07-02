@@ -1,0 +1,18 @@
+uuid: 473acc43-7515-4f18-b156-e3f2c4a7188b
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.icono_titulo_descripcion
+id: paragraph.icono_titulo_descripcion.created
+field_name: created
+entity_type: paragraph
+bundle: icono_titulo_descripcion
+label: Fecha
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

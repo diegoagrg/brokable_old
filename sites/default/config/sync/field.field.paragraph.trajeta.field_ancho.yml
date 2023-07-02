@@ -1,0 +1,23 @@
+uuid: 54e06007-d689-4034-a79b-ea10a0e7d96f
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_ancho
+    - paragraphs.paragraphs_type.trajeta
+  module:
+    - options
+id: paragraph.trajeta.field_ancho
+field_name: field_ancho
+entity_type: paragraph
+bundle: trajeta
+label: Ancho
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 12
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

@@ -1,0 +1,33 @@
+uuid: 24e51dbc-f644-4c92-8815-bf8a3aa29d0b
+langcode: es
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.normativas.body
+    - field.field.node.normativas.field_icono_tipo
+    - node.type.normativas
+  module:
+    - text
+    - user
+id: node.normativas.teaser
+targetEntityType: node
+bundle: normativas
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_icono_tipo: true
+  langcode: true

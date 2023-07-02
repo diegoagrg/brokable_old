@@ -1,0 +1,21 @@
+uuid: 206dced6-816d-4932-9345-69eddd97fb4e
+langcode: es
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_etiqueta_plata
+field_name: field_etiqueta_plata
+entity_type: paragraph
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

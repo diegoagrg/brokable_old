@@ -1,0 +1,35 @@
+uuid: ea86eaf2-fa3d-4a2a-9ea6-c66ba5aceb0e
+langcode: es
+status: true
+dependencies:
+  config:
+    - image.style.banner_celular
+    - image.style.banner_escritorio
+    - image.style.banner_tabe
+  theme:
+    - bootstrap
+id: banner_escritorio
+label: 'Banner escritorio'
+image_style_mappings:
+  -
+    breakpoint_id: bootstrap.screen-md-min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: banner_escritorio
+  -
+    breakpoint_id: bootstrap.screen-sm-max
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: banner_escritorio
+  -
+    breakpoint_id: bootstrap.screen-sm-min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: banner_tabe
+  -
+    breakpoint_id: bootstrap.screen-xs-max
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: banner_celular
+breakpoint_group: bootstrap
+fallback_image_style: banner_escritorio

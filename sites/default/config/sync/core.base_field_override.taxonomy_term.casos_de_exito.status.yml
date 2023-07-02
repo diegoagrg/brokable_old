@@ -1,0 +1,22 @@
+uuid: fe507897-4153-4893-8912-e24a04b1477d
+langcode: es
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.casos_de_exito
+id: taxonomy_term.casos_de_exito.status
+field_name: status
+entity_type: taxonomy_term
+bundle: casos_de_exito
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

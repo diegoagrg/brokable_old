@@ -1,0 +1,20 @@
+uuid: 6cc558c2-6de6-4f9a-b315-d2d3a5145e6d
+langcode: es
+status: true
+dependencies:
+  module:
+    - paragraphs
+    - webform
+id: paragraph.field_seleccionar_formulario
+field_name: field_seleccionar_formulario
+entity_type: paragraph
+type: webform
+settings:
+  target_type: webform
+module: webform
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

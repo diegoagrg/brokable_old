@@ -1,0 +1,25 @@
+uuid: 05e7e2b6-7c4c-46af-842c-054d17a887d6
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.columnas_de_top_bar
+    - field.field.block_content.columnas_de_top_bar.field_columnas2
+  module:
+    - entity_reference_revisions
+id: block_content.columnas_de_top_bar.default
+targetEntityType: block_content
+bundle: columnas_de_top_bar
+mode: default
+content:
+  field_columnas2:
+    type: entity_reference_revisions_entity_view
+    weight: 0
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

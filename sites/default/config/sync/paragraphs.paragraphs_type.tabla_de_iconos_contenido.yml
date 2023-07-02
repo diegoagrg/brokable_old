@@ -1,0 +1,11 @@
+uuid: 27702c73-57de-4e4c-9f69-7af068ad6333
+langcode: es
+status: true
+dependencies:
+  content:
+    - 'file:file:1dec1865-330c-462b-a8b5-946f9c655d50'
+id: tabla_de_iconos_contenido
+label: 'Tabla de íconos - contenido'
+icon_uuid: 1dec1865-330c-462b-a8b5-946f9c655d50
+description: ''
+behavior_plugins: {  }

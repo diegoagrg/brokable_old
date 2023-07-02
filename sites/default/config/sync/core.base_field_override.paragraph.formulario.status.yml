@@ -1,0 +1,22 @@
+uuid: abb4190c-e5be-4907-8919-5f749327e3b5
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.formulario
+id: paragraph.formulario.status
+field_name: status
+entity_type: paragraph
+bundle: formulario
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,18 @@
+uuid: ed4644b9-4276-4452-8d59-d7333f2b11ae
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.normativas
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: node.normativas
+target_entity_type_id: node
+target_bundle: normativas
+default_langcode: site_default
+language_alterable: true

@@ -1,0 +1,30 @@
+uuid: 04e55cd6-f830-467c-9eb0-dc59a3510fc1
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.imagen_de_carga
+    - field.field.block_content.imagen_de_carga.field_imagen
+    - image.style.imagen_grande
+  module:
+    - svg_image
+id: block_content.imagen_de_carga.default
+targetEntityType: block_content
+bundle: imagen_de_carga
+mode: default
+content:
+  field_imagen:
+    weight: 0
+    label: hidden
+    settings:
+      image_style: imagen_grande
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+hidden:
+  langcode: true

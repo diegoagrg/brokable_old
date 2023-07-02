@@ -1,0 +1,25 @@
+uuid: d1a386af-2575-480a-bbc9-011fc8a3a2ff
+langcode: es
+status: true
+dependencies:
+  config:
+    - crop.type.3_2
+  module:
+    - crop
+name: slider_md
+label: 'Slider - MD'
+effects:
+  67860825-ffad-4c16-ad8b-1c2f5b2ff82a:
+    uuid: 67860825-ffad-4c16-ad8b-1c2f5b2ff82a
+    id: crop_crop
+    weight: 1
+    data:
+      crop_type: '3_2'
+  6ef5b158-ddb6-4836-8afe-3ae2a7da2d56:
+    uuid: 6ef5b158-ddb6-4836-8afe-3ae2a7da2d56
+    id: image_scale
+    weight: 2
+    data:
+      width: 768
+      height: null
+      upscale: true

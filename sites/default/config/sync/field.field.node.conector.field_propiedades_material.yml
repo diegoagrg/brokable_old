@@ -1,0 +1,21 @@
+uuid: 3d78809f-6723-4b9d-a516-8f7316522d6a
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_propiedades_material
+    - node.type.conector
+  module:
+    - text
+id: node.conector.field_propiedades_material
+field_name: field_propiedades_material
+entity_type: node
+bundle: conector
+label: 'Propiedades del material'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

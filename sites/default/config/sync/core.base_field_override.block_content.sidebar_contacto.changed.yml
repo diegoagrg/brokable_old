@@ -1,0 +1,18 @@
+uuid: 4f7e9587-d73c-4a2f-bec8-7b7370057b93
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.sidebar_contacto
+id: block_content.sidebar_contacto.changed
+field_name: changed
+entity_type: block_content
+bundle: sidebar_contacto
+label: Modificado
+description: 'The time that the custom block was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

@@ -1,0 +1,143 @@
+uuid: 9829660a-6745-4c98-b273-82b70fb4f9f2
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.ensamble.field_ambientes
+    - field.field.node.ensamble.field_aplicaciones
+    - field.field.node.ensamble.field_caracteristicas
+    - field.field.node.ensamble.field_categoria_tax
+    - field.field.node.ensamble.field_clasificaciones
+    - field.field.node.ensamble.field_descripcion
+    - field.field.node.ensamble.field_ficha_tecnica
+    - field.field.node.ensamble.field_ficha_tecnica_texto
+    - field.field.node.ensamble.field_imagen
+    - field.field.node.ensamble.field_numeros_de_parte
+    - field.field.node.ensamble.field_recursos
+    - field.field.node.ensamble.field_texto_complementario
+    - field.field.node.ensamble.field_video
+    - node.type.ensamble
+  module:
+    - dynamic_entity_reference
+    - file
+    - svg_image
+    - text
+    - user
+    - video_embed_field
+id: node.ensamble.default
+targetEntityType: node
+bundle: ensamble
+mode: default
+content:
+  field_ambientes:
+    weight: 107
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: dynamic_entity_reference_label
+    region: content
+  field_aplicaciones:
+    weight: 106
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_caracteristicas:
+    weight: 105
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_categoria_tax:
+    weight: 112
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_clasificaciones:
+    weight: 104
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_descripcion:
+    weight: 101
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_ficha_tecnica:
+    weight: 108
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_ficha_tecnica_texto:
+    weight: 113
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_imagen:
+    weight: 102
+    label: hidden
+    settings:
+      svg_attributes:
+        width: ''
+        height: ''
+      svg_render_as_image: true
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_numeros_de_parte:
+    weight: 111
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_recursos:
+    weight: 110
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  field_texto_complementario:
+    weight: 103
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_video:
+    weight: 109
+    label: hidden
+    settings:
+      responsive: true
+      width: 854
+      height: 480
+      autoplay: true
+    third_party_settings: {  }
+    type: video_embed_field_video
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

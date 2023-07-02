@@ -1,0 +1,18 @@
+uuid: e8f7f93f-f223-4873-9d4e-6dcaec2e5f4a
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.conector
+id: node.conector.title
+field_name: title
+entity_type: node
+bundle: conector
+label: Nombre
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

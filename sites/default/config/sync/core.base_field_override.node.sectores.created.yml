@@ -1,0 +1,18 @@
+uuid: 40c266ca-e208-4dcb-ab0f-2e0240e7563e
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.sectores
+id: node.sectores.created
+field_name: created
+entity_type: node
+bundle: sectores
+label: Fecha
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

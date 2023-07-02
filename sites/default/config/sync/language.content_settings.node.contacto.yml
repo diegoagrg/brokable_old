@@ -1,0 +1,18 @@
+uuid: 80a17e30-a057-4502-8e53-dd2152bd6490
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.contacto
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: node.contacto
+target_entity_type_id: node
+target_bundle: contacto
+default_langcode: site_default
+language_alterable: true

@@ -1,0 +1,21 @@
+uuid: e35bb3b9-5bf5-40e0-baa6-118a40a4bd04
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_descripcion
+    - paragraphs.paragraphs_type.columnas
+  module:
+    - text
+id: paragraph.columnas.field_descripcion
+field_name: field_descripcion
+entity_type: paragraph
+bundle: columnas
+label: Descripción
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

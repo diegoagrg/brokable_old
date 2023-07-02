@@ -1,0 +1,18 @@
+uuid: 7b39d163-8762-4028-ab31-703a700034d4
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.trajeta
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.trajeta
+target_entity_type_id: paragraph
+target_bundle: trajeta
+default_langcode: site_default
+language_alterable: true

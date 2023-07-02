@@ -1,0 +1,23 @@
+uuid: 68588b47-1ba8-45b1-a40b-ac3603b88f94
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.tipo_de_cable
+  module:
+    - text
+id: node.tipo_de_cable.body
+field_name: body
+entity_type: node
+bundle: tipo_de_cable
+label: Contenido
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

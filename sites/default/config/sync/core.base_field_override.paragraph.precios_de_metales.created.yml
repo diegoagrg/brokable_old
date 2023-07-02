@@ -1,0 +1,18 @@
+uuid: 47c54524-f595-4e9d-a8f0-6b89860d4a0c
+langcode: es
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.precios_de_metales
+id: paragraph.precios_de_metales.created
+field_name: created
+entity_type: paragraph
+bundle: precios_de_metales
+label: Fecha
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

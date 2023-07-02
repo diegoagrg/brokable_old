@@ -1,0 +1,32 @@
+uuid: 88f64db4-e44e-472b-96bb-281a5b1a7e2e
+langcode: es
+status: true
+dependencies:
+  config:
+    - views.view.tipos_de_cable
+  module:
+    - node
+    - views
+  theme:
+    - bootstrap
+id: views_block__tipos_de_cable_tipos_de_cable_menu_lateral
+theme: bootstrap
+region: sidebar_first
+weight: -11
+provider: null
+plugin: 'views_block:tipos_de_cable-tipos_de_cable_menu_lateral'
+settings:
+  id: 'views_block:tipos_de_cable-tipos_de_cable_menu_lateral'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      tipo_de_cable: tipo_de_cable
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

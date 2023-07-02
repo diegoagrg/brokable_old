@@ -1,0 +1,56 @@
+uuid: 0625ea26-2376-47dc-961a-0858d05873e7
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.icono_titulo_descripcion.field_descripcion
+    - field.field.paragraph.icono_titulo_descripcion.field_icono
+    - field.field.paragraph.icono_titulo_descripcion.field_nivel
+    - field.field.paragraph.icono_titulo_descripcion.field_titulo
+    - image.style.imagen_chica
+    - paragraphs.paragraphs_type.icono_titulo_descripcion
+  module:
+    - options
+    - svg_image
+    - text
+id: paragraph.icono_titulo_descripcion.default
+targetEntityType: paragraph
+bundle: icono_titulo_descripcion
+mode: default
+content:
+  field_descripcion:
+    weight: 2
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_icono:
+    weight: 0
+    label: hidden
+    settings:
+      image_style: imagen_chica
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_nivel:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_titulo:
+    weight: 1
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden: {  }

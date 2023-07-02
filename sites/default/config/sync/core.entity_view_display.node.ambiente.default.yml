@@ -1,0 +1,70 @@
+uuid: eb340482-54b3-40e2-9632-1b21ef1e3f86
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.ambiente.body
+    - field.field.node.ambiente.field_gama_de_cables_2
+    - field.field.node.ambiente.field_icono_tipo
+    - field.field.node.ambiente.field_imagen_tipo
+    - image.style.imagen_mediana
+    - node.type.ambiente
+  module:
+    - entity_reference_revisions
+    - svg_image
+    - text
+    - user
+id: node.ambiente.default
+targetEntityType: node
+bundle: ambiente
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_gama_de_cables_2:
+    type: entity_reference_revisions_entity_view
+    weight: 104
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_icono_tipo:
+    weight: 102
+    label: hidden
+    settings:
+      image_style: imagen_chica
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_imagen_tipo:
+    weight: 103
+    label: hidden
+    settings:
+      image_style: imagen_mediana
+      image_link: ''
+      svg_render_as_image: '1'
+      svg_attributes:
+        width: ''
+        height: ''
+    third_party_settings: {  }
+    type: image
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true

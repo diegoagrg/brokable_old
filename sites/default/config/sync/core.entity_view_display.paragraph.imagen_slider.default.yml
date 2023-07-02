@@ -1,0 +1,25 @@
+uuid: 8d34e8da-b55f-4869-8c19-f380b639e3da
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.imagen_slider.field_imagen_slide
+    - paragraphs.paragraphs_type.imagen_slider
+    - responsive_image.styles.slider
+  module:
+    - responsive_image
+id: paragraph.imagen_slider.default
+targetEntityType: paragraph
+bundle: imagen_slider
+mode: default
+content:
+  field_imagen_slide:
+    weight: 0
+    label: hidden
+    settings:
+      responsive_image_style: slider
+      image_link: ''
+    third_party_settings: {  }
+    type: responsive_image
+    region: content
+hidden: {  }

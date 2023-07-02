@@ -1,0 +1,20 @@
+uuid: b7fd3a1b-4df0-446a-abab-dec7bcf5a1b4
+langcode: es
+status: true
+dependencies:
+  config:
+    - node.type.accesorios
+id: node.accesorios.menu_link
+field_name: menu_link
+entity_type: node
+bundle: accesorios
+label: 'Enlace del menu'
+description: 'Enlace de menú calculado para el nodo (solo disponible durante el guardado del nodo).'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

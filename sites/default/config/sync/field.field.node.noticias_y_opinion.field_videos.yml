@@ -1,0 +1,23 @@
+uuid: 6fb5810a-7cec-494b-875a-13b1ecd62098
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_videos
+    - node.type.noticias_y_opinion
+id: node.noticias_y_opinion.field_videos
+field_name: field_videos
+entity_type: node
+bundle: noticias_y_opinion
+label: Videos
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

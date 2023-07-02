@@ -1,0 +1,67 @@
+uuid: f47b6bb5-4de0-40c0-8737-8fd2e48e5778
+langcode: es
+status: true
+dependencies:
+  config:
+    - block_content.type.metales
+    - field.storage.block_content.field_lista_de_metales
+    - paragraphs.paragraphs_type.precios_de_metales
+  module:
+    - entity_reference_revisions
+id: block_content.metales.field_lista_de_metales
+field_name: field_lista_de_metales
+entity_type: block_content
+bundle: metales
+label: 'Lista de metales'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      precios_de_metales: precios_de_metales
+    target_bundles_drag_drop:
+      accesorio:
+        weight: 14
+        enabled: false
+      caso_de_exito:
+        weight: 15
+        enabled: false
+      columnas:
+        weight: 16
+        enabled: false
+      formulario:
+        weight: 17
+        enabled: false
+      icono_titulo_descripcion:
+        weight: 18
+        enabled: false
+      imagen_pdf:
+        weight: 19
+        enabled: false
+      normativas_homologaciones:
+        weight: 20
+        enabled: false
+      precios_de_metales:
+        enabled: true
+        weight: 21
+      sector_industrial:
+        weight: 22
+        enabled: false
+      tabla_de_iconos_contenido:
+        weight: 23
+        enabled: false
+      tab_de_icono:
+        weight: 24
+        enabled: false
+      testimonio:
+        weight: 25
+        enabled: false
+      trajeta:
+        weight: 26
+        enabled: false
+field_type: entity_reference_revisions

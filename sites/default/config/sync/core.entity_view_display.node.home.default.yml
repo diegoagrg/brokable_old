@@ -1,0 +1,44 @@
+uuid: c9d2a3c2-e73f-429b-a07a-500c8501ee01
+langcode: es
+status: true
+dependencies:
+  config:
+    - field.field.node.home.field_contenido
+    - field.field.node.home.field_mostrar_noticias
+    - field.field.node.home.field_slider
+    - node.type.home
+  module:
+    - entity_reference_revisions
+    - user
+id: node.home.default
+targetEntityType: node
+bundle: home
+mode: default
+content:
+  field_contenido:
+    type: entity_reference_revisions_entity_view
+    weight: 1
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_mostrar_noticias:
+    weight: 2
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_slider: true
+  langcode: true
