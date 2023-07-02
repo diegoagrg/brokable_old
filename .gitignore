@@ -1,4 +1,8 @@
 # Excludes for installed Drupal site
-sites/*/files/
-sites/*/settings.php
+!sites/*/files/
+sites/*/files/*
+!sites/*/files/config_HJfVYdVXYp5GQr-NF6z7uPmh8ydc5Sd9qshDJPz3DS2iU7cf7BJi9WwxOxt6z8PdDK_ClmeZEw
+!sites/*/files/config_HJfVYdVXYp5GQr-NF6z7uPmh8ydc5Sd9qshDJPz3DS2iU7cf7BJi9WwxOxt6z8PdDK_ClmeZEw/*
+!sites/*/files/config_eikvVLiTHzsXDgsmCxasnJxIIvLUYtNFe03Lsnb6LycnFJPALJiD0xgndNM_ytLTDw1XD5BTQw
+!sites/*/files/config_eikvVLiTHzsXDgsmCxasnJxIIvLUYtNFe03Lsnb6LycnFJPALJiD0xgndNM_ytLTDw1XD5BTQw/*
 .htaccess
