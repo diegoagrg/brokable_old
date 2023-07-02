@@ -780,7 +780,7 @@ $settings['entity_update_batch_size'] = 50;
 // );
 
 $databases['default']['default'] = array (
-  'database' => 'brokable_old',
+  'database' => 'brokable',
   'username' => 'drupalconn',
   'password' => 'Pa$$w0rd_Dev',
   'prefix' => 'brkb_',
